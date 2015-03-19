@@ -2579,7 +2579,7 @@ module Controls {
                     }
                 }
             }
-            (<CDrawingDataControl><any>this._ownedDataProvider).getDrawingDataList(rect, focusedInfo, (aDrawingDataList: TDrawingData[]) => {
+            (<CDrawingDataProvider><any>this._ownedDataProvider).getDrawingDataList(rect, focusedInfo, (aDrawingDataList: TDrawingData[]) => {
                 var i, len, drawingData: TDrawingData, el: HTMLElement;
                 var drawnElements: CDrawnElements = this._pickDrawnElements();
 
@@ -2633,7 +2633,7 @@ module Controls {
             el.style.width = aDrawingData.rect.getWidth() + "px";
             el.style.height = aDrawingData.rect.getHeight() + "px";
             this._element.appendChild(el);
-            if (this._drawer(el, aDrawingData) === TFocusInfo.KFocusAble) {
+            if (this._drawer(aDrawingData.key, aDrawingData, el) === TFocusInfo.KFocusAble) {
                 el.classList.add(KClassFocusable);
             }
             return el;
@@ -2677,7 +2677,7 @@ module Controls {
             var i, len, key;
             for (i = 0, len = aKeys.length; i < len; i++) {
                 key = aKeys[i];
-                this._drawer(this._getDrawnElement(key), this._ownedDataProvider.getItem(key));
+                this._drawer(key, this._ownedDataProvider.getItem(key), this._getDrawnElement(key));
             }
         }
 
@@ -4089,7 +4089,7 @@ module Controls {
             }
             return itemEl;
         }
-        private _doDraw(aRect: TRect, aDrawParam: { [key: string]: any; }): HTMLElement[] {
+        /*protected*/ _doDraw(aRect: TRect, aDrawParam: { [key: string]: any; }): HTMLElement[] {
             var ret: HTMLElement[];
             this.setTransition(false);
             if (this._dataChanged) {

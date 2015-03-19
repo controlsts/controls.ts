@@ -2473,7 +2473,7 @@ var Controls;
             el.style.width = aDrawingData.rect.getWidth() + "px";
             el.style.height = aDrawingData.rect.getHeight() + "px";
             this._element.appendChild(el);
-            if (this._drawer(el, aDrawingData) === 2 /* KFocusAble */) {
+            if (this._drawer(aDrawingData.key, aDrawingData, el) === 2 /* KFocusAble */) {
                 el.classList.add(KClassFocusable);
             }
             return el;
@@ -2517,7 +2517,7 @@ var Controls;
             var i, len, key;
             for (i = 0, len = aKeys.length; i < len; i++) {
                 key = aKeys[i];
-                this._drawer(this._getDrawnElement(key), this._ownedDataProvider.getItem(key));
+                this._drawer(key, this._ownedDataProvider.getItem(key), this._getDrawnElement(key));
             }
         };
 
@@ -3854,7 +3854,7 @@ var Controls;
             }
             return itemEl;
         };
-        CCarouselControl.prototype._doDraw = function (aRect, aDrawParam) {
+        /*protected*/ CCarouselControl.prototype._doDraw = function (aRect, aDrawParam) {
             var ret;
             this.setTransition(false);
             if (this._dataChanged) {
