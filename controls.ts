@@ -284,7 +284,7 @@ module Controls {
             el = aFocusable[i];
             mapItem = {
                 el: el
-            }
+            };
             if (i && prevMapItem) {
                 if (el.classList.contains(KClassFocused)) {
                     startIndex = i;
@@ -336,7 +336,7 @@ module Controls {
             el = aFocusable[i];
             mapItem = {
                 el: el
-            }
+            };
             if (el.classList.contains(KClassFocused)) {
                 startIndex = i;
             }
@@ -440,7 +440,7 @@ module Controls {
                     }
                 }
             }
-            return 999999;
+            return Number.MAX_VALUE;
         };
         var distanceRight = function (me, some, findArea) {
             var me = me;
@@ -456,7 +456,7 @@ module Controls {
                     }
                 }
             }
-            return 999999;
+            return Number.MAX_VALUE;
         };
         var distanceTop = function (me, some, findArea) {
             var me = me;
@@ -468,7 +468,7 @@ module Controls {
                     return distance;
                 }
             }
-            return 999999;
+            return Number.MAX_VALUE;
         };
         var distanceBottom = function (me, some, findArea) {
             var me = me;
@@ -480,7 +480,7 @@ module Controls {
                     return distance;
                 }
             }
-            return 999999;
+            return Number.MAX_VALUE;
         };
         var weightDistance = function (me, some, xWeight) {
             var me = me;
@@ -494,13 +494,13 @@ module Controls {
         };
 
         var fillKeyMapItem = function (aKeyMapItem, aSourcePosData) {
-            var valNearestLeft = 999999;
+            var valNearestLeft = Number.MAX_VALUE;
             var idxNearestLeft = -1;
-            var valNearestRight = 999999;
+            var valNearestRight = Number.MAX_VALUE;
             var idxNearestRight = -1;
-            var valNearestTop = 999999;
+            var valNearestTop = Number.MAX_VALUE;
             var idxNearestTop = -1;
-            var valNearestBot = 999999;
+            var valNearestBot = Number.MAX_VALUE;
             var idxNearestBot = -1;
 
             var findArea = 46;
@@ -1599,6 +1599,7 @@ module Controls {
     }
 
     export class CLayoutControl extends CControl {
+
         constructor(element: HTMLElement) {
             super(element);
             this._element.classList.add("-lay");
@@ -2927,7 +2928,7 @@ module Controls {
         } else {
             FLayoutElementVertical(aEl, aChild, aVAlign, aHAlign, aMargins, aPadding, maxWidth, maxHeight, totalWidth, totalHeight);
         }
-    }
+    };
 
     var FLayoutElementVertical = function (
         aEl: HTMLElement,
@@ -2976,7 +2977,7 @@ module Controls {
         if (aEl.offsetWidth == 0) {
             aEl.style.width = aMargins.l + aMaxWidth + aMargins.r + 'px';
         }
-    }
+    };
 
     var FLayoutElementHorizontal = function (
         aEl: HTMLElement,

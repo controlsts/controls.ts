@@ -404,7 +404,7 @@ var Controls;
                     }
                 }
             }
-            return 999999;
+            return Number.MAX_VALUE;
         };
         var distanceRight = function (me, some, findArea) {
             var me = me;
@@ -420,7 +420,7 @@ var Controls;
                     }
                 }
             }
-            return 999999;
+            return Number.MAX_VALUE;
         };
         var distanceTop = function (me, some, findArea) {
             var me = me;
@@ -432,7 +432,7 @@ var Controls;
                     return distance;
                 }
             }
-            return 999999;
+            return Number.MAX_VALUE;
         };
         var distanceBottom = function (me, some, findArea) {
             var me = me;
@@ -444,7 +444,7 @@ var Controls;
                     return distance;
                 }
             }
-            return 999999;
+            return Number.MAX_VALUE;
         };
         var weightDistance = function (me, some, xWeight) {
             var me = me;
@@ -458,13 +458,13 @@ var Controls;
         };
 
         var fillKeyMapItem = function (aKeyMapItem, aSourcePosData) {
-            var valNearestLeft = 999999;
+            var valNearestLeft = Number.MAX_VALUE;
             var idxNearestLeft = -1;
-            var valNearestRight = 999999;
+            var valNearestRight = Number.MAX_VALUE;
             var idxNearestRight = -1;
-            var valNearestTop = 999999;
+            var valNearestTop = Number.MAX_VALUE;
             var idxNearestTop = -1;
-            var valNearestBot = 999999;
+            var valNearestBot = Number.MAX_VALUE;
             var idxNearestBot = -1;
 
             var findArea = 46;
