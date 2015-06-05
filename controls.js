@@ -13,11 +13,9 @@ var Controls;
     var KClassFocused = "-fd";
     var KClassActiveFocused = "-afd";
     var KClassActiveFocusedLeaf = "-afd-leaf";
-
     var KCssPropTransition = 'transition';
     var KCssEventTransitionEnd = 'transitionend';
     var KCssTransitionDuration = 'transition-duration';
-
     Controls.TClassStr = {
         KClassControl: KClassControl,
         KClassGroupControl: KClassGroupControl,
@@ -26,13 +24,11 @@ var Controls;
         KClassActiveFocused: KClassActiveFocused,
         KClassActiveFocusedLeaf: KClassActiveFocusedLeaf
     };
-
     Controls.TTransitionStr = {
         KCssPropTransition: KCssPropTransition,
         KCssEventTransitionEnd: KCssEventTransitionEnd,
         KCssTransitionDuration: KCssTransitionDuration
     };
-
     var browser = (function () {
         var N = navigator.appName, ua = navigator.userAgent, tem;
         var M = ua.match(/(opera|chrome|safari|firefox|msie)\/?\s*(\.?\d+(\.\d+)*)/i);
@@ -41,24 +37,23 @@ var Controls;
         M = M ? [M[1], M[2]] : [N, navigator.appVersion, '-?'];
         return M;
     }());
-
     if (browser[0] == "chrome") {
         KCssPropTransition = '-webkit-transition';
         KCssEventTransitionEnd = 'webkitTransitionEnd';
         KCssTransitionDuration = '-webkit-transition-duration';
-    } else if (browser[0] == "opera") {
+    }
+    else if (browser[0] == "opera") {
         KCssPropTransition = '-o-transition';
         KCssEventTransitionEnd = 'oTransitionEnd otransitionend';
         KCssTransitionDuration = '-o-transition-duration';
-    } else if (browser[0] == "msie") {
+    }
+    else if (browser[0] == "msie") {
         KCssPropTransition = '-ms-transition';
         KCssEventTransitionEnd = 'msTransitionEnd mstransitionend';
         KCssTransitionDuration = '-ms-transition-duration';
     }
-
     var KCssTransitionParamPos = 'top .3s linear, left .3s linear';
     var KCssTransitionParamOpa = 'opacity .3s linear';
-
     // DOM helper
     var Util = (function () {
         function Util() {
@@ -69,31 +64,30 @@ var Controls;
                 if (getComputedStyle(aElement).transitionDuration) {
                     durations = getComputedStyle(aElement).transitionDuration.split(',');
                 }
-            } else {
+            }
+            else {
                 durations = aElement.style.transitionDuration.split(',');
             }
-
             var delay = parseFloat(durations[0].replace('s', '')) * 1000 || 300;
             if (delay) {
                 setTimeout(aCallBack, delay);
-            } else {
+            }
+            else {
                 throw "Invalid transition duration";
             }
         };
-
         Util.remove = function (aElement) {
             var parent = aElement.parentElement;
             if (parent) {
                 parent.removeChild(aElement);
-            } else {
+            }
+            else {
                 throw "Element has no parent";
             }
         };
-
         Util.prepend = function (aElement, aNewChild) {
             aElement.insertBefore(aNewChild, aElement.firstElementChild);
         };
-
         Util.getRect = function (aElement) {
             return new TRect({
                 top: aElement.offsetTop,
@@ -104,7 +98,6 @@ var Controls;
         };
         return Util;
     })();
-
     var KKeyStrUp = "Up";
     var KKeyStrDown = "Down";
     var KKeyStrLeft = "Left";
@@ -114,7 +107,6 @@ var Controls;
     var KKeyStrPageDown = "PageDown";
     var KKeyStrBack = "Back";
     var KKeyStrEscape = "Escape";
-
     Controls.TKeyStr = {
         KKeyStrUp: KKeyStrUp,
         KKeyStrDown: KKeyStrDown,
@@ -126,7 +118,6 @@ var Controls;
         KKeyStrBack: KKeyStrBack,
         KKeyStrEscape: KKeyStrEscape
     };
-
     var CKeyMap = (function () {
         function CKeyMap(aFocusChanged, aActiveFocusClass) {
             this._index = -1;
@@ -197,7 +188,6 @@ var Controls;
             handlers[KKeyStrRight] = function () {
                 newIndex = oldMapItem.r;
             };
-
             if (handlers[aKeyStr]) {
                 handlers[aKeyStr]();
                 if (newIndex !== undefined) {
@@ -210,7 +200,6 @@ var Controls;
         return CKeyMap;
     })();
     Controls.CKeyMap = CKeyMap;
-
     Controls.KBuilderTopDown = function (aKeyMap, aFocusable, aPrevFocusInfo, aPrevKeyStr) {
         var i, len, el, mapItem, prevMapItem = null;
         var startIndex = 0;
@@ -232,25 +221,24 @@ var Controls;
         aFocusable[startIndex].classList.add(KClassFocused);
         aKeyMap.setActiveFocus(startIndex);
         /*
-        if (this._parent) {
-        if (!this._parent.isFocused()) {
-        return;
-        }
-        }
-        var scrollingScheme = this._getDrawParam(KParamStrScrollSchemeVertical);
-        if (aPrevKeyStr) {
-        if (scrollingScheme === TParamScrollScheme.EByFocusRemains) {
-        if (aPrevFocused) {
-        aPrevFocused.classList.remove(KClassActiveFocusedLeaf);
-        aFocusable[startIndex].classList.add(KClassActiveFocusedLeaf);
-        }
-        } else {
-        aKeyMap.doKey(aPrevKeyStr);
-        }
-        }
-        */
+         if (this._parent) {
+         if (!this._parent.isFocused()) {
+         return;
+         }
+         }
+         var scrollingScheme = this._getDrawParam(KParamStrScrollSchemeVertical);
+         if (aPrevKeyStr) {
+         if (scrollingScheme === TParamScrollScheme.EByFocusRemains) {
+         if (aPrevFocused) {
+         aPrevFocused.classList.remove(KClassActiveFocusedLeaf);
+         aFocusable[startIndex].classList.add(KClassActiveFocusedLeaf);
+         }
+         } else {
+         aKeyMap.doKey(aPrevKeyStr);
+         }
+         }
+         */
     };
-
     Controls.KBuilderLeftRight = function (aKeyMap, aFocusable, aPrevFocusInfo, aPrevKeyStr) {
         var i, j, len, el, mapItem, prevMapItem = null;
         var startIndex = 0;
@@ -272,25 +260,24 @@ var Controls;
         aFocusable[startIndex].classList.add(KClassFocused);
         aKeyMap.setActiveFocus(startIndex);
         /*
-        if (this._parent) {
-        if (!this._parent.isFocused()) {
-        return;
-        }
-        }
-        var scrollingScheme = this._getDrawParam(KParamStrScrollSchemeVertical);
-        if (aPrevKeyStr) {
-        if (scrollingScheme === TParamScrollScheme.EByFocusRemains) {
-        if (aPrevFocused) {
-        aPrevFocused.classList.remove(KClassActiveFocusedLeaf);
-        aFocusable[startIndex].classList.add(KClassActiveFocusedLeaf);
-        }
-        } else {
-        aKeyMap.doKey(aPrevKeyStr);
-        }
-        }
-        */
+         if (this._parent) {
+         if (!this._parent.isFocused()) {
+         return;
+         }
+         }
+         var scrollingScheme = this._getDrawParam(KParamStrScrollSchemeVertical);
+         if (aPrevKeyStr) {
+         if (scrollingScheme === TParamScrollScheme.EByFocusRemains) {
+         if (aPrevFocused) {
+         aPrevFocused.classList.remove(KClassActiveFocusedLeaf);
+         aFocusable[startIndex].classList.add(KClassActiveFocusedLeaf);
+         }
+         } else {
+         aKeyMap.doKey(aPrevKeyStr);
+         }
+         }
+         */
     };
-
     Controls.KBuilderGrid = function (aKeyMap, aFocusable, aPrevFocusInfo, aPrevKeyStr) {
         var i, j, len;
         var el;
@@ -318,7 +305,8 @@ var Controls;
                 prevMapItem = aKeyMap.getMapItem(i - 1);
                 prevMapItem.r = i;
                 mapItem.l = i - 1;
-            } else {
+            }
+            else {
                 posY = el.offsetTop;
                 if (!colCount) {
                     colCount = i;
@@ -338,7 +326,6 @@ var Controls;
             aKeyMap.doKey(aPrevKeyStr);
         }
     };
-
     Controls.KBuilderWeightDistance = function (aKeyMap, aFocusable, aPrevFocusInfo, aPrevKeyStr) {
         var i, j, cnt = aFocusable.length, el;
         var getPos = function (aElement) {
@@ -348,10 +335,8 @@ var Controls;
             var height = aElement.offsetHeight;
             var bottom = top + height;
             var right = left + width;
-
             var topMiddle = top + (height / 2);
             var leftMiddle = left + (width / 2);
-
             return {
                 top: { x: leftMiddle, y: top },
                 right: { x: right, y: topMiddle },
@@ -368,10 +353,8 @@ var Controls;
             var bottom = aRect.bottom;
             var width = aRect.getWidth();
             var height = aRect.getHeight();
-
             var topMiddle = top + (height / 2);
             var leftMiddle = left + (width / 2);
-
             return {
                 top: { x: leftMiddle, y: top },
                 right: { x: right, y: topMiddle },
@@ -453,10 +436,8 @@ var Controls;
             var yWeight = 10 - xWeight;
             var distance;
             distance = Math.sqrt(Math.pow(me.x - some.x, 2) / yWeight + Math.pow(me.y - some.y, 2) / xWeight);
-
             return distance;
         };
-
         var fillKeyMapItem = function (aKeyMapItem, aSourcePosData) {
             var valNearestLeft = Number.MAX_VALUE;
             var idxNearestLeft = -1;
@@ -466,16 +447,13 @@ var Controls;
             var idxNearestTop = -1;
             var valNearestBot = Number.MAX_VALUE;
             var idxNearestBot = -1;
-
             var findArea = 46;
-
             for (j = 0; j < cnt; j++) {
                 var some = rectInfoList[j];
                 var resultTopVal = distanceTop(aSourcePosData, some, findArea);
                 var resultLeftVal = distanceLeft(aSourcePosData, some, findArea);
                 var resultBottomVal = distanceBottom(aSourcePosData, some, findArea);
                 var resultRightVal = distanceRight(aSourcePosData, some, findArea);
-
                 if (valNearestTop > resultTopVal) {
                     valNearestTop = resultTopVal;
                     idxNearestTop = j;
@@ -493,7 +471,6 @@ var Controls;
                     idxNearestRight = j;
                 }
             }
-
             //result
             if (!aKeyMapItem.l && idxNearestLeft != -1) {
                 aKeyMapItem.l = idxNearestLeft;
@@ -519,16 +496,13 @@ var Controls;
             var idxNearestBot = -1;
             var valNearest = Number.MAX_VALUE;
             var idxNearest = -1;
-
             var findArea = 46;
-
             for (j = 0; j < cnt; j++) {
                 var some = rectInfoList[j];
                 var resultTopVal = distanceTop(aSourcePosData, some, findArea);
                 var resultLeftVal = distanceLeft(aSourcePosData, some, findArea);
                 var resultBottomVal = distanceBottom(aSourcePosData, some, findArea);
                 var resultRightVal = distanceRight(aSourcePosData, some, findArea);
-
                 if (valNearestTop > resultTopVal) {
                     valNearestTop = resultTopVal;
                     idxNearestTop = j;
@@ -554,7 +528,6 @@ var Controls;
                     }
                 }
             }
-
             //result
             if (!aKeyMapItem.l && idxNearestLeft != -1) {
                 aKeyMapItem.l = idxNearestLeft;
@@ -594,19 +567,18 @@ var Controls;
             }
         }
         /*
-        aFocusable[startIndex].classList.add(KClassFocused);
-        aKeyMap.setActiveFocus(startIndex);
-        if (this._parent) {
-        if (!this._parent.isFocused()) {
-        return;
-        }
-        }
-        if (aPrevFocused) {
-        aFocusable[startIndex].classList.add(KClassActiveFocusedLeaf);
-        }
-        */
+         aFocusable[startIndex].classList.add(KClassFocused);
+         aKeyMap.setActiveFocus(startIndex);
+         if (this._parent) {
+         if (!this._parent.isFocused()) {
+         return;
+         }
+         }
+         if (aPrevFocused) {
+         aFocusable[startIndex].classList.add(KClassActiveFocusedLeaf);
+         }
+         */
     };
-
     var CSignalSource = (function () {
         function CSignalSource() {
             this._signalTypes = {};
@@ -621,7 +593,6 @@ var Controls;
                 if (this._signalTypes[signalName]) {
                     throw "Event [" + signalName + "] already exists";
                 }
-
                 this._signalTypes[signalName] = [];
             }
         };
@@ -629,7 +600,6 @@ var Controls;
             if (!(aHolder[aSlotName] instanceof Function)) {
                 throw "holder does not have the slot";
             }
-
             var signalHandlers;
             var signalHandler;
             signalHandlers = this._signalTypes[aSignalName];
@@ -666,8 +636,8 @@ var Controls;
         };
         CSignalSource.prototype.emit = function () {
             var args = [];
-            for (var _i = 0; _i < (arguments.length - 0); _i++) {
-                args[_i] = arguments[_i + 0];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
             }
             var signalName;
             var i, len, handlerInfoList, handlerInfo;
@@ -682,7 +652,6 @@ var Controls;
         return CSignalSource;
     })();
     Controls.CSignalSource = CSignalSource;
-
     (function (TFocusInfo) {
         TFocusInfo[TFocusInfo["KFocusUnknown"] = 0] = "KFocusUnknown";
         TFocusInfo[TFocusInfo["KFocusNone"] = 1] = "KFocusNone";
@@ -690,7 +659,6 @@ var Controls;
         TFocusInfo[TFocusInfo["KFocused"] = 3] = "KFocused";
     })(Controls.TFocusInfo || (Controls.TFocusInfo = {}));
     var TFocusInfo = Controls.TFocusInfo;
-
     var KParamStrScrollSchemeVertical = "scrollingSchemeVertical";
     var KParamStrScrollSchemeHorizontal = "scrollingSchemeHorizontal";
     var KParamStrScrollSchemeFixedUnitVertical = "scrollingSchemeFixedUnitVertical";
@@ -704,7 +672,6 @@ var Controls;
         TParamScrollScheme[TParamScrollScheme["EByFixed"] = 5] = "EByFixed";
     })(Controls.TParamScrollScheme || (Controls.TParamScrollScheme = {}));
     var TParamScrollScheme = Controls.TParamScrollScheme;
-
     var KParamStrOrientation = "orientation";
     (function (TParamOrientation) {
         TParamOrientation[TParamOrientation["EUnknown"] = 0] = "EUnknown";
@@ -724,7 +691,6 @@ var Controls;
     var KParamStrMaxKeyQueueCount = "maxKeyQueueCount";
     var KParamStrTransparentAnchor = "transparentAnchor";
     var KParamStrDrawEffect = "drawEffect";
-
     var KParamStrPadding = "padding";
     var KParamStrChildVAlign = "childVAlign";
     (function (TParamVAlign) {
@@ -746,9 +712,6 @@ var Controls;
     var KParamUserAnimationCSS = "userAnimationCSS";
     var KParamAnimationInterval = "animationInterval";
     var KParamKeepFocus = "keepFocus";
-
-    
-
     var TRect = (function () {
         function TRect(aParam) {
             this.top = 0;
@@ -795,11 +758,9 @@ var Controls;
             var ret = new TRect;
             var x0 = Math.max(this.left, aRect.left);
             var x1 = Math.min(this.right, aRect.right);
-
             if (x0 <= x1) {
                 var y0 = Math.max(this.top, aRect.top);
                 var y1 = Math.min(this.bottom, aRect.bottom);
-
                 if (y0 <= y1) {
                     ret.left = x0;
                     ret.top = y0;
@@ -813,7 +774,6 @@ var Controls;
         return TRect;
     })();
     Controls.TRect = TRect;
-
     var CControl = (function (_super) {
         __extends(CControl, _super);
         function CControl(aElement, className) {
@@ -836,19 +796,17 @@ var Controls;
                 this._element = null;
             }
         };
-
         CControl.prototype.getElement = function () {
             return this._element;
         };
-
         CControl.prototype.setParent = function (aParentControl) {
             this._parent = aParentControl;
         };
-
         CControl.prototype._setDrawParam = function (aParamName, aValue, aVolitile) {
             if (aVolitile) {
                 this._drawParamVolitile[aParamName] = aValue;
-            } else {
+            }
+            else {
                 this._drawParam[aParamName] = aValue;
             }
         };
@@ -877,7 +835,6 @@ var Controls;
         CControl.prototype._clearVolitile = function () {
             this._drawParamVolitile = {};
         };
-
         // Orientation
         CControl.prototype.setOrientation = function (aLayout) {
             this._setDrawParam(KParamStrOrientation, aLayout, false);
@@ -890,7 +847,6 @@ var Controls;
             }
             return ret;
         };
-
         // Item info
         CControl.prototype.setItemHeight = function (aItemHeight) {
             this._setDrawParam(KParamStrItemHeight, aItemHeight, false);
@@ -910,7 +866,6 @@ var Controls;
         CControl.prototype.getMaxColCount = function () {
             return this._getDrawParam(KParamStrMaxColCount) || false;
         };
-
         // Margin
         CControl.prototype.setMargins = function (aMargins) {
             this._setDrawParam(KParamStrMargin, aMargins, false);
@@ -931,7 +886,6 @@ var Controls;
             }
             return ret;
         };
-
         // Padding
         CControl.prototype.setPadding = function (aPadding) {
             this._setDrawParam(KParamStrPadding, aPadding, false);
@@ -939,7 +893,6 @@ var Controls;
         CControl.prototype.getPadding = function () {
             return this._getDrawParam(KParamStrPadding) || 0;
         };
-
         // Child align
         CControl.prototype.setChildVAlign = function (aChildVAlign) {
             this._setDrawParam(KParamStrChildVAlign, aChildVAlign, false);
@@ -953,7 +906,6 @@ var Controls;
         CControl.prototype.getChildHAlign = function () {
             return this._getDrawParam(KParamStrChildHAlign) || 0;
         };
-
         // Animaion
         CControl.prototype.setAnimation = function (aAnimation) {
             this._setDrawParam(KParamAnimation, aAnimation, false);
@@ -961,7 +913,6 @@ var Controls;
         CControl.prototype.getAnimation = function () {
             return this._getDrawParam(KParamAnimation) || false;
         };
-
         // User Animation CSS
         CControl.prototype.setUseUserAnimationCSS = function (aAnimation) {
             this._setDrawParam(KParamUserAnimationCSS, aAnimation, false);
@@ -969,7 +920,6 @@ var Controls;
         CControl.prototype.getUseUserAnimationCSS = function () {
             return this._getDrawParam(KParamUserAnimationCSS) || false;
         };
-
         // AnimationInterval
         CControl.prototype.setAnimationInterval = function (aAnimationInterval) {
             this._setDrawParam(KParamAnimationInterval, aAnimationInterval, false);
@@ -977,7 +927,6 @@ var Controls;
         CControl.prototype.getAnimationInterval = function () {
             return this._getDrawParam(KParamAnimationInterval) || 0;
         };
-
         // ViewCount
         CControl.prototype.setViewCount = function (aViewCount) {
             this._setDrawParam(KParamStrViewCount, aViewCount, false);
@@ -985,7 +934,6 @@ var Controls;
         CControl.prototype.getViewCount = function () {
             return this._getDrawParam(KParamStrViewCount) || 0;
         };
-
         // AnchorIndex
         CControl.prototype.setAnchorIndex = function (aAnchorIndex) {
             this._setDrawParam(KParamStrAnchorIndex, aAnchorIndex, false);
@@ -993,7 +941,6 @@ var Controls;
         CControl.prototype.getAnchorIndex = function () {
             return this._getDrawParam(KParamStrAnchorIndex) || 0;
         };
-
         // AnchorHeight
         CControl.prototype.setAnchorHeight = function (aAnchorHeight) {
             this._setDrawParam(KParamStrAnchorHeight, aAnchorHeight, false);
@@ -1001,7 +948,6 @@ var Controls;
         CControl.prototype.getAnchorHeight = function () {
             return this._getDrawParam(KParamStrAnchorHeight) || 0;
         };
-
         // AnchorWidth
         CControl.prototype.setAnchorWidth = function (aAnchorWidth) {
             this._setDrawParam(KParamStrAnchorWidth, aAnchorWidth, false);
@@ -1009,7 +955,6 @@ var Controls;
         CControl.prototype.getAnchorWidth = function () {
             return this._getDrawParam(KParamStrAnchorWidth) || 0;
         };
-
         // StartIndex
         CControl.prototype.setStartIndex = function (aStartIndex) {
             this._setDrawParam(KParamStrStartIndex, aStartIndex, false);
@@ -1017,7 +962,6 @@ var Controls;
         CControl.prototype.getStartIndex = function () {
             return this._getDrawParam(KParamStrStartIndex) || 0;
         };
-
         // MaxKeyQueueCount
         CControl.prototype.setMaxKeyQueueCount = function (aMaxKeyQueueCount) {
             this._setDrawParam(KParamStrMaxKeyQueueCount, aMaxKeyQueueCount, false);
@@ -1025,7 +969,6 @@ var Controls;
         CControl.prototype.getMaxKeyQueueCount = function () {
             return this._getDrawParam(KParamStrMaxKeyQueueCount) || 0;
         };
-
         // TransparentAnchor
         CControl.prototype.setTransparentAnchor = function (aTransparentAnchor) {
             this._setDrawParam(KParamStrTransparentAnchor, aTransparentAnchor, false);
@@ -1033,7 +976,6 @@ var Controls;
         CControl.prototype.getTransparentAnchor = function () {
             return this._getDrawParam(KParamStrTransparentAnchor) || false;
         };
-
         // DrawEfect
         CControl.prototype.setDrawEfect = function (aDrawEfect) {
             this._setDrawParam(KParamStrDrawEffect, aDrawEfect, true);
@@ -1041,7 +983,6 @@ var Controls;
         CControl.prototype.getDrawEfect = function () {
             return this._getDrawParam(KParamStrDrawEffect) || null;
         };
-
         // Scrolling scheme
         CControl.prototype.setScrollScheme = function (aScheme, aFixedScrollUnit) {
             this._setDrawParam(KParamStrScrollSchemeVertical, aScheme, false);
@@ -1050,7 +991,8 @@ var Controls;
                 if (aFixedScrollUnit) {
                     this._setDrawParam(KParamStrScrollSchemeFixedUnitVertical, aFixedScrollUnit, false);
                     this._setDrawParam(KParamStrScrollSchemeFixedUnitHorizontal, aFixedScrollUnit, false);
-                } else {
+                }
+                else {
                     throw "fixed scroll unit is missiong";
                 }
             }
@@ -1060,7 +1002,8 @@ var Controls;
             if (aScheme == 5 /* EByFixed */) {
                 if (aFixedScrollUnit) {
                     this._setDrawParam(KParamStrScrollSchemeFixedUnitVertical, aFixedScrollUnit, false);
-                } else {
+                }
+                else {
                     throw "fixed scroll unit is missiong";
                 }
             }
@@ -1073,7 +1016,8 @@ var Controls;
             if (aScheme == 5 /* EByFixed */) {
                 if (aFixedScrollUnit) {
                     this._setDrawParam(KParamStrScrollSchemeFixedUnitHorizontal, aFixedScrollUnit, false);
-                } else {
+                }
+                else {
                     throw "fixed scroll unit is missiong";
                 }
             }
@@ -1084,7 +1028,6 @@ var Controls;
         CControl.prototype.getDataRolling = function () {
             return false;
         };
-
         // Keep focus
         CControl.prototype.setKeepFocus = function (aKeepFocus) {
             this._setDrawParam(KParamKeepFocus, aKeepFocus, true);
@@ -1092,7 +1035,6 @@ var Controls;
         CControl.prototype.getKeepFocus = function () {
             return this._getDrawParam(KParamKeepFocus) || false;
         };
-
         CControl.prototype._saveFocusInfo = function () {
             if (this._keyMap) {
                 var prevFocusedEl = this._keyMap.getFocusedElement();
@@ -1102,7 +1044,6 @@ var Controls;
                 };
             }
         };
-
         CControl.prototype.draw = function (aRect) {
             aRect = aRect || null;
             var keepFocus = this.getKeepFocus();
@@ -1113,12 +1054,10 @@ var Controls;
             this._makeKeyMap(drawnElements, false, keepFocus);
             this._saveFocusInfo();
         };
-
         /*protected*/ CControl.prototype._doDraw = function (aRect, aDrawParam) {
             var ret;
             return ret;
         };
-
         CControl.prototype._makeKeyMap = function (drawnElements, aUpdateFocusInfo, aKeepFocus) {
             var _this = this;
             if (aUpdateFocusInfo) {
@@ -1131,12 +1070,12 @@ var Controls;
                 this._keyMapBuilder(keyMap, drawnElements, this._prevFocusInfo, aKeepFocus ? null : this._prevKeyStr);
                 this._keyMap = keyMap;
                 this._element.classList.add(KClassFocusable);
-            } else {
+            }
+            else {
                 this._keyMap = null;
                 this._element.classList.remove(KClassFocusable);
             }
         };
-
         // Key navigation
         CControl.prototype._keyMapFocusChanged = function (aOld, aNew) {
             this._handleFocusChanged(aOld, aNew);
@@ -1146,33 +1085,26 @@ var Controls;
                 return true;
             }
             this._prevKeyStr = aKeyStr;
-
             var handled = false;
-
             var funcName = "_doKey" + aKeyStr;
             if (this[funcName]) {
                 handled = this[funcName](aParam);
             }
-
             if (!handled && this._keyMap) {
                 handled = this._keyMap.doKey(aKeyStr);
             }
-
             funcName += "Latent";
             if (!handled && this[funcName]) {
                 handled = this[funcName](aParam);
             }
-
             return handled;
         };
-
         CControl.prototype._doKeyEnterLatent = function () {
             if (this._keyMap) {
                 this._emitItemSelected(this._keyMap.getFocusedIndex(), this._keyMap.getFocusedElement());
             }
             return false;
         };
-
         // Signals
         /*protected*/ CControl.prototype._handleFocusChanged = function (aElOld, aElNew) {
             this._emitFocusChanged(aElOld, aElNew);
@@ -1207,7 +1139,6 @@ var Controls;
         CControl.prototype.connectItemRemoved = function (aHolder, aSlotName, aSlot) {
             this.connect("ItemRemoved", aHolder, aSlotName);
         };
-
         // Utilities
         CControl.prototype.isFocusable = function () {
             return this._element.classList.contains(KClassFocusable);
@@ -1254,21 +1185,19 @@ var Controls;
                     focused.classList.add(KClassActiveFocusedLeaf);
                     this._saveFocusInfo();
                     this._handleFocusGainged();
-                } else {
+                }
+                else {
                     focused.classList.remove(KClassActiveFocusedLeaf);
                     this._handleFocusLost();
                 }
             }
         };
-
         CControl.prototype._handleFocusGainged = function () {
             this._emitFocusGained();
         };
-
         CControl.prototype._handleFocusLost = function () {
             this._emitFocusLost();
         };
-
         CControl.prototype.setActiveFocus = function () {
             this._setActiveFocus(true);
         };
@@ -1287,29 +1216,24 @@ var Controls;
         CControl.prototype.addClass = function (aClass) {
             this._element.classList.add(aClass);
         };
-
         CControl.prototype.setTransition = function (aTransition) {
             this._transitioning = aTransition;
         };
         CControl.prototype.isTransitioning = function () {
             return this._transitioning ? true : false;
         };
-
         CControl.prototype.getSize = function () {
             return {
                 width: this._element.offsetWidth,
                 height: this._element.offsetHeight
             };
         };
-
         CControl.prototype.getContentAvail = function () {
             return this._contentAvail;
         };
-
         CControl.prototype.setContentAvail = function (aContentAvail) {
             this._contentAvail = aContentAvail;
         };
-
         CControl.prototype.updateContentAvail = function (aKeyStr, aDrawnRect) {
             var focusedItem = this.getFocusedElement();
             var focusedRect = new TRect({
@@ -1318,7 +1242,6 @@ var Controls;
                 right: focusedItem.offsetLeft + focusedItem.offsetWidth,
                 bottom: focusedItem.offsetTop + focusedItem.offsetHeight
             });
-
             var size = this.getSize();
             var contentAvailable = {
                 up: 0,
@@ -1332,13 +1255,11 @@ var Controls;
                 right: size.width - (aDrawnRect.right),
                 down: size.height - (aDrawnRect.bottom)
             };
-
             // This case is (items draw Rect < drawnRect)
             if (totalAvailable.right < 0 || totalAvailable.down < 0) {
                 // when simulation in Chrome, totalAvailable is invalid..(will be fixed?)
                 return;
             }
-
             var orientation = this._getDrawParam(KParamStrOrientation);
             if (orientation === 1 /* EVertical */) {
                 switch (aKeyStr) {
@@ -1347,7 +1268,8 @@ var Controls;
                         this._contentAvail = contentAvailable;
                         return;
                 }
-            } else if (orientation === 2 /* EHorizontal */) {
+            }
+            else if (orientation === 2 /* EHorizontal */) {
                 switch (aKeyStr) {
                     case KKeyStrUp:
                     case KKeyStrDown:
@@ -1355,7 +1277,6 @@ var Controls;
                         return;
                 }
             }
-
             var up = aKeyStr == KKeyStrUp;
             var down = aKeyStr == KKeyStrDown;
             if (up || down) {
@@ -1367,7 +1288,6 @@ var Controls;
                 this._contentAvail = this._updateContentAvailHorizontal(totalAvailable, aDrawnRect, focusedRect, left, right);
             }
         };
-
         CControl.prototype._updateContentAvailVertical = function (aTotalAvailable, aDrawnRect, aFocusedRect, aUp, aDown) {
             var nextTop;
             var contentAvailable = {
@@ -1388,49 +1308,43 @@ var Controls;
                         contentAvailable.down = aFocusedRect.top - aDrawnRect.top;
                     }
                     break;
-
                 case 3 /* EByFocusRemains */:
                     if (aUp) {
                         nextTop = aDrawnRect.getHeight() - itemHeight;
                         if (nextTop <= 0) {
                             contentAvailable.up = Math.min(aTotalAvailable.up, itemHeight);
-                        } else {
+                        }
+                        else {
                             contentAvailable.up = Math.min(aTotalAvailable.up, nextTop);
                         }
                     }
-
                     if (aDown) {
                         nextTop = aFocusedRect.top - aDrawnRect.top;
                         if (nextTop > 0) {
                             contentAvailable.down = Math.min(aTotalAvailable.down, nextTop);
-                        } else {
+                        }
+                        else {
                             contentAvailable.down = Math.min(aTotalAvailable.down, itemHeight);
                         }
                     }
-
                     break;
                 case 1 /* EByItem */:
                     if (aUp) {
                         nextTop = itemHeight;
                         contentAvailable.up = Math.min(aTotalAvailable.up, nextTop);
                     }
-
                     if (aDown) {
                         nextTop = itemHeight;
                         contentAvailable.down = Math.min(aTotalAvailable.down, nextTop);
                     }
-
                     break;
-
                 case 5 /* EByFixed */:
                     break;
-
                 default:
                     break;
             }
             return contentAvailable;
         };
-
         CControl.prototype._updateContentAvailHorizontal = function (aTotalAvailable, aDrawnRect, aFocusedRect, aLeft, aRight) {
             var nextLeft;
             var contentAvailable = {
@@ -1451,63 +1365,54 @@ var Controls;
                         contentAvailable.right = aFocusedRect.left - aDrawnRect.left;
                     }
                     break;
-
                 case 3 /* EByFocusRemains */:
                     if (aLeft) {
                         nextLeft = aDrawnRect.getWidth() - itemWidth;
                         if (nextLeft <= 0) {
                             contentAvailable.left = Math.min(aTotalAvailable.left, itemWidth);
-                        } else {
+                        }
+                        else {
                             contentAvailable.left = Math.min(aTotalAvailable.left, nextLeft);
                         }
                     }
-
                     if (aRight) {
                         nextLeft = aFocusedRect.left - aDrawnRect.left;
                         if (nextLeft > 0) {
                             contentAvailable.right = Math.min(aTotalAvailable.right, nextLeft);
-                        } else {
+                        }
+                        else {
                             contentAvailable.right = Math.min(aTotalAvailable.right, itemWidth);
                         }
                     }
-
                     break;
                 case 1 /* EByItem */:
                     if (aLeft) {
                         nextLeft = itemWidth;
                         contentAvailable.left = Math.min(aTotalAvailable.left, nextLeft);
                     }
-
                     if (aRight) {
                         nextLeft = itemWidth;
                         contentAvailable.right = Math.min(aTotalAvailable.right, nextLeft);
                     }
-
                     break;
-
                 case 5 /* EByFixed */:
                     if (aLeft) {
                         nextLeft = scrollUnit;
                         contentAvailable.left = Math.min(aTotalAvailable.left, nextLeft);
                     }
-
                     if (aRight) {
                         nextLeft = scrollUnit;
                         contentAvailable.right = Math.min(aTotalAvailable.right, nextLeft);
                     }
-
                     break;
-
                 default:
                     break;
             }
-
             return contentAvailable;
         };
         return CControl;
     })(CSignalSource);
     Controls.CControl = CControl;
-
     var CLayoutControl = (function (_super) {
         __extends(CLayoutControl, _super);
         function CLayoutControl(element) {
@@ -1519,7 +1424,6 @@ var Controls;
             var ret = [];
             var i, len, el;
             this.empty();
-
             var horizontal = (aDrawParam[KParamStrOrientation] === 2 /* EHorizontal */);
             this._keyMapBuilder = horizontal ? Controls.KBuilderLeftRight : Controls.KBuilderTopDown;
             var drawer;
@@ -1543,21 +1447,20 @@ var Controls;
                             break;
                     }
                     drawnElements.push(el);
-                } else {
+                }
+                else {
                     drawnElements.push(null);
                 }
             }
             FLayoutElement(this._element, drawnElements, this.getOrientation(), this.getChildVAlign(), this.getChildHAlign(), this.getMargins(), this.getPadding());
             return ret;
         };
-
         CLayoutControl.prototype.setItemDrawers = function (aDrawers) {
             this._itemDrawers = aDrawers;
         };
         return CLayoutControl;
     })(CControl);
     Controls.CLayoutControl = CLayoutControl;
-
     var CDrawnElements = (function () {
         function CDrawnElements() {
             this._drawnElements = {};
@@ -1624,7 +1527,8 @@ var Controls;
                     aItem.style[KCssPropTransition] = KCssTransitionParamPos;
                     return false;
                 });
-            } else {
+            }
+            else {
                 this.forEach(function (aKey, aItem) {
                     delete aItem.style[KCssPropTransition];
                     return false;
@@ -1634,7 +1538,6 @@ var Controls;
         return CDrawnElements;
     })();
     Controls.CDrawnElements = CDrawnElements;
-
     var CDataProvider = (function (_super) {
         __extends(CDataProvider, _super);
         function CDataProvider() {
@@ -1644,17 +1547,14 @@ var Controls;
         CDataProvider.prototype.destroy = function () {
             _super.prototype.destroy.call(this);
         };
-
         CDataProvider.prototype.getItem = function (aKey) {
             throw "not implemented";
             return null;
         };
-
         CDataProvider.prototype.getLength = function () {
             throw "not implemented";
             return 0;
         };
-
         CDataProvider.prototype.insertItems = function (aKey, aItems) {
             this._doInsertItems(aKey, aItems);
             this.emit("ItemInserted", aKey, aItems);
@@ -1671,7 +1571,6 @@ var Controls;
             this._doUpdateItems(aKeys, aItems);
             this.emit("ItemUpdated", aKeys, aItems);
         };
-
         //_doUpdateItems: (aKey: any[], aItem: any[]) => boolean;
         /*protected*/ CDataProvider.prototype._doUpdateItems = function (aKey, aItem) {
             return false;
@@ -1688,7 +1587,6 @@ var Controls;
         return CDataProvider;
     })(CSignalSource);
     Controls.CDataProvider = CDataProvider;
-
     var CListDataProvider = (function (_super) {
         __extends(CListDataProvider, _super);
         function CListDataProvider(aArray, aRolling) {
@@ -1714,7 +1612,8 @@ var Controls;
                 front = list.slice(0, aKey);
                 end = list.slice(aKey);
                 this._listData = front.concat(aItems, end);
-            } else {
+            }
+            else {
                 this._listData.splice(aKey, 0, aItems);
             }
         };
@@ -1736,7 +1635,6 @@ var Controls;
         return CListDataProvider;
     })(CDataProvider);
     Controls.CListDataProvider = CListDataProvider;
-
     var CGridDataProvider = (function (_super) {
         __extends(CGridDataProvider, _super);
         function CGridDataProvider(aArray) {
@@ -1745,7 +1643,6 @@ var Controls;
         return CGridDataProvider;
     })(CDataProvider);
     Controls.CGridDataProvider = CGridDataProvider;
-
     var CDataControl = (function (_super) {
         __extends(CDataControl, _super);
         function CDataControl(aElement) {
@@ -1761,18 +1658,15 @@ var Controls;
             delete this._drawer;
             delete this._ownedDataProvider;
         };
-
         CDataControl.prototype.draw = function (aRect) {
             if (!this._drawer) {
                 throw "data drawer must be provided to draw";
             }
             _super.prototype.draw.call(this, aRect);
         };
-
         CDataControl.prototype.setDataDrawer = function (aDrawer) {
             this._drawer = aDrawer;
         };
-
         CDataControl.prototype.getFocusedItemInfo = function () {
             var el = this.getFocusedElement();
             var key, item;
@@ -1787,28 +1681,22 @@ var Controls;
             }
             return null;
         };
-
         CDataControl.prototype.setFocusedItem = function (aKey) {
             var el = this._drawnElements.getElement(aKey);
             if (el) {
                 this.setFocusedElement(el);
             }
         };
-
         /*protected*/ CDataControl.prototype.doItemChagned = function (aKeys) {
         };
-
         /*protected*/ CDataControl.prototype.doItemInserted = function (aKey, aItems, aNeedFocus) {
         };
-
         //doItemRemoved: (aKeys: any[]) => void;
         /*protected*/ CDataControl.prototype.doItemRemoved = function (aKey, aUnsetFocus) {
         };
-
         CDataControl.prototype.setRedrawAfterOperation = function (aRedraw) {
             this._redrawAfterOperation = aRedraw;
         };
-
         CDataControl.prototype._slItemChanged = function (aKeys) {
             var i, len, key, el;
             for (i = 0, len = aKeys.length; i < len; i++) {
@@ -1820,7 +1708,6 @@ var Controls;
             }
             this.doItemChagned(aKeys);
         };
-
         CDataControl.prototype._slItemInserted = function (aKey, aItems) {
             var _this = this;
             var drawnElements = this._drawnElements;
@@ -1862,11 +1749,9 @@ var Controls;
                 this.doItemInserted(aKey, aItems, needFocus);
             }
         };
-
         CDataControl.prototype._slItemRemoved = function (aKeys) {
             //TODO implement
         };
-
         CDataControl.prototype.setOwnedDataProvider = function (dataProvider) {
             var self = this;
             this._drawnElements.removeAll();
@@ -1913,17 +1798,15 @@ var Controls;
             });
             this._prevDrawnElements = aDrawnElements;
         };
-
         /*protected*/ CDataControl.prototype._handleFocusChanged = function (aElOld, aElNew) {
             _super.prototype._handleFocusChanged.call(this, aElOld, aElNew);
             var key = aElNew.attributes["data"];
             var item = this._ownedDataProvider.getItem(key);
             this._emitFocusedDataItemChanged(key, item, aElNew);
         };
-
         /*
-        Signals
-        */
+         Signals
+         */
         /*protected*/ CDataControl.prototype._doKeyEnterLatent = function () {
             _super.prototype._doKeyEnterLatent.call(this);
             var focusedInfo = this.getFocusedItemInfo();
@@ -1945,7 +1828,6 @@ var Controls;
         return CDataControl;
     })(CControl);
     Controls.CDataControl = CDataControl;
-
     var CListDataControl = (function (_super) {
         __extends(CListDataControl, _super);
         function CListDataControl(aElement, aRolling) {
@@ -1984,7 +1866,8 @@ var Controls;
             if (this._bDataRolling) {
                 var w = horizontal ? 999999 : itemWidth;
                 var h = horizontal ? itemHeight : 999999;
-            } else {
+            }
+            else {
                 var w = horizontal ? itemWidth * count : itemWidth;
                 var h = horizontal ? itemHeight : itemHeight * count;
             }
@@ -1993,7 +1876,6 @@ var Controls;
                 height: h
             };
         };
-
         CListDataControl.prototype._doDraw = function (aRect, aDrawParam) {
             var focusableElements = [];
             var horizontal = (aDrawParam[KParamStrOrientation] === 2 /* EHorizontal */);
@@ -2037,26 +1919,26 @@ var Controls;
                     if (drawPosStart <= elPosStart && elPosEnd <= drawPosEnd && el.classList.contains(KClassFocusable)) {
                         focusableElements.push(el);
                     }
-
                     // check content available
                     if (elPosStart < drawPosStart) {
                         if (horizontal) {
                             contentAvailable.left = drawPosStart - elPosStart;
-                        } else {
+                        }
+                        else {
                             contentAvailable.up = drawPosStart - elPosStart;
                         }
                     }
                     if (drawPosEnd < elPosEnd) {
                         if (horizontal) {
                             contentAvailable.right = elPosEnd - drawPosEnd;
-                        } else {
+                        }
+                        else {
                             contentAvailable.down = elPosEnd - drawPosEnd;
                         }
                     }
                 }
             }
             prevDrawnItem.destroy();
-
             // check content available
             if (horizontal) {
                 if (contentAvailable.left === 0 && startIndex) {
@@ -2065,7 +1947,8 @@ var Controls;
                 if (contentAvailable.right === 0 && i !== itemCount) {
                     contentAvailable.right = fixedItemSize;
                 }
-            } else {
+            }
+            else {
                 if (contentAvailable.up === 0 && startIndex) {
                     contentAvailable.up = fixedItemSize;
                 }
@@ -2074,7 +1957,6 @@ var Controls;
                 }
             }
             this._contentAvail = contentAvailable;
-
             return focusableElements;
         };
         CListDataControl.prototype.prependItem = function (aItem) {
@@ -2104,7 +1986,6 @@ var Controls;
         return CListDataControl;
     })(CDataControl);
     Controls.CListDataControl = CListDataControl;
-
     var CGridDataControl = (function (_super) {
         __extends(CGridDataControl, _super);
         function CGridDataControl(aElement) {
@@ -2123,7 +2004,6 @@ var Controls;
                 height: h
             };
         };
-
         CGridDataControl.prototype._doDraw = function (aRect, aDrawParam) {
             var focusableElements = [];
             var dp = this._ownedDataProvider;
@@ -2131,21 +2011,16 @@ var Controls;
             var itemWidth = aDrawParam[KParamStrItemWidth];
             var itemHeight = aDrawParam[KParamStrItemHeight];
             var maxColCount = aDrawParam[KParamStrMaxColCount];
-
             var curCol = aRect ? Math.floor(aRect.left / itemWidth) : 0;
             var curRow = aRect ? Math.floor(aRect.top / itemHeight) : 0;
-
             var startIndex = aRect ? curRow * maxColCount + curCol : 0;
-
             var prevDrawnItem = this._pickDrawnElements();
-
             var contentAvailable = {
                 up: 0,
                 left: 0,
                 right: 0,
                 down: 0
             };
-
             var i;
             this._keyMapBuilder = Controls.KBuilderGrid;
             for (i = startIndex; i < itemCount; i++) {
@@ -2176,14 +2051,16 @@ var Controls;
                     if (aRect.top <= elTop && aRect.left <= elLeft && aRect.bottom >= elBottom && aRect.right >= elRight && el.classList.contains(KClassFocusable)) {
                         focusableElements.push(el);
                     }
-
                     if (elBottom > aRect.bottom) {
                         contentAvailable.down = elBottom - aRect.bottom;
-                    } else if (elRight > aRect.right) {
+                    }
+                    else if (elRight > aRect.right) {
                         contentAvailable.right = elRight - aRect.right;
-                    } else if (elTop < aRect.top) {
+                    }
+                    else if (elTop < aRect.top) {
                         contentAvailable.up = aRect.top - elTop;
-                    } else if (elLeft < aRect.left) {
+                    }
+                    else if (elLeft < aRect.left) {
                         contentAvailable.left = aRect.left - elLeft;
                     }
                 }
@@ -2191,11 +2068,14 @@ var Controls;
             prevDrawnItem.destroy();
             if (contentAvailable.up === 0 && curRow) {
                 contentAvailable.up = itemHeight;
-            } else if (contentAvailable.down === 0 && i !== itemCount) {
+            }
+            else if (contentAvailable.down === 0 && i !== itemCount) {
                 contentAvailable.down = itemHeight;
-            } else if (contentAvailable.left === 0 && curCol) {
+            }
+            else if (contentAvailable.left === 0 && curCol) {
                 contentAvailable.left = itemWidth;
-            } else if (contentAvailable.right === 0 && i !== itemCount) {
+            }
+            else if (contentAvailable.right === 0 && i !== itemCount) {
                 contentAvailable.right = itemWidth;
             }
             this._contentAvail = contentAvailable;
@@ -2204,7 +2084,6 @@ var Controls;
         return CGridDataControl;
     })(CDataControl);
     Controls.CGridDataControl = CGridDataControl;
-
     (function (TDrawingDataGrouping) {
         TDrawingDataGrouping[TDrawingDataGrouping["ENone"] = 0] = "ENone";
         TDrawingDataGrouping[TDrawingDataGrouping["ERow"] = 1] = "ERow";
@@ -2212,7 +2091,6 @@ var Controls;
         TDrawingDataGrouping[TDrawingDataGrouping["EFreeStyle"] = 3] = "EFreeStyle";
     })(Controls.TDrawingDataGrouping || (Controls.TDrawingDataGrouping = {}));
     var TDrawingDataGrouping = Controls.TDrawingDataGrouping;
-
     var CDrawingDataProvider = (function (_super) {
         __extends(CDrawingDataProvider, _super);
         function CDrawingDataProvider(aGrouping) {
@@ -2225,25 +2103,20 @@ var Controls;
         CDrawingDataProvider.prototype.destroy = function () {
             this._drawingDataCache = null;
         };
-
         CDrawingDataProvider.prototype.getItem = function (aKey) {
             return this._drawingDataCache[aKey];
         };
-
         CDrawingDataProvider.prototype.getLength = function () {
             return Object.keys(this._drawingDataCache).length;
         };
-
         CDrawingDataProvider.prototype.getPrevDrawingDataByRow = function (aRowIndex) {
             return this._drawingDataByRow[aRowIndex];
         };
-
         // get drawing data
         CDrawingDataProvider.prototype.getDrawingDataList = function (aRect, aFocusedInfo, aCallback) {
             var _this = this;
             if (this._grouping && this._doGetDrawingDataListByRow) {
             }
-
             this._doDrawingDataList(aRect, aFocusedInfo, function (aDrawingDataList) {
                 var i, len, drawingData;
                 for (i = 0, len = aDrawingDataList.length; i < len; i++) {
@@ -2253,18 +2126,15 @@ var Controls;
                 aCallback(aDrawingDataList);
             });
         };
-
         // get whole drawable area
         CDrawingDataProvider.prototype.getSize = function () {
             throw "implement this";
         };
-
         CDrawingDataProvider.prototype._doDrawingDataList = function (aRect, aFocusedInfo, aCallback) {
             throw "implement this";
         };
-
         CDrawingDataProvider.prototype._handleNewItem = function (aDrawingData, aInserted) {
-            if (typeof aInserted === "undefined") { aInserted = false; }
+            if (aInserted === void 0) { aInserted = false; }
             aDrawingData.key = aDrawingData.key || aDrawingData.rect.top + "x" + aDrawingData.rect.left;
             if (aInserted && this._drawingDataCache[aDrawingData.key]) {
                 throw "data already exists";
@@ -2277,22 +2147,18 @@ var Controls;
                 this._drawingDataByRow[aDrawingData.rowIndex].push(aDrawingData);
             }
         };
-
         CDrawingDataProvider.prototype._doGetItem = function (aKey) {
             return this._drawingDataCache[aKey];
         };
-
         /*protected*/ CDrawingDataProvider.prototype._doUpdateItems = function (aKey, aItem) {
             return true;
         };
-
         /*protected*/ CDrawingDataProvider.prototype._doInsertItems = function (aKey, aItems) {
             var i, len;
             for (i = 0, len = aItems.length; i < len; i += 1) {
                 this._handleNewItem(aItems[i], true);
             }
         };
-
         /*protected*/ CDrawingDataProvider.prototype._doRemoveItems = function (aKeys) {
             var i, iLen, k, item, j, jLen, rowList;
             for (i = 0, iLen = aKeys.length; i < iLen; i += 1) {
@@ -2313,7 +2179,6 @@ var Controls;
         return CDrawingDataProvider;
     })(CDataProvider);
     Controls.CDrawingDataProvider = CDrawingDataProvider;
-
     var CDrawingDataControl = (function (_super) {
         __extends(CDrawingDataControl, _super);
         function CDrawingDataControl(aElement) {
@@ -2324,22 +2189,18 @@ var Controls;
         CDrawingDataControl.prototype.getSize = function () {
             return this._ownedDataProvider.getSize();
         };
-
         CDrawingDataControl.prototype.destroy = function () {
             this._ownedDataProvider.destroy();
         };
-
         CDrawingDataControl.prototype.setOwnedDataProvider = function (aDrawingDataProvider) {
             this._ownedDataProvider = aDrawingDataProvider;
             this._ownedDataProvider.connectItemInserted(this, "_dataInserted", this._dataInserted);
             this._ownedDataProvider.connectItemUpdated(this, "_dataUpdated", this._dataUpdated);
             this._ownedDataProvider.connectItemRemoved(this, "_dataRemoved", this._dataRemoved);
         };
-
         CDrawingDataControl.prototype.setDataDrawer = function (aDrawingDataDrawer) {
             this._drawer = aDrawingDataDrawer;
         };
-
         CDrawingDataControl.prototype._changeCurrentRow = function (aRowIndex) {
             if (this._currentRowIndex != aRowIndex) {
                 this._currentRowIndex = aRowIndex;
@@ -2348,13 +2209,12 @@ var Controls;
             }
             return false;
         };
-
         /*
-        private _handleFocusGained() {
-        var el: HTMLElement = this.getFirstElementByRow(this._curretRowIndex);
-        this.setFocusedElement(el);
-        }
-        */
+         private _handleFocusGained() {
+         var el: HTMLElement = this.getFirstElementByRow(this._curretRowIndex);
+         this.setFocusedElement(el);
+         }
+         */
         CDrawingDataControl.prototype.setCurrentRow = function (aRowIndex) {
             if (this._changeCurrentRow(aRowIndex)) {
                 var el = this.getFirstElementByRow(this._currentRowIndex);
@@ -2363,11 +2223,9 @@ var Controls;
                 }
             }
         };
-
         CDrawingDataControl.prototype.getCurrentRow = function () {
             return this._currentRowIndex;
         };
-
         CDrawingDataControl.prototype.getFirstElementByRow = function (aRowIndex) {
             var el, rowIndexStr = "" + aRowIndex;
             this._drawnElements.forEach(function (aKey, aItem) {
@@ -2378,15 +2236,12 @@ var Controls;
             });
             return el;
         };
-
         CDrawingDataControl.prototype.connectRowIndexChanged = function (aHolder, aSlotName, aSlot) {
             this.connect("RowIndexChanged", aHolder, aSlotName);
         };
-
         CDrawingDataControl.prototype._emitRowIndexChanged = function (aRowIndex) {
             this.emit.call(this, "RowIndexChanged", aRowIndex);
         };
-
         CDrawingDataControl.prototype._handleFocusChanged = function (aElOld, aElNew) {
             _super.prototype._handleFocusChanged.call(this, aElOld, aElNew);
             if (aElNew.attributes["data-row-index"]) {
@@ -2394,7 +2249,6 @@ var Controls;
                 this._changeCurrentRow(rowIndex);
             }
         };
-
         CDrawingDataControl.prototype._doDraw = function (aRect, aDrawParam) {
             var _this = this;
             var focusableElements = [];
@@ -2424,7 +2278,6 @@ var Controls;
             this._ownedDataProvider.getDrawingDataList(rect, focusedInfo, function (aDrawingDataList) {
                 var i, len, drawingData, el;
                 var drawnElements = _this._pickDrawnElements();
-
                 drawnElements.forEach(function (aKey, aItem) {
                     if (_this._isItemFocusable(aRect, aKey, aItem)) {
                         drawnElements.pickElement(aKey);
@@ -2460,7 +2313,6 @@ var Controls;
             console.log("data: " + this._ownedDataProvider.getLength() + " drawn: " + this._drawnElements.getCount());
             return focusableElements;
         };
-
         CDrawingDataControl.prototype._createDrawItem = function (aDrawingData) {
             var el = document.createElement("div");
             el.style.position = "absolute";
@@ -2478,7 +2330,6 @@ var Controls;
             }
             return el;
         };
-
         CDrawingDataControl.prototype._isItemFocusable = function (aDrawRect, aKey, aDrawnElement) {
             var el = aDrawnElement || this._getDrawnElement(aKey);
             if (el.classList.contains(KClassFocusable)) {
@@ -2493,7 +2344,6 @@ var Controls;
             }
             return false;
         };
-
         CDrawingDataControl.prototype._dataInserted = function (aKey, aItems) {
             var i, len;
             var drawnElements = this._getDrawnElements();
@@ -2512,7 +2362,6 @@ var Controls;
             this._makeKeyMap(drawnElements, false, true);
             console.log("data: " + this._ownedDataProvider.getLength() + " drawn: " + this._drawnElements.getCount());
         };
-
         CDrawingDataControl.prototype._dataUpdated = function (aKeys, aItems) {
             var i, len, key;
             for (i = 0, len = aKeys.length; i < len; i++) {
@@ -2520,7 +2369,6 @@ var Controls;
                 this._drawer(key, this._ownedDataProvider.getItem(key), this._getDrawnElement(key));
             }
         };
-
         CDrawingDataControl.prototype._dataRemoved = function (aKeys) {
             var i, len, k;
             for (i = 0, len = aKeys.length; i < len; i += 1) {
@@ -2531,7 +2379,6 @@ var Controls;
         return CDrawingDataControl;
     })(CDataControl);
     Controls.CDrawingDataControl = CDrawingDataControl;
-
     var CGroupControl = (function (_super) {
         __extends(CGroupControl, _super);
         function CGroupControl(aElement) {
@@ -2544,7 +2391,6 @@ var Controls;
         CGroupControl.prototype.destroy = function () {
             this._destroyChild();
         };
-
         CGroupControl.prototype._destroyChild = function () {
             var i, len, c;
             for (i = 0, len = this._child; i < len; i++) {
@@ -2552,17 +2398,17 @@ var Controls;
                 c.destroy();
             }
         };
-
         CGroupControl.prototype.setKeyBuilder = function (aLayout) {
             if (aLayout == 1 /* EVertical */) {
                 this._keyMapBuilder = Controls.KBuilderTopDown;
-            } else if (aLayout == 2 /* EHorizontal */) {
+            }
+            else if (aLayout == 2 /* EHorizontal */) {
                 this._keyMapBuilder = Controls.KBuilderLeftRight;
-            } else {
+            }
+            else {
                 this._keyMapBuilder = Controls.KBuilderLeftRight;
             }
         };
-
         CGroupControl.prototype.setOwnedChildControls = function (aChildControls) {
             this._destroyChild();
             var i, len;
@@ -2571,15 +2417,12 @@ var Controls;
             }
             this._child = aChildControls;
         };
-
         CGroupControl.prototype.insertOwnedChild = function (aIndex, aControl) {
             this._child.unshift(aControl);
         };
-
         CGroupControl.prototype.appendOwnedChild = function (aControl) {
             this._child.push(aControl);
         };
-
         CGroupControl.prototype.removeOwnedControl = function (aControl) {
             var index = this._child.indexOf(aControl);
             if (index != -1) {
@@ -2587,37 +2430,33 @@ var Controls;
                 aControl.destroy();
             }
         };
-
         /*
-        updateKeyMap(aFocusedControl?: CControl) {
-        var ret: HTMLElement[] = [];
-        var i, len, c: CControl, el: HTMLElement;
-        for (i = 0, len = this._child.length; i < len; i++) {
-        c = this._child[i];
-        el = c._element;
-        el.attributes["data"] = i;
-        this._element.appendChild(el);
-        c.draw(aRect);
-        if (c.isFocusable()) {
-        ret.push(el);
-        }
-        }
-        return ret;
-        }
-        */
+         updateKeyMap(aFocusedControl?: CControl) {
+         var ret: HTMLElement[] = [];
+         var i, len, c: CControl, el: HTMLElement;
+         for (i = 0, len = this._child.length; i < len; i++) {
+         c = this._child[i];
+         el = c._element;
+         el.attributes["data"] = i;
+         this._element.appendChild(el);
+         c.draw(aRect);
+         if (c.isFocusable()) {
+         ret.push(el);
+         }
+         }
+         return ret;
+         }
+         */
         CGroupControl.prototype.doKey = function (aKeyStr, aParam) {
             if (this._transitioning) {
                 return true;
             }
-
             //this._prevKeyStr = aKeyStr;
             var handled = false;
-
             var funcName = "_doKey" + aKeyStr;
             if (this[funcName]) {
                 handled = this[funcName](aParam);
             }
-
             if (!handled) {
                 var child = this._child.slice(0);
                 var i, len, c, bUpdated, size = this.getSize();
@@ -2629,30 +2468,24 @@ var Controls;
                     }
                 }
             }
-
             if (!handled && this._keyMap) {
                 handled = this._keyMap.doKey(aKeyStr);
             }
-
             funcName += "Latent";
             if (!handled && this[funcName]) {
                 handled = this[funcName](aParam);
             }
-
             return handled;
         };
-
         CGroupControl.prototype.draw = function (aRect) {
             _super.prototype.draw.call(this, aRect);
             if (this._root) {
                 this.setActiveFocus();
             }
         };
-
         CGroupControl.prototype._doDraw = function (aRect, aDrawParam) {
             return this._doDrawCommon(this._element, aRect, aDrawParam);
         };
-
         CGroupControl.prototype._doDrawCommon = function (aParent, aRect, aDrawParam) {
             var ret = [];
             if (this._root) {
@@ -2671,7 +2504,6 @@ var Controls;
             }
             return ret;
         };
-
         CGroupControl.prototype.getFocusedChild = function () {
             var i, len, c;
             for (i = 0, len = this._child.length; i < len; i++) {
@@ -2682,24 +2514,16 @@ var Controls;
             }
             return null;
         };
-
         CGroupControl.prototype._setActiveFocus = function (aFocus) {
             var focusedChild;
             if (this.isFocusable()) {
-                if (aFocus) {
-                    this._element.classList.add(KClassFocused);
-                } else {
-                    this._element.classList.remove(KClassFocused);
-                }
                 focusedChild = this.getFocusedChild();
                 focusedChild._setActiveFocus(aFocus);
             }
         };
-
         CGroupControl.prototype.setActiveFocus = function () {
             this._setActiveFocus(true);
         };
-
         CGroupControl.prototype._handleFocusChanged = function (elOld, elNew) {
             var oldIndex = parseInt(elOld.attributes["data"]);
             var newIndex = parseInt(elNew.attributes["data"]);
@@ -2709,7 +2533,6 @@ var Controls;
             newChild._setActiveFocus(true);
             this._emitChildFocusChanged(oldChild, newChild);
         };
-
         // CGroupControl events
         CGroupControl.prototype.connectChildFocusChanged = function (aHolder, aSlotName, aSlot) {
             this.connect("ChildFocusChanged", aHolder, aSlotName);
@@ -2729,7 +2552,6 @@ var Controls;
         return CGroupControl;
     })(CControl);
     Controls.CGroupControl = CGroupControl;
-
     var FLayoutElement = function (aEl, aChild, aOrientation, aVAlign, aHAlign, aMargins, aPadding) {
         if (aEl.offsetHeight == 0 && aVAlign != 0 /* EUnkown */) {
             throw "vertical align meaningless without height";
@@ -2737,7 +2559,6 @@ var Controls;
         if (aEl.offsetWidth == 0 && aHAlign != 0 /* EUnkown */) {
             throw "horizontal align meaningless without width";
         }
-
         var maxWidth = 0;
         var maxHeight = 0;
         var totalWidth = 0;
@@ -2760,21 +2581,21 @@ var Controls;
         }
         if (aOrientation == 2 /* EHorizontal */) {
             FLayoutElementHorizontal(aEl, aChild, aVAlign, aHAlign, aMargins, aPadding, maxWidth, maxHeight, totalWidth, totalHeight);
-        } else {
+        }
+        else {
             FLayoutElementVertical(aEl, aChild, aVAlign, aHAlign, aMargins, aPadding, maxWidth, maxHeight, totalWidth, totalHeight);
         }
     };
-
     var FLayoutElementVertical = function (aEl, aChild, aVAlign, aHAlign, aMargins, aPadding, aMaxWidth, aMaxHeight, aTotalWidth, aTotalHeight) {
         var height = aMargins.t + aTotalHeight + aMargins.b;
         var posTop = aMargins.t;
         if (aVAlign == 2 /* ECenter */) {
             posTop = (aEl.offsetHeight - aTotalHeight) / 2;
-        } else if (aVAlign == 3 /* EBottom */) {
+        }
+        else if (aVAlign == 3 /* EBottom */) {
             posTop = aEl.offsetHeight - (aMargins.b + aTotalHeight);
         }
         var posLeft = aMargins.l;
-
         var i, len, el, posLeft;
         for (i = 0, len = aChild.length; i < len; i++) {
             el = aChild[i];
@@ -2782,19 +2603,20 @@ var Controls;
                 el.style.top = posTop + "px";
                 if (aHAlign == 2 /* ECenter */) {
                     posLeft = (aEl.offsetWidth - el.offsetWidth) / 2;
-                } else if (aHAlign == 3 /* ERight */) {
+                }
+                else if (aHAlign == 3 /* ERight */) {
                     posLeft = aEl.offsetWidth - (aMargins.r + el.offsetWidth);
                 }
                 el.style.left = posLeft + "px";
                 posTop += el.offsetHeight + aPadding;
-            } else {
+            }
+            else {
                 if (aEl.offsetHeight == 0) {
                     throw "Height must be provided for expending";
                 }
                 posTop = aEl.offsetHeight - (aTotalHeight - posTop);
             }
         }
-
         if (aEl.offsetHeight == 0) {
             aEl.style.height = height + "px";
         }
@@ -2802,13 +2624,13 @@ var Controls;
             aEl.style.width = aMargins.l + aMaxWidth + aMargins.r + 'px';
         }
     };
-
     var FLayoutElementHorizontal = function (aEl, aChild, aVAlign, aHAlign, aMargins, aPadding, aMaxWidth, aMaxHeight, aTotalWidth, aTotalHeight) {
         var width = aMargins.l + aTotalWidth + aMargins.r;
         var posLeft = aMargins.l;
         if (aHAlign == 2 /* ECenter */) {
             posLeft = (aEl.offsetWidth - aTotalWidth) / 2;
-        } else if (aHAlign == 3 /* ERight */) {
+        }
+        else if (aHAlign == 3 /* ERight */) {
             posLeft = aEl.offsetWidth - (aMargins.l + aTotalWidth);
         }
         var posTop = aMargins.t;
@@ -2818,13 +2640,13 @@ var Controls;
             el.style.left = posLeft + "px";
             if (aVAlign == 2 /* ECenter */) {
                 posTop = (aEl.offsetHeight - el.offsetHeight) / 2;
-            } else if (aVAlign == 3 /* EBottom */) {
+            }
+            else if (aVAlign == 3 /* EBottom */) {
                 posTop = aEl.offsetHeight - (aMargins.b + el.offsetHeight);
             }
             el.style.top = posTop + "px";
             posLeft += el.offsetWidth + aPadding;
         }
-
         if (aEl.offsetHeight == 0) {
             aEl.style.height = aMargins.t + aMaxHeight + aMargins.b + "px";
         }
@@ -2832,7 +2654,6 @@ var Controls;
             aEl.style.width = width + 'px';
         }
     };
-
     var CLayoutGroupControl = (function (_super) {
         __extends(CLayoutGroupControl, _super);
         function CLayoutGroupControl(aElement) {
@@ -2845,19 +2666,17 @@ var Controls;
                 childEl.push(this._child[i]._element);
             }
             FLayoutElement(this._element, childEl, this.getOrientation(), this.getChildVAlign(), this.getChildHAlign(), this.getMargins(), this.getPadding());
-
             if (this.getOrientation() == 2 /* EHorizontal */) {
                 this._keyMapBuilder = Controls.KBuilderLeftRight;
-            } else {
+            }
+            else {
                 this._keyMapBuilder = Controls.KBuilderTopDown;
             }
-
             return ret;
         };
         return CLayoutGroupControl;
     })(CGroupControl);
     Controls.CLayoutGroupControl = CLayoutGroupControl;
-
     var CViewGroupControl = (function (_super) {
         __extends(CViewGroupControl, _super);
         function CViewGroupControl(aElement) {
@@ -2878,34 +2697,28 @@ var Controls;
             this._targetChild = aChildControls[0];
             _super.prototype.setOwnedChildControls.call(this, aChildControls);
         };
-
         CViewGroupControl.prototype.setScrollScheme = function (aScheme, aFixedScrollUnit) {
             _super.prototype.setScrollScheme.call(this, aScheme, aFixedScrollUnit);
             this._targetChild.setScrollScheme(aScheme, aFixedScrollUnit);
         };
-
         CViewGroupControl.prototype.setVerticalScrollScheme = function (aScheme, aFixedScrollUnit) {
             _super.prototype.setVerticalScrollScheme.call(this, aScheme, aFixedScrollUnit);
             this._targetChild.setVerticalScrollScheme(aScheme, aFixedScrollUnit);
         };
-
         CViewGroupControl.prototype.setHorizontalScrollScheme = function (aScheme, aFixedScrollUnit) {
             _super.prototype.setHorizontalScrollScheme.call(this, aScheme, aFixedScrollUnit);
             this._targetChild.setHorizontalScrollScheme(aScheme, aFixedScrollUnit);
         };
-
         CViewGroupControl.prototype.setKeepFocus = function (aKeepFocus) {
             _super.prototype.setKeepFocus.call(this, aKeepFocus);
             this._targetChild.setKeepFocus(aKeepFocus);
         };
-
         CViewGroupControl.prototype.setViewSize = function (aRect) {
             this._element.style.left = aRect.left + "px";
             this._element.style.top = aRect.top + "px";
             this._element.style.height = aRect.getHeight() + "px";
             this._element.style.width = aRect.getWidth() + "px";
         };
-
         CViewGroupControl.prototype._doDraw = function (aRect, aDrawParam) {
             if (this._element.offsetWidth == 0 || this._element.offsetHeight == 0) {
                 throw "drawing view group without size meaning-less";
@@ -2917,7 +2730,8 @@ var Controls;
                 drawPosTop = -this._getContainerPosForAni().top;
                 drawPosLeft = -this._getContainerPosForAni().left;
                 this._setContainerPosForAni(undefined);
-            } else {
+            }
+            else {
                 drawPosTop = -this._container.offsetTop;
                 drawPosLeft = -this._container.offsetLeft;
             }
@@ -2927,10 +2741,10 @@ var Controls;
                 right: drawPosLeft + this._element.offsetWidth,
                 bottom: drawPosTop + this._element.offsetHeight
             });
-            var i, len, c, el;
-            var childRect = new TRect;
-            var childSize;
-            var drawRectForChild;
+            var i, len, c, el; // looping param
+            var childRect = new TRect; // rectangle for child control
+            var childSize; // size of child control
+            var drawRectForChild; // rectangle param for child control
             for (i = 0, len = this._child.length; i < len; i++) {
                 c = this._child[i];
                 el = c._element;
@@ -2943,7 +2757,8 @@ var Controls;
                 var scrollSchemeHorizontal = this._getDrawParam(KParamStrScrollSchemeHorizontal);
                 if (scrollSchemeVertical === 4 /* EByFocusRemainsRolling */ || scrollSchemeHorizontal === 4 /* EByFocusRemainsRolling */) {
                     drawRectForChild = drawRect;
-                } else {
+                }
+                else {
                     drawRectForChild = drawRect.getIntersectedRect(childRect);
                 }
                 c.draw(drawRectForChild || new TRect());
@@ -2955,7 +2770,6 @@ var Controls;
             this._drawnRect = drawRect;
             return focusableElements;
         };
-
         CViewGroupControl.prototype._getNextMove = function (aKeyStr, aControl) {
             var ret = {
                 top: 0,
@@ -2989,15 +2803,12 @@ var Controls;
             }
             return ret;
         };
-
         CViewGroupControl.prototype._setContainerPosForAni = function (aPosition) {
             this._containerPosForAni = aPosition;
         };
-
         CViewGroupControl.prototype._getContainerPosForAni = function () {
             return this._containerPosForAni;
         };
-
         CViewGroupControl.prototype._getContainerPos = function () {
             var containerTop = this._container.offsetTop;
             var containerLeft = this._container.offsetLeft;
@@ -3006,7 +2817,6 @@ var Controls;
                 left: containerLeft
             };
         };
-
         CViewGroupControl.prototype.doKey = function (aKeyStr, aParam) {
             if (this.isTransitioning()) {
                 return true;
@@ -3053,7 +2863,8 @@ var Controls;
                 this.setTransition(true);
                 this._container.style.top = aPosition.top + "px";
                 this._container.style.left = aPosition.left + "px";
-            } else {
+            }
+            else {
                 this._container.style.top = aPosition.top + "px";
                 this._container.style.left = aPosition.left + "px";
                 this.draw();
@@ -3068,7 +2879,6 @@ var Controls;
         return CViewGroupControl;
     })(CGroupControl);
     Controls.CViewGroupControl = CViewGroupControl;
-
     var CListControl = (function (_super) {
         __extends(CListControl, _super);
         function CListControl(aElement) {
@@ -3141,7 +2951,6 @@ var Controls;
         CListControl.prototype.connectItemRemoved = function (aHolder, aSlotName, aSlot) {
             this._listDataControl.connectItemRemoved(aHolder, aSlotName, aSlot);
         };
-
         CListControl.prototype.setRedrawAfterOperation = function (aRedraw) {
             this._listDataControl.setRedrawAfterOperation(aRedraw);
         };
@@ -3169,7 +2978,6 @@ var Controls;
         CListControl.prototype.removeItems = function (index) {
             this._listDataControl.removeItems(index);
         };
-
         CListControl.prototype._slItemInserted = function (drawnElements, aNeedFocus) {
             var rect = this.getSize();
             var height = this._listDataControl.getItemHeight();
@@ -3178,13 +2986,12 @@ var Controls;
             var count = keys.length;
             var cut = 0;
             var removeEl;
-
             if (width) {
                 cut = count - (rect.width / width);
-            } else if (height) {
+            }
+            else if (height) {
                 cut = count - (rect.height / height);
             }
-
             for (; cut > 0; cut--) {
                 removeEl = drawnElements.pickElement('' + (count - cut));
                 Util.remove(removeEl);
@@ -3194,7 +3001,6 @@ var Controls;
                 this._listDataControl._setActiveFocus(true);
             }
         };
-
         CListControl.prototype._slItemRemoved = function (drawnElements, aUnsetFocus) {
             //TODO: implement
             this._listDataControl._makeKeyMap(drawnElements.getElements(), false, false);
@@ -3205,7 +3011,6 @@ var Controls;
         return CListControl;
     })(CViewGroupControl);
     Controls.CListControl = CListControl;
-
     var CGridControl = (function (_super) {
         __extends(CGridControl, _super);
         function CGridControl(aElement) {
@@ -3218,7 +3023,6 @@ var Controls;
             this._gridDataControl.destroy();
             _super.prototype.destroy.call(this);
         };
-
         // set draw param
         CGridControl.prototype.setMaxColCount = function (aMaxColCount) {
             this._gridDataControl.setMaxColCount(aMaxColCount);
@@ -3229,7 +3033,6 @@ var Controls;
         CGridControl.prototype.setItemHeight = function (aItemHeight) {
             this._gridDataControl.setItemHeight(aItemHeight);
         };
-
         // set data
         CGridControl.prototype.setListData = function (aData) {
             this._gridDataControl.setOwnedDataProvider(new CListDataProvider(aData, false));
@@ -3237,12 +3040,10 @@ var Controls;
         CGridControl.prototype.setOwnedDataProvider = function (aDataProvider) {
             this._gridDataControl.setOwnedDataProvider(aDataProvider);
         };
-
         // set drawer
         CGridControl.prototype.setDataDrawer = function (aDrawer) {
             this._gridDataControl.setDataDrawer(aDrawer);
         };
-
         // connect event
         CGridControl.prototype.connectFocusChanged = function (aHolder, aSlotName, aSlot) {
             this._gridDataControl.connectFocusChanged(aHolder, aSlotName, aSlot);
@@ -3253,7 +3054,6 @@ var Controls;
         return CGridControl;
     })(CViewGroupControl);
     Controls.CGridControl = CGridControl;
-
     var CDrawingControl = (function (_super) {
         __extends(CDrawingControl, _super);
         function CDrawingControl(aElement) {
@@ -3268,32 +3068,25 @@ var Controls;
         CDrawingControl.prototype.setItemHeight = function (aItemHeight) {
             this._drawingDataControl.setItemHeight(aItemHeight);
         };
-
         CDrawingControl.prototype.setOwnedDataProvider = function (aDataProvider) {
             this._drawingDataControl.setOwnedDataProvider(aDataProvider);
         };
-
         CDrawingControl.prototype.setCurrentRowIndex = function (aRowIndex) {
             this._drawingDataControl.setCurrentRow(aRowIndex);
         };
-
         CDrawingControl.prototype.getCurrentRowIndex = function () {
             return this._drawingDataControl.getCurrentRow();
         };
-
         // set drawer
         CDrawingControl.prototype.setDataDrawer = function (aDrawer) {
             this._drawingDataControl.setDataDrawer(aDrawer);
         };
-
         CDrawingControl.prototype.getFirstElementByRow = function (aIndex) {
             return this._drawingDataControl.getFirstElementByRow(aIndex);
         };
-
         CDrawingControl.prototype.clearDrawnElements = function () {
             this._drawingDataControl.clearDrawnElements();
         };
-
         // connect event
         CDrawingControl.prototype.connectFocusChanged = function (aHolder, aSlotName, aSlot) {
             this._drawingDataControl.connectFocusChanged(aHolder, aSlotName, aSlot);
@@ -3307,7 +3100,6 @@ var Controls;
         return CDrawingControl;
     })(CViewGroupControl);
     Controls.CDrawingControl = CDrawingControl;
-
     var CLayeredGroupControl = (function (_super) {
         __extends(CLayeredGroupControl, _super);
         function CLayeredGroupControl(aElement) {
@@ -3328,29 +3120,28 @@ var Controls;
             this._layerInfoStack = null;
             _super.prototype.destroy.call(this);
         };
-
         CLayeredGroupControl.prototype.getLayoutElement = function (aClassName) {
             var ret;
             var elements = this._elLayer.getElementsByClassName(aClassName);
             if (elements.length == 1) {
                 ret = elements.item(0);
-            } else if (elements.length == 0) {
+            }
+            else if (elements.length == 0) {
                 ret = document.createElement("div");
                 ret.classList.add(aClassName);
                 this._elLayer.appendChild(ret);
-            } else {
+            }
+            else {
                 throw "Layout element duplicated";
             }
             return ret;
         };
-
         CLayeredGroupControl.prototype.getCurrentLayerElement = function () {
             return this._elLayer;
         };
-
         CLayeredGroupControl.prototype.createLayer = function (aParam) {
             var _this = this;
-            if (typeof aParam === "undefined") { aParam = {}; }
+            if (aParam === void 0) { aParam = {}; }
             var elLayerPrev = this._elLayer;
             if (this._elLayer) {
                 this._layerInfoStack.push({
@@ -3365,23 +3156,21 @@ var Controls;
                 this._keyMap = null;
                 this._child = [];
             }
-
             var elLayer = document.createElement("div");
             elLayer.classList.add("-layer");
             elLayer.style.position = "absolute";
             elLayer.style.width = "inherit";
             elLayer.style.height = "inherit";
-
             if (aParam.addClass) {
                 elLayer.classList.add(aParam.addClass);
             }
-
             var executeNext = [];
             if (aParam.transition) {
                 this.setTransition(true);
                 if (aParam.transition.custom) {
                     executeNext.push(aParam.transition.custom.fnCreate(elLayerPrev, elLayer));
-                } else {
+                }
+                else {
                     if (elLayerPrev) {
                         switch (aParam.transition.prevLayer) {
                             case "fadeOut":
@@ -3422,11 +3211,9 @@ var Controls;
                     }
                 });
             }
-
             this._element.appendChild(elLayer);
             this._elLayer = elLayer;
             this._createParam = aParam;
-
             if (executeNext.length) {
                 setTimeout(function () {
                     var i, len;
@@ -3437,13 +3224,11 @@ var Controls;
             }
             return elLayer;
         };
-
         CLayeredGroupControl.prototype.removeLayer = function () {
             var _this = this;
             var prevChild = this._child;
             var prevElLayer = this._elLayer;
             var prevCreateParam = this._createParam;
-
             var destroy = function () {
                 var i, len, control;
                 for (i = 0, len = prevChild.length; i < len; i++) {
@@ -3455,16 +3240,13 @@ var Controls;
                 prevElLayer = null;
                 prevCreateParam = null;
             };
-
             this._child = [];
             if (this._keyMap) {
                 this._keyMap.destroy();
             }
             this._keyMap = null;
             this._elLayer = null;
-
             var layerInfo = this._layerInfoStack.pop();
-
             if (layerInfo) {
                 this._child = layerInfo.childControls;
                 this._keyMap = layerInfo.keyMap;
@@ -3472,12 +3254,12 @@ var Controls;
                 this._elLayer = layerInfo.elLayer;
                 this._elLayer.classList.remove("-stacked");
                 this._createParam = layerInfo.createParam;
-
                 var transitionParam = prevCreateParam.transition;
                 if (transitionParam) {
                     if (transitionParam.custom) {
                         transitionParam.custom.fnRemove(prevElLayer, this._elLayer);
-                    } else {
+                    }
+                    else {
                         switch (transitionParam.prevLayer) {
                             case "fadeOut":
                                 this._elLayer.style.opacity = "1";
@@ -3495,32 +3277,30 @@ var Controls;
                                 break;
                         }
                     }
-
                     this.setTransition(true);
                     Util.afterTransition(prevElLayer, function () {
                         destroy();
                         _this.setTransition(false);
                     });
-                } else {
+                }
+                else {
                     destroy();
                 }
-            } else {
+            }
+            else {
                 destroy();
             }
         };
-
         CLayeredGroupControl.prototype.draw = function (aRect) {
             _super.prototype.draw.call(this, aRect);
             this.setActiveFocus();
         };
-
         CLayeredGroupControl.prototype._doDraw = function (aRect, aDrawParam) {
             if (!this._elLayer) {
                 throw "Layer must be created before draw";
             }
             return this._doDrawCommon(this._elLayer, aRect, aDrawParam);
         };
-
         CLayeredGroupControl.prototype.createLayoutControl = function (aItemDrawers) {
             if (!this._elLayer) {
                 throw "Layer must be created before set controls";
@@ -3531,7 +3311,6 @@ var Controls;
             this.setOwnedChildControls([layoutControl]);
             return layoutControl;
         };
-
         CLayeredGroupControl.prototype.createLayoutGroupControl = function (aControls) {
             if (!this._elLayer) {
                 throw "Layer must be created before set controls";
@@ -3542,7 +3321,6 @@ var Controls;
             this.setOwnedChildControls([layoutGroupControl]);
             return layoutGroupControl;
         };
-
         CLayeredGroupControl.prototype.setControl = function (aControl) {
             if (!this._elLayer) {
                 throw "Layer must be created before set controls";
@@ -3553,9 +3331,7 @@ var Controls;
         return CLayeredGroupControl;
     })(CGroupControl);
     Controls.CLayeredGroupControl = CLayeredGroupControl;
-
     ;
-
     var CViewItemResult = (function () {
         function CViewItemResult() {
             this.items = [];
@@ -3579,7 +3355,6 @@ var Controls;
         return CViewItemResult;
     })();
     Controls.CViewItemResult = CViewItemResult;
-
     var CCircularArray = (function () {
         function CCircularArray(aArray) {
             if (aArray) {
@@ -3623,12 +3398,10 @@ var Controls;
             var ret = new CViewItemResult();
             var len = this._array.length;
             var i;
-
             if (aCount > len) {
                 var halfCount = Math.floor(len / 2);
                 var centering = halfCount <= aOffset && halfCount <= aCount - aOffset;
                 var start, index;
-
                 for (i = 0; i < aCount; i += 1) {
                     ret.items.push(null);
                 }
@@ -3641,7 +3414,8 @@ var Controls;
                             data: this._array[index]
                         };
                     }
-                } else if (len - 1 <= aOffset) {
+                }
+                else if (len - 1 <= aOffset) {
                     start = aOffset - len - 1;
                     for (i = 0; i < len; i += 1) {
                         index = this.indexing(this._idxCur + i + 1);
@@ -3650,7 +3424,8 @@ var Controls;
                             data: this._array[index]
                         };
                     }
-                } else if (len <= aCount - aOffset) {
+                }
+                else if (len <= aCount - aOffset) {
                     start = aOffset;
                     for (i = 0; i < len; i += 1) {
                         index = this.indexing(this._idxCur + i);
@@ -3659,7 +3434,8 @@ var Controls;
                             data: this._array[index]
                         };
                     }
-                } else {
+                }
+                else {
                     for (i = 0; i < len; i += 1) {
                         index = this.indexing(this._idxCur - aOffset + i);
                         ret.items[i] = {
@@ -3668,7 +3444,8 @@ var Controls;
                         };
                     }
                 }
-            } else {
+            }
+            else {
                 for (i = 0; i < aCount; i += 1) {
                     index = this.indexing(this._idxCur - aOffset + i);
                     ret.items.push({
@@ -3692,7 +3469,7 @@ var Controls;
             do {
                 need = aFn(index, this.at(index));
                 index = this.indexing(index + 1);
-            } while(need && index != this._idxCur);
+            } while (need && index != this._idxCur);
         };
         CCircularArray.prototype.eachReverse = function (aFn) {
             var index = this._idxCur;
@@ -3700,7 +3477,7 @@ var Controls;
             do {
                 need = aFn(index, this.at(index));
                 index = this.indexing(index - 1);
-            } while(need && index != this._idxCur);
+            } while (need && index != this._idxCur);
         };
         CCircularArray.prototype.eachArray = function (aFn) {
             var index = this._idxCur;
@@ -3708,11 +3485,12 @@ var Controls;
             do {
                 if (index < this._array.length) {
                     need = aFn(index, this.at(index));
-                } else {
+                }
+                else {
                     need = aFn(-1, undefined);
                 }
                 index += 1;
-            } while(need);
+            } while (need);
         };
         CCircularArray.prototype.length = function () {
             var ret = 0;
@@ -3729,7 +3507,6 @@ var Controls;
         return CCircularArray;
     })();
     Controls.CCircularArray = CCircularArray;
-
     var CCarouselControl = (function (_super) {
         __extends(CCarouselControl, _super);
         function CCarouselControl(aElement) {
@@ -3798,7 +3575,8 @@ var Controls;
                         index: item.index,
                         el: itemEl ? itemEl : null
                     });
-                } else {
+                }
+                else {
                     ret.push(null);
                 }
             }
@@ -3807,14 +3585,16 @@ var Controls;
         CCarouselControl.prototype.safeUpdate = function (fnUpdate) {
             if (this.isTransitioning()) {
                 this.fnSafeUpdate = fnUpdate;
-            } else {
+            }
+            else {
                 fnUpdate();
             }
         };
         CCarouselControl.prototype._drawItem = function (aItemEl, aItem, aIndex) {
             if (this._dataDrawer) {
                 this._dataDrawer(aItemEl, aItem, aIndex);
-            } else {
+            }
+            else {
                 aItemEl.innerHTML = aItem;
             }
         };
@@ -3826,7 +3606,6 @@ var Controls;
             if (!animationInterval) {
                 animationInterval = 0.3;
             }
-
             //var classNames = aClassName ? ['-carousel-item', aClassName] : ['-carousel-item'];
             var classNames = [CCarouselControl.KClassItem];
             if (aClassName) {
@@ -3843,7 +3622,8 @@ var Controls;
                     itemEl.style.transition = 'left ' + animationInterval + 's linear';
                 }
                 itemEl.style.left = aTop + 'px';
-            } else {
+            }
+            else {
                 if (animation && !useUserAnimationCSS) {
                     itemEl.style.transition = 'top ' + animationInterval + 's linear';
                 }
@@ -3860,7 +3640,8 @@ var Controls;
             if (this._dataChanged) {
                 if (this.getOrientation() == 2 /* EHorizontal */) {
                     this._keyMapBuilder = Controls.KBuilderLeftRight;
-                } else {
+                }
+                else {
                     this._keyMapBuilder = Controls.KBuilderTopDown;
                 }
                 this._doDrawItems();
@@ -3880,11 +3661,9 @@ var Controls;
             var drawEffect = this.getDrawEfect();
             var drawnItems = [];
             var i;
-
             if (!viewCount) {
                 throw "setViewCount required";
             }
-
             if (align == 1 /* EVertical */) {
                 var anchorHeight = this.getAnchorHeight();
                 var anchorTop = anchorIndex * itemHeight;
@@ -3894,7 +3673,8 @@ var Controls;
                 if (!anchorHeight) {
                     anchorHeight = itemHeight;
                 }
-            } else {
+            }
+            else {
                 var anchorWidth = this.getAnchorWidth();
                 var anchorLeft = anchorIndex * itemWidth;
                 if (!itemWidth) {
@@ -3904,7 +3684,6 @@ var Controls;
                     anchorWidth = itemWidth;
                 }
             }
-
             this._element.innerText = '';
             this._cirMenuItems.setCur(startIndex);
             if (transparentAnchor) {
@@ -3923,7 +3702,8 @@ var Controls;
                     this._lowerBoundEl.style.top = this._lowerBoundTop + 'px';
                     this._lowerBoundEl.style.width = itemWidth + 'px';
                     this._lowerBoundEl.style.height = this._lowerBoundHeight + 'px';
-                } else {
+                }
+                else {
                     this._upperBoundWidth = anchorIndex * itemWidth;
                     this._upperBoundEl.style.height = itemHeight + 'px';
                     this._upperBoundEl.style.width = this._upperBoundWidth + 'px';
@@ -3936,10 +3716,9 @@ var Controls;
                 this._element.appendChild(this._upperBoundEl);
                 this._element.appendChild(this._lowerBoundEl);
             }
-
             /*
-            * Make draw info for each items
-            */
+             * Make draw info for each items
+             */
             var result = this._cirMenuItems.getViewItems(viewCount, anchorIndex);
             var parentEl = null;
             var drawInfos = [];
@@ -3947,10 +3726,10 @@ var Controls;
             var itemPosition = 0;
             if (align == 1 /* EVertical */) {
                 var itemPositionStart = anchorTop;
-            } else {
+            }
+            else {
                 var itemPositionStart = anchorLeft;
             }
-
             for (i = 0; i < result.items.length; i += 1) {
                 if (transparentAnchor) {
                     if (i <= anchorIndex) {
@@ -3958,20 +3737,24 @@ var Controls;
                         itemPosition = nextPosition;
                         if (align == 1 /* EVertical */) {
                             itemPositionStart = this._upperBoundHeight;
-                        } else {
+                        }
+                        else {
                             itemPositionStart = this._lowerBoundWidth;
                         }
-                    } else if (anchorIndex < i) {
+                    }
+                    else if (anchorIndex < i) {
                         parentEl = this._lowerBoundEl;
                         if (align == 1 /* EVertical */) {
                             itemPosition = nextPosition - this._lowerBoundTop;
                             itemPositionStart = -itemHeight;
-                        } else {
+                        }
+                        else {
                             itemPosition = nextPosition - this._lowerBoundLeft;
                             itemPositionStart = -itemWidth;
                         }
                     }
-                } else {
+                }
+                else {
                     parentEl = this._element;
                     itemPosition = nextPosition;
                 }
@@ -3982,7 +3765,8 @@ var Controls;
                 });
                 if (align == 1 /* EVertical */) {
                     nextPosition += i === anchorIndex ? anchorHeight : itemHeight;
-                } else {
+                }
+                else {
                     nextPosition += i == anchorIndex ? anchorWidth : itemWidth;
                 }
             }
@@ -3996,13 +3780,15 @@ var Controls;
                 if (drawInfo.parentEl) {
                     if (drawEffect == 'spreadOut') {
                         itemEl = this._createItem(item, drawInfo.positionStart, distClassName);
-                    } else {
+                    }
+                    else {
                         itemEl = this._createItem(item, drawInfo.position, distClassName);
                     }
                     if (diff !== 0) {
                         if (diff < 0) {
                             itemEl.classList.add(CCarouselControl.KClassUpper);
-                        } else {
+                        }
+                        else {
                             itemEl.classList.add(CCarouselControl.KClassLower);
                         }
                     }
@@ -4016,45 +3802,41 @@ var Controls;
                         if (drawnItems[i]) {
                             if (align == 1 /* EVertical */) {
                                 drawnItems[i].style.top = drawInfos[i].position + 'px';
-                            } else {
+                            }
+                            else {
                                 drawnItems[i].style.left = drawInfos[i].position + 'px';
                             }
                         }
                     }
                 }, 1);
             }
-
             var anchorEl = document.createElement('div');
             anchorEl.classList.add(CCarouselControl.KClassAnchor);
             anchorEl.style.position = 'absolute';
             if (align == 1 /* EVertical */) {
                 anchorEl.style.top = anchorTop + 'px';
-                //anchorEl.style.height = anchorHeight + 'px';
-                //anchorEl.style.width = itemWidth + 'px';
-            } else {
-                anchorEl.style.left = anchorLeft + 'px';
-                //anchorEl.style.width = anchorWidth + 'px';
-                //anchorEl.style.height = itemHeight + 'px';
             }
-
+            else {
+                anchorEl.style.left = anchorLeft + 'px';
+            }
             if (this._anchorDrawer) {
                 this._anchorDrawer(anchorEl, result.items[anchorIndex].data, result.items[anchorIndex].index);
             }
             if (this._anchorBackground) {
                 Util.prepend(this._element, anchorEl);
-            } else {
+            }
+            else {
                 this._element.appendChild(anchorEl);
             }
-
             this._anchorEl = anchorEl;
             if (align == 1 /* EVertical */) {
                 this._height = anchorHeight + (itemHeight * (viewCount - 1));
                 this._element.style.height = this._height + 'px';
-            } else {
+            }
+            else {
                 this._width = anchorWidth + (itemWidth * (viewCount - 1));
                 this._element.style.width = this._width + 'px';
             }
-
             if (this._dataChanged) {
                 this._dataChanged = false;
                 this._emitCurrentItemChanged(this._anchorEl, this._cirMenuItems.curItem(), this._cirMenuItems.cur());
@@ -4079,7 +3861,8 @@ var Controls;
                 itemEl.classList.add(distClassName);
                 if (diff === 0) {
                     itemEl.classList.remove(prevDirection);
-                } else {
+                }
+                else {
                     itemEl.classList.remove(prevDirection);
                     itemEl.classList.add(direction);
                 }
@@ -4104,7 +3887,8 @@ var Controls;
                 itemEl.classList.add(distClassName);
                 if (diff === 0) {
                     itemEl.classList.remove(prevDirection);
-                } else {
+                }
+                else {
                     itemEl.classList.remove(prevDirection);
                     itemEl.classList.add(direction);
                 }
@@ -4130,7 +3914,8 @@ var Controls;
                 itemEl.classList.add(distClassName);
                 if (diff === 0) {
                     itemEl.classList.remove(prevDirection);
-                } else {
+                }
+                else {
                     itemEl.classList.remove(prevDirection);
                     itemEl.classList.add(direction);
                 }
@@ -4156,7 +3941,8 @@ var Controls;
                 itemEl.classList.add(distClassName);
                 if (diff === 0) {
                     itemEl.classList.remove(prevDirection);
-                } else {
+                }
+                else {
                     itemEl.classList.remove(prevDirection);
                     itemEl.classList.add(direction);
                 }
@@ -4169,10 +3955,12 @@ var Controls;
                 this.fnSafeUpdate();
                 this.fnSafeUpdate = null;
                 this._keyQueue = [];
-            } else {
+            }
+            else {
                 if (this._keyQueue.length) {
                     this[this._keyQueue.shift()]();
-                } else {
+                }
+                else {
                     this._emitCurrentItemChanged(this._anchorEl, this._cirMenuItems.curItem(), this._cirMenuItems.cur());
                 }
             }
@@ -4197,13 +3985,13 @@ var Controls;
             var itemOffset;
             var anchorOffset;
             var fnMoveItemUpper, fnMoveItemlower;
-
             if (align == 1 /* EVertical */) {
                 itemOffset = itemHeight;
                 anchorOffset = anchorHeight;
                 fnMoveItemUpper = this._moveItemsUpward;
                 fnMoveItemlower = this._moveItemsDownward;
-            } else {
+            }
+            else {
                 itemOffset = anchorWidth;
                 anchorOffset = anchorWidth;
                 fnMoveItemUpper = this._moveItemsRightward;
@@ -4218,52 +4006,56 @@ var Controls;
                     if (lowerItemsEl.length) {
                         upperItemsEl[0].parentNode.removeChild(upperItemsEl[0]);
                         lowerItemsEl[0].parentNode.removeChild(lowerItemsEl[0]);
-                    } else {
+                    }
+                    else {
                         upperItemsEl[0].parentNode.removeChild(upperItemsEl[0]);
                     }
-                } else {
+                }
+                else {
                     fnMoveItemlower(upperItemsEl, itemOffset, anchorIndex, 0);
                     fnMoveItemlower(lowerItemsEl, itemOffset, anchorIndex, anchorIndex + 1);
                     if (lowerItemsEl.length) {
                         upperItemsEl[0].parentNode.removeChild(upperItemsEl[upperItemsEl.length - 1]);
                         lowerItemsEl[0].parentNode.removeChild(lowerItemsEl[lowerItemsEl.length - 1]);
-                    } else {
+                    }
+                    else {
                         upperItemsEl[0].parentNode.removeChild(upperItemsEl[upperItemsEl.length - 1]);
                     }
                 }
-            } else {
+            }
+            else {
                 var itemsEl = this._element.querySelectorAll(CCarouselControl.KSelectorItem);
                 if (aDown) {
                     fnMoveItemUpper(itemsEl, itemOffset, anchorIndex, -1, anchorOffset);
                     itemsEl[0].parentNode.removeChild(itemsEl[0]);
-                } else {
+                }
+                else {
                     fnMoveItemlower(itemsEl, itemOffset, anchorIndex, 0, anchorOffset);
                     itemsEl[0].parentNode.removeChild(itemsEl[itemsEl.length - 1]);
                 }
             }
             this._emitCurrentItemChanged(this._anchorEl, this._cirMenuItems.curItem(), this._cirMenuItems.cur());
         };
-
         CCarouselControl.prototype._animate = function (aDown) {
             var _this = this;
             this.setTransition(true);
             this._emitStartToChange(this._anchorEl, this._cirMenuItems.curItem(), this._cirMenuItems.cur());
             setTimeout(function () {
-                var menuLen = _this._cirMenuItems.length(), align, anchorIndex = _this.getAnchorIndex(), anchorHeight = _this.getAnchorHeight(), anchorWidth = _this.getAnchorWidth(), itemHeight = _this.getItemHeight(), itemWidth = _this.getItemWidth(), transparentAnchor = _this.getTransparentAnchor(), nextTop = 0, itemOffset, anchorOffset, fnMoveItemUpper, fnMoveItemlower;
-
+                var menuLen = _this._cirMenuItems.length(), align, anchorIndex = _this.getAnchorIndex(), anchorHeight = _this.getAnchorHeight(), anchorWidth = _this.getAnchorWidth(), itemHeight = _this.getItemHeight(), itemWidth = _this.getItemWidth(), transparentAnchor = _this.getTransparentAnchor(), nextTop = 0, itemOffset, anchorOffset, fnMoveItemUpper, fnMoveItemlower; //
                 //get align
                 if (_this.getOrientation() == 0 /* EUnknown */ || undefined) {
                     align = 1 /* EVertical */;
-                } else {
+                }
+                else {
                     align = _this.getOrientation();
                 }
-
                 if (align == 1 /* EVertical */) {
                     itemOffset = itemHeight;
                     anchorOffset = anchorHeight;
                     fnMoveItemUpper = _this._moveItemsUpward;
                     fnMoveItemlower = _this._moveItemsDownward;
-                } else {
+                }
+                else {
                     itemOffset = itemWidth;
                     anchorOffset = anchorWidth;
                     fnMoveItemUpper = _this._moveItemsRightward;
@@ -4280,12 +4072,14 @@ var Controls;
                                 upperItemNodeList[0].parentNode.removeChild(upperItemNodeList[0]);
                                 lowerItemNodeList[0].parentNode.removeChild(lowerItemNodeList[0]);
                             });
-                        } else {
+                        }
+                        else {
                             _this._doTransitionAndAfter(upperItemNodeList[upperItemNodeList.length - 1], function () {
                                 upperItemNodeList[0].parentNode.removeChild(upperItemNodeList[0]);
                             });
                         }
-                    } else {
+                    }
+                    else {
                         fnMoveItemlower(upperItemNodeList, itemOffset, anchorIndex, 0);
                         fnMoveItemlower(lowerItemNodeList, itemOffset, anchorIndex, anchorIndex + 1);
                         if (lowerItemNodeList.length) {
@@ -4293,20 +4087,23 @@ var Controls;
                                 upperItemNodeList[0].parentNode.removeChild(upperItemNodeList[upperItemNodeList.length - 1]);
                                 lowerItemNodeList[0].parentNode.removeChild(lowerItemNodeList[lowerItemNodeList.length - 1]);
                             });
-                        } else {
+                        }
+                        else {
                             _this._doTransitionAndAfter(upperItemNodeList[upperItemNodeList.length - 1], function () {
                                 upperItemNodeList[0].parentNode.removeChild(upperItemNodeList[upperItemNodeList.length - 1]);
                             });
                         }
                     }
-                } else {
+                }
+                else {
                     var itemNodeList = _this._element.querySelectorAll(CCarouselControl.KSelectorItem);
                     if (aDown) {
                         fnMoveItemUpper(itemNodeList, itemOffset, anchorIndex, -1, anchorOffset);
                         _this._doTransitionAndAfter(itemNodeList[itemNodeList.length - 1], function () {
                             itemNodeList[0].parentNode.removeChild(itemNodeList[0]);
                         });
-                    } else {
+                    }
+                    else {
                         fnMoveItemlower(itemNodeList, itemOffset, anchorIndex, 0, anchorOffset);
                         _this._doTransitionAndAfter(itemNodeList[itemNodeList.length - 1], function () {
                             itemNodeList[0].parentNode.removeChild(itemNodeList[itemNodeList.length - 1]);
@@ -4315,7 +4112,6 @@ var Controls;
                 }
             }, 1);
         };
-
         CCarouselControl.prototype._doTransitionBack = function () {
             var dataLen = this._cirMenuItems.length();
             var viewCount = this.getViewCount();
@@ -4328,15 +4124,14 @@ var Controls;
             var itemEl;
             var itemSize;
             var anchorSize;
-
             if (align == 1 /* EVertical */) {
                 itemSize = this.getItemHeight();
                 anchorSize = this.getAnchorHeight();
-            } else {
+            }
+            else {
                 itemSize = this.getItemWidth();
                 anchorSize = this.getAnchorWidth();
             }
-
             this._cirMenuItems.dec(1);
             var result = this._cirMenuItems.getViewItems(viewCount, anchorIndex);
             var items = result.items;
@@ -4367,13 +4162,15 @@ var Controls;
                             this._drawItem(itemEl, item.data, item.index);
                         }
                     }
-                } else {
+                }
+                else {
                     newUpperEl = this._createItem(items[0], -itemSize, null);
                     newLowerEl = this._createItem(items[anchorIndex + 1], -itemSize, null);
                     uppperItemNodeList[0].parentNode.insertBefore(newUpperEl, uppperItemNodeList[0]);
                     lowerItemNodeList[0].parentNode.insertBefore(newLowerEl, lowerItemNodeList[0]);
                 }
-            } else {
+            }
+            else {
                 var itemNodeList = this._element.querySelectorAll(CCarouselControl.KSelectorItem);
                 var newItemEl = this._createItem(items[0], -itemSize, CCarouselControl.KClassUpper);
                 this._element.insertBefore(newItemEl, itemNodeList[0]);
@@ -4391,11 +4188,11 @@ var Controls;
             }
             if (animation) {
                 this._animate(false);
-            } else {
+            }
+            else {
                 this._update2(false);
             }
         };
-
         CCarouselControl.prototype._doTransitionNext = function () {
             var dataLen = this._cirMenuItems.length();
             var viewCount = this.getViewCount();
@@ -4408,15 +4205,14 @@ var Controls;
             var itemEl;
             var itemSize;
             var anchorSize;
-
             if (align == 1 /* EVertical */) {
                 itemSize = this.getItemHeight();
                 anchorSize = this.getAnchorHeight();
-            } else {
+            }
+            else {
                 itemSize = this.getItemWidth();
                 anchorSize = this.getAnchorWidth();
             }
-
             this._cirMenuItems.inc(1);
             var result = this._cirMenuItems.getViewItems(viewCount, anchorIndex);
             var items = result.items;
@@ -4427,7 +4223,8 @@ var Controls;
                 if (dataLen < viewCount) {
                     if (align == 1 /* EVertical */) {
                         newUpperEl = this._createItem(null, this._upperBoundHeight);
-                    } else {
+                    }
+                    else {
                         newUpperEl = this._createItem(null, this._upperBoundWidth);
                     }
                     this._upperBoundEl.appendChild(newUpperEl);
@@ -4440,10 +4237,10 @@ var Controls;
                             this._drawItem(itemEl, item.data, item.index);
                         }
                     }
-
                     if (align == 1 /* EVertical */) {
                         newLowerEl = this._createItem(null, this._lowerBoundHeight);
-                    } else {
+                    }
+                    else {
                         newLowerEl = this._createItem(null, this._lowerBoundWidth);
                     }
                     this._lowerBoundEl.appendChild(newLowerEl);
@@ -4456,22 +4253,26 @@ var Controls;
                             this._drawItem(itemEl, item.data, item.index);
                         }
                     }
-                } else {
+                }
+                else {
                     if (align == 1 /* EVertical */) {
                         newUpperEl = this._createItem(items[anchorIndex - 1], this._upperBoundHeight, null);
                         newLowerEl = this._createItem(items[items.length - 1], this._lowerBoundHeight, null);
-                    } else {
+                    }
+                    else {
                         newUpperEl = this._createItem(items[anchorIndex - 1], this._upperBoundWidth, null);
                         newLowerEl = this._createItem(items[items.length - 1], this._lowerBoundWidth, null);
                     }
                     uppperItemNodeList[0].parentNode.appendChild(newUpperEl);
                     lowerItemNodeList[0].parentNode.appendChild(newLowerEl);
                 }
-            } else {
+            }
+            else {
                 var itemNodeList = this._element.querySelectorAll(CCarouselControl.KSelectorItem);
                 if (align == 1 /* EVertical */) {
                     var newItemEl = this._createItem(items[items.length - 1], this._height, CCarouselControl.KClassLower);
-                } else {
+                }
+                else {
                     var newItemEl = this._createItem(items[items.length - 1], this._width, CCarouselControl.KClassLower);
                 }
                 this._element.appendChild(newItemEl);
@@ -4488,16 +4289,15 @@ var Controls;
             }
             if (animation) {
                 this._animate(true);
-            } else {
+            }
+            else {
                 this._update2(true);
             }
         };
-
         CCarouselControl.prototype._doKeyLeft = function () {
             var dataLen = this._cirMenuItems.length();
             var align = this.getOrientation();
             var maxKeyQueueCount = this.getMaxKeyQueueCount();
-
             if (align == 1 /* EVertical */) {
                 return false;
             }
@@ -4506,10 +4306,12 @@ var Controls;
             }
             if (!this.isTransitioning()) {
                 this._doTransitionBack();
-            } else {
+            }
+            else {
                 if (maxKeyQueueCount === undefined) {
                     this._keyQueue.push('doKeyLeft');
-                } else if (this._keyQueue.length < maxKeyQueueCount) {
+                }
+                else if (this._keyQueue.length < maxKeyQueueCount) {
                     this._keyQueue.push('doKeyLeft');
                 }
             }
@@ -4519,7 +4321,6 @@ var Controls;
             var dataLen = this._cirMenuItems.length();
             var align = this.getOrientation();
             var maxKeyQueueCount = this.getMaxKeyQueueCount();
-
             if (align == 1 /* EVertical */) {
                 return false;
             }
@@ -4528,10 +4329,12 @@ var Controls;
             }
             if (!this.isTransitioning()) {
                 this._doTransitionNext();
-            } else {
+            }
+            else {
                 if (maxKeyQueueCount === undefined) {
                     this._keyQueue.push('doKeyRight');
-                } else if (this._keyQueue.length < maxKeyQueueCount) {
+                }
+                else if (this._keyQueue.length < maxKeyQueueCount) {
                     this._keyQueue.push('doKeyRight');
                 }
             }
@@ -4541,7 +4344,6 @@ var Controls;
             var dataLen = this._cirMenuItems.length();
             var align = this.getOrientation();
             var maxKeyQueueCount = this.getMaxKeyQueueCount();
-
             if (align == 2 /* EHorizontal */) {
                 return false;
             }
@@ -4550,10 +4352,12 @@ var Controls;
             }
             if (!this.isTransitioning()) {
                 this._doTransitionBack();
-            } else {
+            }
+            else {
                 if (maxKeyQueueCount === undefined) {
                     this._keyQueue.push('doKeyUp');
-                } else if (this._keyQueue.length < maxKeyQueueCount) {
+                }
+                else if (this._keyQueue.length < maxKeyQueueCount) {
                     this._keyQueue.push('doKeyUp');
                 }
             }
@@ -4563,7 +4367,6 @@ var Controls;
             var dataLen = this._cirMenuItems.length();
             var align = this.getOrientation();
             var maxKeyQueueCount = this.getMaxKeyQueueCount();
-
             if (align == 2 /* EHorizontal */) {
                 return false;
             }
@@ -4572,10 +4375,12 @@ var Controls;
             }
             if (!this.isTransitioning()) {
                 this._doTransitionNext();
-            } else {
+            }
+            else {
                 if (maxKeyQueueCount === undefined) {
                     this._keyQueue.push('doKeyDown');
-                } else if (this._keyQueue.length < maxKeyQueueCount) {
+                }
+                else if (this._keyQueue.length < maxKeyQueueCount) {
                     this._keyQueue.push('doKeyDown');
                 }
             }
@@ -4597,7 +4402,6 @@ var Controls;
         return CCarouselControl;
     })(CControl);
     Controls.CCarouselControl = CCarouselControl;
-
     function makeNoneFocusable(aId) {
         var focusInfo = new CLayoutControl(null);
         focusInfo.setId(aId);
@@ -4605,7 +4409,6 @@ var Controls;
         return focusInfo;
     }
     Controls.makeNoneFocusable = makeNoneFocusable;
-
     var CImageLoader = (function () {
         function CImageLoader(aBaseUrl, aImgList) {
             this.items = [];
@@ -4619,42 +4422,31 @@ var Controls;
         return CImageLoader;
     })();
     Controls.CImageLoader = CImageLoader;
-
     var CMetaDataDisplayUtil = (function () {
         function CMetaDataDisplayUtil(aParentEl, aImageBaseUrl, aDimming) {
             this._element = document.createElement('div');
             this._element.classList.add('-metadata');
             this._element.style.display = 'none';
-
             if (aDimming) {
                 this._dimmingEl = document.createElement('div');
                 this._dimmingEl.classList.add('-metadata-dimming');
                 this._element.appendChild(this._dimmingEl);
             }
-
             this._metaChannelEl = document.createElement('p');
             this._metaChannelEl.classList.add("-metadata-channel-name");
-
             this._metaTitleEl = document.createElement('p');
             this._metaTitleEl.classList.add("-metadata-title");
-
             this._metaBottomEl = document.createElement('div');
             this._metaBottomEl.classList.add("-metadata-bottom");
-
             this._metaDurationEl = document.createElement('span');
             this._metaDurationEl.classList.add("-metadata-duration");
-
             this._metaIconEl = document.createElement('span');
             this._metaIconEl.classList.add("-metadata-icon");
-
             this._metaDescriptionEl = document.createElement('div');
             this._metaDescriptionEl.classList.add("-metadata-description");
-
             this._metaDescriptionText = document.createElement('p');
-
             this._metaEpisodeEl = document.createElement('span');
             this._metaEpisodeEl.classList.add("-metadata-episode");
-
             this._element.appendChild(this._metaChannelEl);
             this._element.appendChild(this._metaTitleEl);
             this._element.appendChild(this._metaBottomEl);
@@ -4664,7 +4456,6 @@ var Controls;
             aParentEl.appendChild(this._element);
             this._parentEl = aParentEl;
             this._isShown = false;
-
             var imgs = [
                 'icon_reminder.png',
                 'icon_rec.png',
@@ -4685,7 +4476,7 @@ var Controls;
                 'icon_sub.png',
                 'icon_guidance.png',
                 'icon_ad.png',
-                'icon_signed.png'
+                'icon_signed.png',
             ];
             var imageBaseUrl = "../../image/icon/";
             this._imageLoader = new CImageLoader(imageBaseUrl, imgs);
@@ -4698,145 +4489,124 @@ var Controls;
             }
             this._imageLoader.items = null;
         };
-
         CMetaDataDisplayUtil.prototype.hasMetaDataProvider = function () {
             return this._metaDataItem ? true : false;
         };
-
         CMetaDataDisplayUtil.prototype.isShown = function () {
             return this._isShown;
         };
-
         CMetaDataDisplayUtil.prototype.setMetaDataProvider = function (aMetaDataProvider) {
             var i;
             var len;
             var imgElArray;
             imgElArray = this._imageLoader.items;
-
             this._metaDataItem = aMetaDataProvider;
-
             for (len = this._metaIconEl.children.length, i = len - 1; i >= 0; i -= 1) {
                 this._metaIconEl.removeChild(this._metaIconEl.children[i]);
             }
-
             var functionalImg = this._metaDataItem.getFunctionalState();
             if (functionalImg) {
                 this._metaIconEl.appendChild(imgElArray[functionalImg - 1]);
             }
-
             var statusImg = this._metaDataItem.getStatus();
             if (statusImg) {
                 this._metaIconEl.appendChild(imgElArray[statusImg + 2]);
             }
-
             //RestartAvailable or OnDemandAvailable
             if (this._metaDataItem.isRestartAvailable()) {
                 this._metaIconEl.appendChild(imgElArray[8]);
-            } else if (this._metaDataItem.isOnDemandAvailable()) {
+            }
+            else if (this._metaDataItem.isOnDemandAvailable()) {
                 this._metaIconEl.appendChild(imgElArray[9]);
             }
-
             //hasGuidance
             if (this._metaDataItem.hasGuidance()) {
                 this._metaIconEl.appendChild(imgElArray[17]);
             }
-
             //isHDSimulacastAvailable or isHD or is3D
             if (this._metaDataItem.isHDSimulacastAvailable()) {
                 this._metaIconEl.appendChild(imgElArray[12]);
-            } else if (this._metaDataItem.isHD()) {
+            }
+            else if (this._metaDataItem.isHD()) {
                 this._metaIconEl.appendChild(imgElArray[11]);
-            } else if (this._metaDataItem.is3D()) {
+            }
+            else if (this._metaDataItem.is3D()) {
                 this._metaIconEl.appendChild(imgElArray[13]);
             }
-
             //hasSubtitles
             if (this._metaDataItem.hasSubtitles()) {
                 this._metaIconEl.appendChild(imgElArray[16]);
             }
-
             //hasSigned
             if (this._metaDataItem.hasSigned()) {
                 this._metaIconEl.appendChild(imgElArray[19]);
             }
-
             //hasAudioDesc
             if (this._metaDataItem.hasAudioDesc()) {
                 this._metaIconEl.appendChild(imgElArray[18]);
             }
-
             //isPartOfSeries
             if (this._metaDataItem.isPartOfSeries()) {
                 this._metaIconEl.appendChild(imgElArray[10]);
             }
-
             //isAudio5dot1
             if (this._metaDataItem.isAudio5dot1()) {
                 this._metaIconEl.appendChild(imgElArray[15]);
             }
-
             //isPartOfShowcase
             if (this._metaDataItem.isPartOfShowcase()) {
                 this._metaIconEl.appendChild(imgElArray[14]);
             }
         };
-
         CMetaDataDisplayUtil.prototype.show = function () {
             if (this._metaDataItem) {
                 this._element.classList.remove('ext');
                 this._metaBottomEl.appendChild(this._metaIconEl);
                 this._metaChannelEl.innerText = this._metaDataItem.getChannelName();
                 this._metaTitleEl.innerText = this._metaDataItem.getTitle();
-
                 //a._$title.text(String.ellipsis(this._metaDataProvider.getTitle(), 40));
                 this._metaDurationEl.innerText = this._metaDataItem.getDuration();
-
                 /*
-                if (gEngine.isDebugMode()) {
-                a._$debugMsg.html(this._metaDataProvider.getDebugMsg());
-                }
-                */
+                 if (gEngine.isDebugMode()) {
+                 a._$debugMsg.html(this._metaDataProvider.getDebugMsg());
+                 }
+                 */
                 // a._$dayIndicator.text(p.getDayIndicator());
                 this._element.style.display = 'block';
-
                 /*
-                if (this._parentEl.classList.contains('-page-full')) {
-                //a._$notiText.show();
-                }
-                */
+                 if (this._parentEl.classList.contains('-page-full')) {
+                 //a._$notiText.show();
+                 }
+                 */
                 this._isShown = true;
                 return true;
             }
             return false;
         };
-
         CMetaDataDisplayUtil.prototype.showExt = function () {
             if (this._metaDataItem) {
                 var channelName = this._metaDataItem.getChannelName();
                 var title = this._metaDataItem.getTitle();
                 var duration = this._metaDataItem.getDuration();
                 var description = this._metaDataItem.getDescription();
-
                 //description = String.ellipsis(description, 200).replace(/\n/g, "<br />");
                 var seasonEpisodeInfo = this._metaDataItem.getSeasonEpisodeInfo();
                 this._element.classList.add('ext');
                 this._metaChannelEl.innerText = channelName;
                 this._metaTitleEl.innerText = title;
-
                 //a._$title.text(String.ellipsis(title, 40));
                 this._metaDurationEl.innerText = duration;
                 this._element.appendChild(this._metaIconEl);
                 this._element.appendChild(this._metaDescriptionEl);
                 this._metaDescriptionText.innerText = description;
-
                 /*
-                if (gEngine.isDebugMode()) {
-                a._$debugMsg.html(this._metaDataProvider.getDebugMsg());
-                }
-                if (this._parentEl.classList.contains('-page-full')) {
-                a._$notiText.hide();
-                }
-                */
+                 if (gEngine.isDebugMode()) {
+                 a._$debugMsg.html(this._metaDataProvider.getDebugMsg());
+                 }
+                 if (this._parentEl.classList.contains('-page-full')) {
+                 a._$notiText.hide();
+                 }
+                 */
                 //    var t = a._$descriptionText;
                 //    var divh=a._$description.height();
                 //    while (t.outerHeight()>divh) {
@@ -4852,20 +4622,17 @@ var Controls;
             }
             return false;
         };
-
         CMetaDataDisplayUtil.prototype.refreshIcon = function () {
             if (this._metaDataItem) {
                 this._metaIconEl.innerHTML = "";
                 this.setMetaDataProvider(this._metaDataItem);
             }
         };
-
         CMetaDataDisplayUtil.prototype.refreshDuration = function () {
             if (this._metaDataItem) {
                 this._metaDurationEl.innerText = this._metaDataItem.getDuration();
             }
         };
-
         CMetaDataDisplayUtil.prototype.hide = function () {
             this._metaChannelEl.innerText = '';
             this._metaTitleEl.innerText = '';
@@ -4879,7 +4646,6 @@ var Controls;
         return CMetaDataDisplayUtil;
     })();
     Controls.CMetaDataDisplayUtil = CMetaDataDisplayUtil;
-
     var CPasswordControl = (function (_super) {
         __extends(CPasswordControl, _super);
         function CPasswordControl(aElement, aCount) {
@@ -4888,14 +4654,12 @@ var Controls;
             this._passwordNos = [];
             this._element = aElement;
             this._element.classList.add(KClassFocusable);
-
             var i;
             this._count = aCount;
             for (i = 0; i < this._count; i += 1) {
                 var _passwordNode = document.createElement('div');
                 _passwordNode.classList.add('-password-no');
                 _passwordNode.classList.add(KClassFocusable);
-
                 if (i === 0) {
                     _passwordNode.classList.add(KClassActiveFocusedLeaf);
                 }
@@ -4908,10 +4672,8 @@ var Controls;
         CPasswordControl.prototype.setClassName = function (aString) {
             this._element.classList.add(aString);
         };
-
         CPasswordControl.prototype._isValid = function () {
             var i;
-
             for (i = 0; i < this._count; i += 1) {
                 if (this._passwordNos[i] == -1) {
                     return false;
@@ -4919,10 +4681,8 @@ var Controls;
             }
             return true;
         };
-
         CPasswordControl.prototype.clear = function () {
             var i;
-
             for (i = 0; i < this._count; i += 1) {
                 clearTimeout(this['_hideTimer' + i]);
                 this._passwordNodes[i].classList.remove(KClassActiveFocusedLeaf);
@@ -4931,10 +4691,8 @@ var Controls;
             }
             this._passwordNodes[0].classList.add(KClassActiveFocusedLeaf);
         };
-
         CPasswordControl.prototype.getPassword = function () {
             var ret = '', i;
-
             if (this._isValid()) {
                 for (i = 0; i < this._count; i += 1) {
                     ret += this._passwordNos[i];
@@ -4942,10 +4700,8 @@ var Controls;
             }
             return ret;
         };
-
         CPasswordControl.prototype.doKeyRight = function () {
             var i;
-
             for (i = 0; i < this._count; i += 1) {
                 if (this._passwordNodes[i].classList.contains(KClassActiveFocusedLeaf)) {
                     if (this._passwordNodes[i].innerText.length) {
@@ -4956,16 +4712,12 @@ var Controls;
             return false;
             //return true;
         };
-
         CPasswordControl.prototype.doKeyNumber = function (aNum) {
             var i;
-
             for (i = 0; i < this._count; i += 1) {
                 if (this._passwordNodes[i].classList.contains(KClassActiveFocusedLeaf)) {
                     this._passwordNos[i] = aNum;
-
                     clearTimeout(this['_hideTimer' + i]);
-
                     break;
                 }
             }
@@ -4974,7 +4726,6 @@ var Controls;
         return CPasswordControl;
     })(CControl);
     Controls.CPasswordControl = CPasswordControl;
-
     var CButton = (function (_super) {
         __extends(CButton, _super);
         function CButton(aElement) {
@@ -4987,31 +4738,28 @@ var Controls;
                 this._handler();
             }
         };
-
         CButton.prototype.setClassName = function (aString) {
             this._element.classList.add(aString);
         };
-
         CButton.prototype.setActive = function (aActive) {
             if (aActive) {
                 this._element.classList.remove('-inactive');
-            } else {
+            }
+            else {
                 this._element.classList.add('-inactive');
             }
         };
-
         CButton.prototype.getActive = function () {
             if (this._element.classList.contains('-inactive')) {
                 return false;
-            } else {
+            }
+            else {
                 return true;
             }
         };
-
         CButton.prototype.setButtonText = function (aText) {
             this._element.innerText = aText;
         };
-
         CButton.prototype.setOkHandler = function (aHandler) {
             this._handler = aHandler;
         };

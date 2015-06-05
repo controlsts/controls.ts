@@ -2853,11 +2853,6 @@ module Controls {
         _setActiveFocus(aFocus: boolean) {
             var focusedChild: CControl;
             if (this.isFocusable()) {
-                if (aFocus) {
-                    this._element.classList.add(KClassFocused);
-                } else {
-                    this._element.classList.remove(KClassFocused);
-                }
                 focusedChild = this.getFocusedChild();
                 focusedChild._setActiveFocus(aFocus);
             }

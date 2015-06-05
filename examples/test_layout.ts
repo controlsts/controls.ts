@@ -6,6 +6,7 @@ module App {
     status.setItemDrawers([
         function (aElement: HTMLElement, aIndex: number) {
             aElement.id = "-status";
+            aElement.innerText = "-status";
             return Controls.TFocusInfo.KFocusAble;
         },
     ]);
@@ -14,6 +15,7 @@ module App {
     menuUpper.setItemDrawers([
         function (aElement: HTMLElement, aIndex: number) {
             aElement.id = "-menu-upper-item1";
+            aElement.innerText = "-menu-upper-item1";
             return Controls.TFocusInfo.KFocusAble;
         },
     ]);
@@ -22,6 +24,7 @@ module App {
     menuLower.setItemDrawers([
         function (aElement: HTMLElement, aIndex: number) {
             aElement.id = "-menu-lower-item1";
+            aElement.innerText = "-menu-lower-item1";
             return Controls.TFocusInfo.KFocusAble;
         },
     ]);
@@ -30,6 +33,7 @@ module App {
     content1.setItemDrawers([
         function (aElement: HTMLElement, aIndex: number) {
             aElement.id = "-content1-item1";
+            aElement.innerHTML = "-content1-item1";
             return Controls.TFocusInfo.KFocusAble;
         },
     ]);
@@ -38,6 +42,7 @@ module App {
     content2.setItemDrawers([
         function (aElement: HTMLElement, aIndex: number) {
             aElement.id = "-content2-item1";
+            aElement.innerHTML = "-content2-item1";
             return Controls.TFocusInfo.KFocusAble;
         },
     ]);
@@ -47,6 +52,7 @@ module App {
     lcHorizontal.setItemDrawers([
         function (aElement: HTMLElement, aIndex: number) {
             aElement.id = "-h-item1";
+            aElement.innerText = "-h-item1";
             return Controls.TFocusInfo.KFocusAble;
         },
     ]);
@@ -71,5 +77,13 @@ module App {
     lcgRoot.setOwnedChildControls([status, lcgHorizontal]);
     lcgRoot.draw();
     lcgRoot.setActiveFocus();
+
+    document.body.addEventListener('keydown', function(e) {
+        var handled = lcgRoot.doKey(e['keyIdentifier']);
+        if (handled) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
+    });
 
 }
