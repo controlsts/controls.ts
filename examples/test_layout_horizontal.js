@@ -1,128 +1,112 @@
-
 /// <reference path="../controls.ts"/>
-
-module App {
-
-    var itemDrawers: Controls.FItemDrawer[] = [
-        function (aEl: HTMLElement, aIndex: number) {
+var App;
+(function (App) {
+    var itemDrawers = [
+        function (aEl, aIndex) {
             aEl.classList.add("-item-" + aIndex);
-            return Controls.TFocusInfo.KFocusAble;
+            return 2 /* KFocusAble */;
         },
-        function (aEl: HTMLElement, aIndex: number) {
+        function (aEl, aIndex) {
             aEl.classList.add("-item-1");
-            return Controls.TFocusInfo.KFocusAble;
+            return 2 /* KFocusAble */;
         },
-        function (aEl: HTMLElement, aIndex: number) {
+        function (aEl, aIndex) {
             aEl.classList.add("-item-2");
-            return Controls.TFocusInfo.KFocusAble;
+            return 2 /* KFocusAble */;
         },
-        function (aEl: HTMLElement, aIndex: number) {
+        function (aEl, aIndex) {
             aEl.classList.add("-item-3");
-            return Controls.TFocusInfo.KFocusAble;
+            return 2 /* KFocusAble */;
         },
-        function (aEl: HTMLElement, aIndex: number) {
+        function (aEl, aIndex) {
             aEl.classList.add("-item-4");
-            return Controls.TFocusInfo.KFocusAble;
+            return 2 /* KFocusAble */;
         },
     ];
-
-    var child: Controls.CControl[] = [];
+    var child = [];
     var padding = 4;
     var margines = [10];
-
-    var lay1: Controls.CLayoutControl;
+    var lay1;
     lay1 = new Controls.CLayoutControl(null);
-    lay1.setOrientation(Controls.TParamOrientation.EHorizontal);
+    lay1.setOrientation(2 /* EHorizontal */);
     lay1.setItemDrawers(itemDrawers);
     lay1.setPadding(padding);
     lay1.setMargins(margines);
     child.push(lay1);
-
     lay1 = new Controls.CLayoutControl(null);
-    lay1.setOrientation(Controls.TParamOrientation.EHorizontal);
+    lay1.setOrientation(2 /* EHorizontal */);
     lay1.setItemDrawers(itemDrawers);
     lay1.setPadding(padding);
     lay1.setMargins(margines);
-    lay1.setChildHAlign(Controls.TParamHAlign.ECenter);
+    lay1.setChildHAlign(2 /* ECenter */);
     child.push(lay1);
-
     lay1 = new Controls.CLayoutControl(null);
-    lay1.setOrientation(Controls.TParamOrientation.EHorizontal);
+    lay1.setOrientation(2 /* EHorizontal */);
     lay1.setItemDrawers(itemDrawers);
     lay1.setPadding(padding);
     lay1.setMargins(margines);
-    lay1.setChildHAlign(Controls.TParamHAlign.ERight);
+    lay1.setChildHAlign(3 /* ERight */);
     child.push(lay1);
-
     lay1 = new Controls.CLayoutControl(null);
-    lay1.setOrientation(Controls.TParamOrientation.EHorizontal);
+    lay1.setOrientation(2 /* EHorizontal */);
     lay1.setItemDrawers(itemDrawers);
     lay1.setPadding(padding);
     lay1.setMargins(margines);
-    lay1.setChildVAlign(Controls.TParamVAlign.ECenter);
+    lay1.setChildVAlign(2 /* ECenter */);
     child.push(lay1);
-
     lay1 = new Controls.CLayoutControl(null);
-    lay1.setOrientation(Controls.TParamOrientation.EHorizontal);
+    lay1.setOrientation(2 /* EHorizontal */);
     lay1.setItemDrawers(itemDrawers);
     lay1.setPadding(padding);
     lay1.setMargins(margines);
-    lay1.setChildVAlign(Controls.TParamVAlign.ECenter);
-    lay1.setChildHAlign(Controls.TParamHAlign.ECenter);
+    lay1.setChildVAlign(2 /* ECenter */);
+    lay1.setChildHAlign(2 /* ECenter */);
     child.push(lay1);
-
     lay1 = new Controls.CLayoutControl(null);
-    lay1.setOrientation(Controls.TParamOrientation.EHorizontal);
+    lay1.setOrientation(2 /* EHorizontal */);
     lay1.setItemDrawers(itemDrawers);
     lay1.setPadding(padding);
     lay1.setMargins(margines);
-    lay1.setChildVAlign(Controls.TParamVAlign.ECenter);
-    lay1.setChildHAlign(Controls.TParamHAlign.ERight);
+    lay1.setChildVAlign(2 /* ECenter */);
+    lay1.setChildHAlign(3 /* ERight */);
     child.push(lay1);
-
     lay1 = new Controls.CLayoutControl(null);
-    lay1.setOrientation(Controls.TParamOrientation.EHorizontal);
+    lay1.setOrientation(2 /* EHorizontal */);
     lay1.setItemDrawers(itemDrawers);
     lay1.setPadding(padding);
     lay1.setMargins(margines);
-    lay1.setChildVAlign(Controls.TParamVAlign.EBottom);
+    lay1.setChildVAlign(3 /* EBottom */);
     child.push(lay1);
-
     lay1 = new Controls.CLayoutControl(null);
-    lay1.setOrientation(Controls.TParamOrientation.EHorizontal);
+    lay1.setOrientation(2 /* EHorizontal */);
     lay1.setItemDrawers(itemDrawers);
     lay1.setPadding(padding);
     lay1.setMargins(margines);
-    lay1.setChildVAlign(Controls.TParamVAlign.EBottom);
-    lay1.setChildHAlign(Controls.TParamHAlign.ECenter);
+    lay1.setChildVAlign(3 /* EBottom */);
+    lay1.setChildHAlign(2 /* ECenter */);
     child.push(lay1);
-
     lay1 = new Controls.CLayoutControl(null);
-    lay1.setOrientation(Controls.TParamOrientation.EHorizontal);
+    lay1.setOrientation(2 /* EHorizontal */);
     lay1.setItemDrawers(itemDrawers);
     lay1.setPadding(padding);
     lay1.setMargins(margines);
-    lay1.setChildVAlign(Controls.TParamVAlign.EBottom);
-    lay1.setChildHAlign(Controls.TParamHAlign.ERight);
+    lay1.setChildVAlign(3 /* EBottom */);
+    lay1.setChildHAlign(3 /* ERight */);
     child.push(lay1);
-
     var el = document.createElement("div");
     document.body.appendChild(el);
     var root = new Controls.CLayoutGroupControl(el);
-    root.setOrientation(Controls.TParamOrientation.EHorizontal);
+    root.setOrientation(2 /* EHorizontal */);
     root.setOwnedChildControls(child);
     root.setPadding(2);
     root.draw();
     root.setActiveFocus();
-
-    document.body.addEventListener('keydown', function(e) {
+    document.body.addEventListener('keydown', function (e) {
         var handled = root.doKey(e['keyIdentifier']);
         if (handled) {
             e.stopPropagation();
             e.preventDefault();
         }
     });
-
-
-}
-
+})(App || (App = {}));
+//# sourceMappingURL=test_layout_horizontal.js.map
