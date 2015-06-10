@@ -1,11 +1,9 @@
-
 /// <reference path="../controls.ts"/>
 
-module App {
-
-    var itemDrawers: Controls.FItemDrawer[] = [
+module gApp {
+    var itemDrawers = [
         function (aEl: HTMLElement, aIndex: number) {
-            aEl.classList.add("-item-" + aIndex);
+            aEl.classList.add("-item-0");
             return Controls.TFocusInfo.KFocusAble;
         },
         function (aEl: HTMLElement, aIndex: number) {
@@ -32,14 +30,12 @@ module App {
 
     var lay1: Controls.CLayoutControl;
     lay1 = new Controls.CLayoutControl(null);
-    lay1.setOrientation(Controls.TParamOrientation.EHorizontal);
     lay1.setItemDrawers(itemDrawers);
     lay1.setPadding(padding);
     lay1.setMargins(margines);
     child.push(lay1);
 
     lay1 = new Controls.CLayoutControl(null);
-    lay1.setOrientation(Controls.TParamOrientation.EHorizontal);
     lay1.setItemDrawers(itemDrawers);
     lay1.setPadding(padding);
     lay1.setMargins(margines);
@@ -47,7 +43,6 @@ module App {
     child.push(lay1);
 
     lay1 = new Controls.CLayoutControl(null);
-    lay1.setOrientation(Controls.TParamOrientation.EHorizontal);
     lay1.setItemDrawers(itemDrawers);
     lay1.setPadding(padding);
     lay1.setMargins(margines);
@@ -55,7 +50,6 @@ module App {
     child.push(lay1);
 
     lay1 = new Controls.CLayoutControl(null);
-    lay1.setOrientation(Controls.TParamOrientation.EHorizontal);
     lay1.setItemDrawers(itemDrawers);
     lay1.setPadding(padding);
     lay1.setMargins(margines);
@@ -63,7 +57,6 @@ module App {
     child.push(lay1);
 
     lay1 = new Controls.CLayoutControl(null);
-    lay1.setOrientation(Controls.TParamOrientation.EHorizontal);
     lay1.setItemDrawers(itemDrawers);
     lay1.setPadding(padding);
     lay1.setMargins(margines);
@@ -72,7 +65,6 @@ module App {
     child.push(lay1);
 
     lay1 = new Controls.CLayoutControl(null);
-    lay1.setOrientation(Controls.TParamOrientation.EHorizontal);
     lay1.setItemDrawers(itemDrawers);
     lay1.setPadding(padding);
     lay1.setMargins(margines);
@@ -81,7 +73,6 @@ module App {
     child.push(lay1);
 
     lay1 = new Controls.CLayoutControl(null);
-    lay1.setOrientation(Controls.TParamOrientation.EHorizontal);
     lay1.setItemDrawers(itemDrawers);
     lay1.setPadding(padding);
     lay1.setMargins(margines);
@@ -89,7 +80,6 @@ module App {
     child.push(lay1);
 
     lay1 = new Controls.CLayoutControl(null);
-    lay1.setOrientation(Controls.TParamOrientation.EHorizontal);
     lay1.setItemDrawers(itemDrawers);
     lay1.setPadding(padding);
     lay1.setMargins(margines);
@@ -98,7 +88,6 @@ module App {
     child.push(lay1);
 
     lay1 = new Controls.CLayoutControl(null);
-    lay1.setOrientation(Controls.TParamOrientation.EHorizontal);
     lay1.setItemDrawers(itemDrawers);
     lay1.setPadding(padding);
     lay1.setMargins(margines);
@@ -109,7 +98,6 @@ module App {
     var el = document.createElement("div");
     document.body.appendChild(el);
     var root = new Controls.CLayoutGroupControl(el);
-    root.setOrientation(Controls.TParamOrientation.EHorizontal);
     root.setOwnedChildControls(child);
     root.setPadding(2);
     root.draw();
@@ -122,5 +110,5 @@ module App {
             e.preventDefault();
         }
     });
-}
 
+}
