@@ -1,0 +1,22 @@
+body {
+  margin: 0;
+}
+#-root {
+  width: 100%;
+  height: 100%;
+}
+#-root .-f {
+  border: 1px dashed blue;
+  box-sizing: border-box;
+}
+#-root .-afd-leaf {
+  border: 1px solid red;
+}
+#-root #-status {
+  width: 400px;
+  height: 50px;
+}
+#-root #-test-content {
+  width: 1000px;
+  height: 600px;
+}

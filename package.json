@@ -1,0 +1,26 @@
+{
+  "name": "controls.ts",
+  "version": "1.0.0",
+  "description": "TypeScript based UI framework. Specialized in key event processing & optimized drawing for low end clients.",
+  "main": "controls.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/controlsts/controls.ts.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/controlsts/controls.ts/issues"
+  },
+  "homepage": "https://github.com/controlsts/controls.ts",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-less": "^3.0.3"
+  }
+}
