@@ -1182,12 +1182,14 @@ module Controls {
             }
         }
 
+        _drawn: boolean;
         draw(aRect?: TRect) {
             aRect = aRect || null;
             var keepFocus = this.getKeepFocus();
             var param = this._prepareParam();
             var drawnElements: HTMLElement[];
             drawnElements = this._doDraw(aRect, param);
+            this._drawn = true;
             this._clearVolitile();
             this._makeKeyMap(drawnElements, false, keepFocus);
             this._saveFocusInfo();
@@ -1200,6 +1202,11 @@ module Controls {
 
         _keyMapBuilder: FKeyMapBuilder;
         _makeKeyMap(drawnElements: HTMLElement[], aUpdateFocusInfo: boolean, aKeepFocus: boolean): void {
+
+            if (!this._drawn) {
+                return;
+            }
+
             if (aUpdateFocusInfo) {
                 this._saveFocusInfo();
             }
@@ -3355,6 +3362,13 @@ module Controls {
             this._listDataControl.removeItems(index);
         }
 
+        /**
+         * slot for item insert signal
+         *
+         * @param drawnElements inserted drawn items
+         * @param aNeedFocus
+         * @private
+         */
         private _slItemInserted(drawnElements: CDrawnElements, aNeedFocus?: boolean) {
             var rect = this.getSize();
             var height = this._listDataControl.getItemHeight();
@@ -3372,7 +3386,9 @@ module Controls {
 
             for (; cut > 0; cut--) {
                 removeEl = drawnElements.pickElement('' + (count - cut));
-                Util.remove(removeEl);
+                if (removeEl) {
+                    Util.remove(removeEl);
+                }
             }
             this._listDataControl._makeKeyMap(drawnElements.getElements(), false, false);
             if (aNeedFocus) {

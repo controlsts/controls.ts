@@ -1050,6 +1050,7 @@ var Controls;
             var param = this._prepareParam();
             var drawnElements;
             drawnElements = this._doDraw(aRect, param);
+            this._drawn = true;
             this._clearVolitile();
             this._makeKeyMap(drawnElements, false, keepFocus);
             this._saveFocusInfo();
@@ -1060,6 +1061,9 @@ var Controls;
         };
         CControl.prototype._makeKeyMap = function (drawnElements, aUpdateFocusInfo, aKeepFocus) {
             var _this = this;
+            if (!this._drawn) {
+                return;
+            }
             if (aUpdateFocusInfo) {
                 this._saveFocusInfo();
             }
@@ -2978,6 +2982,13 @@ var Controls;
         CListControl.prototype.removeItems = function (index) {
             this._listDataControl.removeItems(index);
         };
+        /**
+         * slot for item insert signal
+         *
+         * @param drawnElements inserted drawn items
+         * @param aNeedFocus
+         * @private
+         */
         CListControl.prototype._slItemInserted = function (drawnElements, aNeedFocus) {
             var rect = this.getSize();
             var height = this._listDataControl.getItemHeight();
@@ -2994,7 +3005,9 @@ var Controls;
             }
             for (; cut > 0; cut--) {
                 removeEl = drawnElements.pickElement('' + (count - cut));
-                Util.remove(removeEl);
+                if (removeEl) {
+                    Util.remove(removeEl);
+                }
             }
             this._listDataControl._makeKeyMap(drawnElements.getElements(), false, false);
             if (aNeedFocus) {
