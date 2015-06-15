@@ -1757,9 +1757,9 @@ module Controls {
             return 0;
         }
 
-        insertItems(aKey: any, aItems: any[]) {
-            this._doInsertItems(aKey, aItems);
-            this.emit("ItemInserted", aKey, aItems);
+        insertItem(aKey: any, aItem: any) {
+            this._doInsertItems(aKey, aItem);
+            this.emit("ItemInserted", aKey, aItem);
         }
         /*protected*/ _doInsertItems(aKey: any, aItem: any[]): void {
 
@@ -2198,22 +2198,13 @@ module Controls {
             return focusableElements;
         }
         prependItem(aItem: any) {
-            this._ownedDataProvider.insertItems(0, [aItem]);
-        }
-        prependItems(aItems: any[]) {
-            this._ownedDataProvider.insertItems(0, aItems);
+            this._ownedDataProvider.insertItem(0, aItem);
         }
         insertItem(position: number, aItem: any) {
-            this._ownedDataProvider.insertItems(position, [aItem]);
-        }
-        insertItems(position: number, aItems: any[]) {
-            this._ownedDataProvider.insertItems(position, aItems);
+            this._ownedDataProvider.insertItem(position, aItem);
         }
         appendItem(aItem: any) {
-            this._ownedDataProvider.insertItems(this._ownedDataProvider.getLength(), aItem);
-        }
-        appendItems(aItems: any[]) {
-            this._ownedDataProvider.insertItems(this._ownedDataProvider.getLength(), aItems);
+            this._ownedDataProvider.insertItem(this._ownedDataProvider.getLength(), aItem);
         }
         removeItem(index: number) {
             this._ownedDataProvider.removeItems([index]);
@@ -3338,22 +3329,13 @@ module Controls {
             this._listDataControl.setRedrawAfterOperation(aRedraw);
         }
         prependItem(aItem: any) {
-            this._listDataControl.insertItems(0, [aItem]);
-        }
-        prependItems(aItems: any[]) {
-            this._listDataControl.insertItems(0, aItems);
+            this._listDataControl.insertItem(0, aItem);
         }
         insertItem(position: number, aItem: any) {
-            this._listDataControl.insertItems(position, [aItem]);
-        }
-        insertItems(position: number, aItems: any[]) {
-            this._listDataControl.insertItems(position, aItems);
+            this._listDataControl.insertItem(position, [aItem]);
         }
         appendItem(aItem: any) {
             this._listDataControl.appendItem(aItem);
-        }
-        appendItems(aItems: any[]) {
-            this._listDataControl.appendItems(aItems);
         }
         removeItem(index: number) {
             this._listDataControl.removeItems([index]);

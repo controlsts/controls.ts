@@ -1559,9 +1559,9 @@ var Controls;
             throw "not implemented";
             return 0;
         };
-        CDataProvider.prototype.insertItems = function (aKey, aItems) {
-            this._doInsertItems(aKey, aItems);
-            this.emit("ItemInserted", aKey, aItems);
+        CDataProvider.prototype.insertItem = function (aKey, aItem) {
+            this._doInsertItems(aKey, aItem);
+            this.emit("ItemInserted", aKey, aItem);
         };
         /*protected*/ CDataProvider.prototype._doInsertItems = function (aKey, aItem) {
         };
@@ -1964,22 +1964,13 @@ var Controls;
             return focusableElements;
         };
         CListDataControl.prototype.prependItem = function (aItem) {
-            this._ownedDataProvider.insertItems(0, [aItem]);
-        };
-        CListDataControl.prototype.prependItems = function (aItems) {
-            this._ownedDataProvider.insertItems(0, aItems);
+            this._ownedDataProvider.insertItem(0, aItem);
         };
         CListDataControl.prototype.insertItem = function (position, aItem) {
-            this._ownedDataProvider.insertItems(position, [aItem]);
-        };
-        CListDataControl.prototype.insertItems = function (position, aItems) {
-            this._ownedDataProvider.insertItems(position, aItems);
+            this._ownedDataProvider.insertItem(position, aItem);
         };
         CListDataControl.prototype.appendItem = function (aItem) {
-            this._ownedDataProvider.insertItems(this._ownedDataProvider.getLength(), aItem);
-        };
-        CListDataControl.prototype.appendItems = function (aItems) {
-            this._ownedDataProvider.insertItems(this._ownedDataProvider.getLength(), aItems);
+            this._ownedDataProvider.insertItem(this._ownedDataProvider.getLength(), aItem);
         };
         CListDataControl.prototype.removeItem = function (index) {
             this._ownedDataProvider.removeItems([index]);
@@ -2959,22 +2950,13 @@ var Controls;
             this._listDataControl.setRedrawAfterOperation(aRedraw);
         };
         CListControl.prototype.prependItem = function (aItem) {
-            this._listDataControl.insertItems(0, [aItem]);
-        };
-        CListControl.prototype.prependItems = function (aItems) {
-            this._listDataControl.insertItems(0, aItems);
+            this._listDataControl.insertItem(0, aItem);
         };
         CListControl.prototype.insertItem = function (position, aItem) {
-            this._listDataControl.insertItems(position, [aItem]);
-        };
-        CListControl.prototype.insertItems = function (position, aItems) {
-            this._listDataControl.insertItems(position, aItems);
+            this._listDataControl.insertItem(position, [aItem]);
         };
         CListControl.prototype.appendItem = function (aItem) {
             this._listDataControl.appendItem(aItem);
-        };
-        CListControl.prototype.appendItems = function (aItems) {
-            this._listDataControl.appendItems(aItems);
         };
         CListControl.prototype.removeItem = function (index) {
             this._listDataControl.removeItems([index]);

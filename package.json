@@ -20,7 +20,10 @@
   },
   "homepage": "https://github.com/controlsts/controls.ts",
   "devDependencies": {
+    "browser-sync": "^2.7.10",
     "gulp": "^3.9.0",
-    "gulp-less": "^3.0.3"
+    "gulp-less": "^3.0.3",
+    "gulp-livereload": "^3.8.0",
+    "gulp-watch": "^4.2.4"
   }
 }

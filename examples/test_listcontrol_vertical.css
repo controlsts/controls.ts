@@ -8,7 +8,7 @@ body .-afd-leaf {
 body #-focus-info {
   width: 300px;
   height: 50px;
-  font-size: 30px;
+  font-size: 12px;
 }
 body .-group.-view {
   background-color: black;
@@ -17,7 +17,8 @@ body .-group.-view {
 }
 body .-group.-view .txtSmall {
   width: 200px;
-  height: 40px;
+  height: 50px;
   background-color: blue;
-  font-size: 30px;
+  font-size: 20px;
+  color: white;
 }

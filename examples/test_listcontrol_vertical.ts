@@ -31,54 +31,75 @@ module gApp {
     list.connectItemSelected(dummy, "_slItemSelected", dummy._slItemSelected);
     list.setRedrawAfterOperation(true);
     list.setDataDrawer(function (aKey:any, aItem:any, aEl:HTMLElement) {
-        if (aItem.type == "txtSmall") {
-            aEl.classList.add("txtSmall");
-            aEl.style.opacity = '.5';
-            aEl.innerText = aKey + ": " + aItem.text;
-        }
+        aEl.classList.add(aItem.type);
+        aEl.style.opacity = '.5';
+        aEl.innerText = aKey + ": " + aItem.text;
         return Controls.TFocusInfo.KFocusAble;
     });
 
     var root = new Controls.CLayoutGroupControl(document.body);
-    root.setOwnedChildControls([focus, list]);
+    root.setOrientation(Controls.TParamOrientation.EHorizontal);
+    root.setOwnedChildControls([list, focus]);
     root.draw();
     root.setActiveFocus();
 
     list.appendItem({
         type: 'txtSmall',
-        text: 'Small text!'
+        text: 'Small 1 text!'
     });
 
-    list.appendItems([{
+    list.appendItem({
         type: 'txtSmall',
-        text: 'Small2 text@'
+        text: 'Small 2 text@'
+    });
+
+    list.appendItem({
+        type: 'txtSmall',
+        text: 'Small 3 text@'
+    });
+
+    list.prependItem([{
+        type: 'txtSmall',
+        text: 'Prepended'
     }]);
 
     setTimeout(function () {
         list.prependItem({
             type: 'txtSmall',
-            text: 'test'
+            text: '1 sec'
         })
     }, 1000);
 
     setTimeout(function () {
         list.insertItem(3, {
-            type: 'textSmall',
-            text: 'timeout'
+            type: 'txtSmall',
+            text: '2 sec'
         });
     }, 2000);
 
     setTimeout(function () {
         list.appendItem({
             type: 'txtSmall',
-            text: 'test2'
+            text: '5 sec'
         })
     }, 5000);
 
     document.body.addEventListener('keydown', function (e) {
-        var handled = root.doKey(e['keyIdentifier']);
-        e.stopPropagation();
-        e.preventDefault();
+        var keyStr = e['keyIdentifier'];
+        var handled = root.doKey(keyStr);
+        console.log(handled);
+
+        var skip = {
+            'Up': true,
+            'Down': true,
+            'Left': true,
+            'Right': true
+        };
+
+        if (skip[keyStr]) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
     });
 
 }
