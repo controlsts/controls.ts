@@ -895,7 +895,7 @@ module Controls {
             this._element = aElement || document.createElement("div");
             this._element.style.position = "absolute";
             this._element.classList.add(className || KClassControl);
-            this.registerSignal(["FocusChanged", "FocusGained", "FocusLost", "ItemSelected"]);
+            this.registerSignal(["FocusChanged", "FocusGained", "FocusLost", "ItemSelected", "RedrawRequired"]);
         }
 
         destroy() {
@@ -1195,7 +1195,7 @@ module Controls {
             this._saveFocusInfo();
         }
 
-        /*protected*/ _doDraw(aRect: TRect, aDrawParam: { [key: string]: any; }): HTMLElement[] {
+        protected _doDraw(aRect: TRect, aDrawParam: { [key: string]: any; }): HTMLElement[] {
             var ret: HTMLElement[];
             return ret;
         }
@@ -1292,6 +1292,12 @@ module Controls {
         }
         connectItemRemoved(aHolder: any, aSlotName: string, aSlot: FItemRemoved) {
             this.connect("ItemRemoved", aHolder, aSlotName);
+        }
+        connectRedrawRequired(aHolder: any, aSlotName: string, aSlot: () => void) {
+            this.connect("RedrawRequired", aHolder, aSlotName);
+        }
+        protected _emitRedrawRequired() {
+            this.emit.call(this, "RedrawRequired", this);
         }
 
         // Utilities
@@ -1998,6 +2004,7 @@ module Controls {
                 drawnElements.setElement(aKey, fnCreateElement());
                 this.doItemInserted(aKey, aItems, needFocus);
             }
+            this._emitRedrawRequired();
         }
 
         private _slItemRemoved(aKeys: any[]) {
@@ -2124,8 +2131,8 @@ module Controls {
             var horizontal: boolean = (this._getDrawParam(KParamStrOrientation) === TParamOrientation.EHorizontal);
             var count = this._ownedDataProvider ? this._ownedDataProvider.getLength() : 0;
             if (this._bDataRolling) {
-                var w = horizontal ? 999999 : itemWidth;
-                var h = horizontal ? itemHeight : 999999;
+                var w = horizontal ? Number.MAX_VALUE : itemWidth;
+                var h = horizontal ? itemHeight : Number.MAX_VALUE;
             } else {
                 var w = horizontal ? itemWidth * count : itemWidth;
                 var h = horizontal ? itemHeight : itemHeight * count;
@@ -3084,7 +3091,18 @@ module Controls {
                 throw "just single child supported";
             }
             this._targetChild = aChildControls[0];
+            aChildControls.forEach((c) => {
+                c.connectRedrawRequired(this, "_slRedrawRequired", this._slRedrawRequired);
+            });
             super.setOwnedChildControls(aChildControls);
+        }
+
+        private _redrawTimer;
+        protected _slRedrawRequired() {
+            clearTimeout(this._redrawTimer);
+            this._redrawTimer = setTimeout(() => {
+                this.draw();
+            }, 0);
         }
 
         setScrollScheme(aScheme: TParamScrollScheme, aFixedScrollUnit?: number) {

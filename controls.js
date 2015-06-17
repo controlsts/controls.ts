@@ -787,7 +787,7 @@ var Controls;
             this._element = aElement || document.createElement("div");
             this._element.style.position = "absolute";
             this._element.classList.add(className || KClassControl);
-            this.registerSignal(["FocusChanged", "FocusGained", "FocusLost", "ItemSelected"]);
+            this.registerSignal(["FocusChanged", "FocusGained", "FocusLost", "ItemSelected", "RedrawRequired"]);
         }
         CControl.prototype.destroy = function () {
             _super.prototype.destroy.call(this);
@@ -1055,7 +1055,7 @@ var Controls;
             this._makeKeyMap(drawnElements, false, keepFocus);
             this._saveFocusInfo();
         };
-        /*protected*/ CControl.prototype._doDraw = function (aRect, aDrawParam) {
+        CControl.prototype._doDraw = function (aRect, aDrawParam) {
             var ret;
             return ret;
         };
@@ -1142,6 +1142,12 @@ var Controls;
         };
         CControl.prototype.connectItemRemoved = function (aHolder, aSlotName, aSlot) {
             this.connect("ItemRemoved", aHolder, aSlotName);
+        };
+        CControl.prototype.connectRedrawRequired = function (aHolder, aSlotName, aSlot) {
+            this.connect("RedrawRequired", aHolder, aSlotName);
+        };
+        CControl.prototype._emitRedrawRequired = function () {
+            this.emit.call(this, "RedrawRequired", this);
         };
         // Utilities
         CControl.prototype.isFocusable = function () {
@@ -1765,6 +1771,7 @@ var Controls;
                 drawnElements.setElement(aKey, fnCreateElement());
                 this.doItemInserted(aKey, aItems, needFocus);
             }
+            this._emitRedrawRequired();
         };
         CDataControl.prototype._slItemRemoved = function (aKeys) {
             //TODO implement
@@ -1883,8 +1890,8 @@ var Controls;
             var horizontal = (this._getDrawParam(KParamStrOrientation) === 2 /* EHorizontal */);
             var count = this._ownedDataProvider ? this._ownedDataProvider.getLength() : 0;
             if (this._bDataRolling) {
-                var w = horizontal ? 999999 : itemWidth;
-                var h = horizontal ? itemHeight : 999999;
+                var w = horizontal ? Number.MAX_VALUE : itemWidth;
+                var h = horizontal ? itemHeight : Number.MAX_VALUE;
             }
             else {
                 var w = horizontal ? itemWidth * count : itemWidth;
@@ -2701,11 +2708,22 @@ var Controls;
             this._keyMapBuilder = Controls.KBuilderTopDown;
         }
         CViewGroupControl.prototype.setOwnedChildControls = function (aChildControls) {
+            var _this = this;
             if (aChildControls.length != 1) {
                 throw "just single child supported";
             }
             this._targetChild = aChildControls[0];
+            aChildControls.forEach(function (c) {
+                c.connectRedrawRequired(_this, "_slRedrawRequired", _this._slRedrawRequired);
+            });
             _super.prototype.setOwnedChildControls.call(this, aChildControls);
+        };
+        CViewGroupControl.prototype._slRedrawRequired = function () {
+            var _this = this;
+            clearTimeout(this._redrawTimer);
+            this._redrawTimer = setTimeout(function () {
+                _this.draw();
+            }, 0);
         };
         CViewGroupControl.prototype.setScrollScheme = function (aScheme, aFixedScrollUnit) {
             _super.prototype.setScrollScheme.call(this, aScheme, aFixedScrollUnit);
