@@ -1698,6 +1698,23 @@ module Controls {
         setElement(aKey: any, aItem: HTMLElement) {
             this._drawnElements[aKey] = aItem;
         }
+
+        /**
+         * Get key from drawn element
+         * @param aItem
+         * @returns {string|any}
+         */
+        getKey(aItem: HTMLElement) {
+            var keys = Object.keys(this._drawnElements);
+            var i, len = keys.length, k, el;
+            for (i=0; i<len; i++) {
+                k = keys[i];
+                el = this._drawnElements[k];
+                if (aItem === el) {
+                    return k;
+                }
+            }
+        }
         pickElement(aKey: any): HTMLElement {
             var ret: HTMLElement = null;
             if (this._drawnElements.hasOwnProperty(aKey)) {
@@ -1853,7 +1870,8 @@ module Controls {
     }
 
     export interface FFocusedDataItemChanged {
-        (aKey: any, aItem: any, aEl: HTMLElement): void;
+        (aKeyNew: any, aItemNew: any, aElNew: HTMLElement,
+         aKeyOld: any, aItemOld: any, aElOld: HTMLElement): void;
     }
 
     export interface TFocusedInfo {
@@ -1877,9 +1895,6 @@ module Controls {
         destroy() {
             this._drawnElements.destroy();
             this._ownedDataProvider.destroy();
-            delete this._drawnElements;
-            delete this._drawer;
-            delete this._ownedDataProvider;
         }
 
         draw(aRect?: TRect) {
@@ -1967,7 +1982,7 @@ module Controls {
                 }
                 this._element.appendChild(el);
                 return el;
-            }
+            };
             var needFocus: boolean = (keys.length === 0);
             if (replacedKey >= 0) {
                 for (i = keys.length - 1; i >= dest; i--) {
@@ -2038,9 +2053,13 @@ module Controls {
 
         /*protected*/ _handleFocusChanged(aElOld: HTMLElement, aElNew: HTMLElement) {
             super._handleFocusChanged(aElOld, aElNew);
-            var key = aElNew.attributes["data"];
-            var item = this._ownedDataProvider.getItem(key);
-            this._emitFocusedDataItemChanged(key, item, aElNew);
+            var keyNew = this._drawnElements.getKey(aElNew);
+            var keyOld = this._drawnElements.getKey(aElOld);
+            var itemNew = this._ownedDataProvider.getItem(keyNew);
+            var itemOld = this._ownedDataProvider.getItem(keyOld);
+            this._emitFocusedDataItemChanged(
+                keyNew, itemNew, aElNew,
+                keyOld, itemOld, aElOld);
         }
 
         /*
@@ -2061,8 +2080,11 @@ module Controls {
         connectFocusedDataItemChanged(aHolder: any, aSlotName: string, aSlot: FFocusedDataItemChanged) {
             this.connect("FocusedDataItemChanged", aHolder, aSlotName);
         }
-        private _emitFocusedDataItemChanged(aKey: any, aItem: any, aEl: HTMLElement) {
-            this.emit.call(this, "FocusedDataItemChanged", aKey, aItem, aEl);
+        private _emitFocusedDataItemChanged(aKeyNew: any, aItemNew: any, aElNew: HTMLElement,
+                                            aKeyOld: any, aItemOld: any, aElOld: HTMLElement) {
+            this.emit.call(this, "FocusedDataItemChanged",
+                aKeyNew, aItemNew, aElNew,
+                aKeyOld, aItemOld, aElOld);
         }
     }
 

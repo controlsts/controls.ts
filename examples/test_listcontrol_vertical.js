@@ -7,9 +7,9 @@ var gApp;
         text: 'Small text!'
     }];
     var dummy = {
-        _slFocusChanged: function (aOld, aNew) {
+        _slFocusedDataItemChanged: function (aKeyNew, aItemNew, aElNew, aKeyOld, aItemOld, aElOld) {
             var p = document.createElement("p");
-            p.innerHTML = "list focus changed";
+            p.innerHTML = aItemNew.text;
             var focusInfo = focus.getElement();
             focusInfo.insertBefore(p, focusInfo.firstChild);
         },
@@ -22,7 +22,7 @@ var gApp;
     list.setListData(data);
     list.setItemHeight(50);
     list.setAnimation(true);
-    list.connectFocusChanged(dummy, "_slFocusChanged", dummy._slFocusChanged);
+    list.connectFocusedDataItemChanged(dummy, "_slFocusedDataItemChanged", dummy._slFocusedDataItemChanged);
     list.connectItemSelected(dummy, "_slItemSelected", dummy._slItemSelected);
     list.setRedrawAfterOperation(true);
     list.setDataDrawer(function (aKey, aItem, aEl) {

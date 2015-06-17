@@ -1500,6 +1500,22 @@ var Controls;
         CDrawnElements.prototype.setElement = function (aKey, aItem) {
             this._drawnElements[aKey] = aItem;
         };
+        /**
+         * Get key from drawn element
+         * @param aItem
+         * @returns {string|any}
+         */
+        CDrawnElements.prototype.getKey = function (aItem) {
+            var keys = Object.keys(this._drawnElements);
+            var i, len = keys.length, k, el;
+            for (i = 0; i < len; i++) {
+                k = keys[i];
+                el = this._drawnElements[k];
+                if (aItem === el) {
+                    return k;
+                }
+            }
+        };
         CDrawnElements.prototype.pickElement = function (aKey) {
             var ret = null;
             if (this._drawnElements.hasOwnProperty(aKey)) {
@@ -1658,9 +1674,6 @@ var Controls;
         CDataControl.prototype.destroy = function () {
             this._drawnElements.destroy();
             this._ownedDataProvider.destroy();
-            delete this._drawnElements;
-            delete this._drawer;
-            delete this._ownedDataProvider;
         };
         CDataControl.prototype.draw = function (aRect) {
             if (!this._drawer) {
@@ -1804,9 +1817,11 @@ var Controls;
         };
         /*protected*/ CDataControl.prototype._handleFocusChanged = function (aElOld, aElNew) {
             _super.prototype._handleFocusChanged.call(this, aElOld, aElNew);
-            var key = aElNew.attributes["data"];
-            var item = this._ownedDataProvider.getItem(key);
-            this._emitFocusedDataItemChanged(key, item, aElNew);
+            var keyNew = this._drawnElements.getKey(aElNew);
+            var keyOld = this._drawnElements.getKey(aElOld);
+            var itemNew = this._ownedDataProvider.getItem(keyNew);
+            var itemOld = this._ownedDataProvider.getItem(keyOld);
+            this._emitFocusedDataItemChanged(keyNew, itemNew, aElNew, keyOld, itemOld, aElOld);
         };
         /*
          Signals
@@ -1826,8 +1841,8 @@ var Controls;
         CDataControl.prototype.connectFocusedDataItemChanged = function (aHolder, aSlotName, aSlot) {
             this.connect("FocusedDataItemChanged", aHolder, aSlotName);
         };
-        CDataControl.prototype._emitFocusedDataItemChanged = function (aKey, aItem, aEl) {
-            this.emit.call(this, "FocusedDataItemChanged", aKey, aItem, aEl);
+        CDataControl.prototype._emitFocusedDataItemChanged = function (aKeyNew, aItemNew, aElNew, aKeyOld, aItemOld, aElOld) {
+            this.emit.call(this, "FocusedDataItemChanged", aKeyNew, aItemNew, aElNew, aKeyOld, aItemOld, aElOld);
         };
         return CDataControl;
     })(CControl);

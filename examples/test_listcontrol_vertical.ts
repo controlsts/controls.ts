@@ -10,9 +10,10 @@ module gApp {
     }];
 
     var dummy = {
-        _slFocusChanged: function (aOld:HTMLElement, aNew:HTMLElement) {
+        _slFocusedDataItemChanged: function (aKeyNew: any, aItemNew: any, aElNew: HTMLElement,
+                                             aKeyOld: any, aItemOld: any, aElOld: HTMLElement) {
             var p = document.createElement("p");
-            p.innerHTML = "list focus changed";
+            p.innerHTML = aItemNew.text;
             var focusInfo = focus.getElement();
             focusInfo.insertBefore(p, focusInfo.firstChild);
         },
@@ -22,12 +23,12 @@ module gApp {
         }
     };
 
-    var list:Controls.CListControl;
+    var list: Controls.CListControl;
     list = new Controls.CListControl(null);
     list.setListData(data);
     list.setItemHeight(50);
     list.setAnimation(true);
-    list.connectFocusChanged(dummy, "_slFocusChanged", dummy._slFocusChanged);
+    list.connectFocusedDataItemChanged(dummy, "_slFocusedDataItemChanged", dummy._slFocusedDataItemChanged);
     list.connectItemSelected(dummy, "_slItemSelected", dummy._slItemSelected);
     list.setRedrawAfterOperation(true);
     list.setDataDrawer(function (aKey:any, aItem:any, aEl:HTMLElement) {
