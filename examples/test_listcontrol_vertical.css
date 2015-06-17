@@ -1,6 +1,8 @@
+body * {
+  box-sizing: border-box;
+}
 body .-f {
   border: 1px dashed blue;
-  box-sizing: border-box;
 }
 body .-afd-leaf {
   border: 1px solid red;
@@ -18,7 +20,7 @@ body .-group.-view {
 body .-group.-view .txtSmall {
   width: 200px;
   height: 50px;
-  background-color: blue;
+  background-color: white;
   font-size: 20px;
-  color: white;
+  color: black;
 }
