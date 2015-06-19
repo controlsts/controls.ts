@@ -2489,10 +2489,6 @@ module Controls {
         }
     }
 
-    export interface FDrawingDataDrawer {
-        (aElement: HTMLElement, aDrawingData: TDrawingData): TFocusInfo;
-    }
-
     export interface FRowIndexChanged {
         (aRowIndex: number): void;
     }
@@ -2522,7 +2518,7 @@ module Controls {
             this._ownedDataProvider.connectItemRemoved(this, "_dataRemoved", this._dataRemoved);
         }
 
-        setDataDrawer(aDrawingDataDrawer: FDrawingDataDrawer) {
+        setDataDrawer(aDrawingDataDrawer: FDataDrawer) {
             this._drawer = aDrawingDataDrawer;
         }
 
