@@ -3662,7 +3662,7 @@ var Controls;
             }
             return itemEl;
         };
-        /*protected*/ CCarouselControl.prototype._doDraw = function (aRect, aDrawParam) {
+        CCarouselControl.prototype._doDraw = function (aRect, aDrawParam) {
             var ret;
             this.setTransition(false);
             if (this._dataChanged) {
@@ -4029,8 +4029,8 @@ var Controls;
                 var upperItemsEl = this._upperBoundEl.querySelectorAll(CCarouselControl.KSelectorItem);
                 var lowerItemsEl = this._lowerBoundEl.querySelectorAll(CCarouselControl.KSelectorItem);
                 if (aDown) {
-                    fnMoveItemUpper(upperItemsEl, itemOffset, anchorIndex, -1);
-                    fnMoveItemUpper(lowerItemsEl, itemOffset, anchorIndex, anchorIndex);
+                    fnMoveItemUpper(upperItemsEl, itemWidth, anchorIndex, itemOffset, anchorWidth);
+                    fnMoveItemUpper(lowerItemsEl, itemWidth, anchorIndex, itemOffset, anchorWidth);
                     if (lowerItemsEl.length) {
                         upperItemsEl[0].parentNode.removeChild(upperItemsEl[0]);
                         lowerItemsEl[0].parentNode.removeChild(lowerItemsEl[0]);
@@ -4040,8 +4040,8 @@ var Controls;
                     }
                 }
                 else {
-                    fnMoveItemlower(upperItemsEl, itemOffset, anchorIndex, 0);
-                    fnMoveItemlower(lowerItemsEl, itemOffset, anchorIndex, anchorIndex + 1);
+                    fnMoveItemlower(upperItemsEl, itemWidth, anchorIndex, itemOffset, anchorWidth);
+                    fnMoveItemlower(lowerItemsEl, itemWidth, anchorIndex, itemOffset, anchorWidth);
                     if (lowerItemsEl.length) {
                         upperItemsEl[0].parentNode.removeChild(upperItemsEl[upperItemsEl.length - 1]);
                         lowerItemsEl[0].parentNode.removeChild(lowerItemsEl[lowerItemsEl.length - 1]);
@@ -4054,11 +4054,11 @@ var Controls;
             else {
                 var itemsEl = this._element.querySelectorAll(CCarouselControl.KSelectorItem);
                 if (aDown) {
-                    fnMoveItemUpper(itemsEl, itemOffset, anchorIndex, -1, anchorOffset);
+                    fnMoveItemUpper(itemsEl, itemWidth, anchorIndex, itemOffset, anchorWidth);
                     itemsEl[0].parentNode.removeChild(itemsEl[0]);
                 }
                 else {
-                    fnMoveItemlower(itemsEl, itemOffset, anchorIndex, 0, anchorOffset);
+                    fnMoveItemlower(itemsEl, itemWidth, anchorIndex, itemOffset, anchorWidth);
                     itemsEl[0].parentNode.removeChild(itemsEl[itemsEl.length - 1]);
                 }
             }
@@ -4093,8 +4093,8 @@ var Controls;
                     var upperItemNodeList = _this._upperBoundEl.querySelectorAll(CCarouselControl.KSelectorItem);
                     var lowerItemNodeList = _this._lowerBoundEl.querySelectorAll(CCarouselControl.KSelectorItem);
                     if (aDown) {
-                        fnMoveItemUpper(upperItemNodeList, itemOffset, anchorIndex, -1);
-                        fnMoveItemUpper(lowerItemNodeList, itemOffset, anchorIndex, anchorIndex);
+                        fnMoveItemUpper(upperItemNodeList, itemWidth, anchorIndex, itemOffset, anchorWidth);
+                        fnMoveItemUpper(lowerItemNodeList, itemWidth, anchorIndex, itemOffset, anchorWidth);
                         if (lowerItemNodeList.length) {
                             _this._doTransitionAndAfter(lowerItemNodeList[lowerItemNodeList.length - 1], function () {
                                 upperItemNodeList[0].parentNode.removeChild(upperItemNodeList[0]);
@@ -4108,8 +4108,8 @@ var Controls;
                         }
                     }
                     else {
-                        fnMoveItemlower(upperItemNodeList, itemOffset, anchorIndex, 0);
-                        fnMoveItemlower(lowerItemNodeList, itemOffset, anchorIndex, anchorIndex + 1);
+                        fnMoveItemlower(upperItemNodeList, itemWidth, anchorIndex, itemOffset, anchorWidth);
+                        fnMoveItemlower(lowerItemNodeList, itemWidth, anchorIndex, itemOffset, anchorWidth);
                         if (lowerItemNodeList.length) {
                             _this._doTransitionAndAfter(lowerItemNodeList[lowerItemNodeList.length - 1], function () {
                                 upperItemNodeList[0].parentNode.removeChild(upperItemNodeList[upperItemNodeList.length - 1]);
@@ -4126,19 +4126,19 @@ var Controls;
                 else {
                     var itemNodeList = _this._element.querySelectorAll(CCarouselControl.KSelectorItem);
                     if (aDown) {
-                        fnMoveItemUpper(itemNodeList, itemOffset, anchorIndex, -1, anchorOffset);
+                        fnMoveItemUpper(itemNodeList, itemWidth, anchorIndex, itemOffset, anchorWidth);
                         _this._doTransitionAndAfter(itemNodeList[itemNodeList.length - 1], function () {
                             itemNodeList[0].parentNode.removeChild(itemNodeList[0]);
                         });
                     }
                     else {
-                        fnMoveItemlower(itemNodeList, itemOffset, anchorIndex, 0, anchorOffset);
+                        fnMoveItemlower(itemNodeList, itemWidth, anchorIndex, itemOffset, anchorWidth);
                         _this._doTransitionAndAfter(itemNodeList[itemNodeList.length - 1], function () {
                             itemNodeList[0].parentNode.removeChild(itemNodeList[itemNodeList.length - 1]);
                         });
                     }
                 }
-            }, 1);
+            }, 0);
         };
         CCarouselControl.prototype._doTransitionBack = function () {
             var dataLen = this._cirMenuItems.length();
