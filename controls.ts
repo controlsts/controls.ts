@@ -639,7 +639,7 @@ module Controls {
          aFocusable[startIndex].classList.add(KClassActiveFocusedLeaf);
          }
          */
-    };
+    }
 
     interface TSignalHandlerInfo {
         holder: any;
@@ -1868,6 +1868,7 @@ module Controls {
 
     export interface FDataDrawer {
         (aKey: any, aItem: any, aEl: HTMLElement): TFocusInfo;
+        //(aEl: HTMLElement, aItem: any): TFocusInfo;
     }
 
     export interface FDataItemSelected {
@@ -3973,10 +3974,6 @@ module Controls {
         (aElement: HTMLElement, aItem: any, aIndex: number): void;
     }
 
-    interface FCarouselMove {
-        (aItemsEl: NodeList, aItemWidth: number, aAnchorIndex: number, aIndexOffset: number, aAnchorWidth: number): void;
-    }
-
     export class CCarouselControl extends CControl {
         static KClassCarousel = "-carousel";
         static KClassAnchor = "-carousel-anchor";
@@ -4126,7 +4123,7 @@ module Controls {
             }
             return itemEl;
         }
-        protected _doDraw(aRect: TRect, aDrawParam: { [key: string]: any; }): HTMLElement[] {
+        /*protected*/ _doDraw(aRect: TRect, aDrawParam: { [key: string]: any; }): HTMLElement[] {
             var ret: HTMLElement[];
             this.setTransition(false);
             if (this._dataChanged) {
@@ -4467,7 +4464,7 @@ module Controls {
             var align: TParamOrientation = this.getOrientation();
             var itemOffset: number;
             var anchorOffset: number;
-            var fnMoveItemUpper: FCarouselMove, fnMoveItemlower: FCarouselMove;
+            var fnMoveItemUpper, fnMoveItemlower;
 
             if (align == TParamOrientation.EVertical) {
                 itemOffset = itemHeight;
@@ -4475,7 +4472,7 @@ module Controls {
                 fnMoveItemUpper = this._moveItemsUpward;
                 fnMoveItemlower = this._moveItemsDownward;
             } else {
-                itemOffset = anchorWidth;
+                itemOffset = itemWidth;
                 anchorOffset = anchorWidth;
                 fnMoveItemUpper = this._moveItemsRightward;
                 fnMoveItemlower = this._moveItemsLeftward;
@@ -4484,8 +4481,8 @@ module Controls {
                 var upperItemsEl = this._upperBoundEl.querySelectorAll(CCarouselControl.KSelectorItem);
                 var lowerItemsEl = this._lowerBoundEl.querySelectorAll(CCarouselControl.KSelectorItem);
                 if (aDown) {
-                    fnMoveItemUpper(upperItemsEl, itemWidth, anchorIndex, itemOffset, anchorWidth);
-                    fnMoveItemUpper(lowerItemsEl, itemWidth, anchorIndex, itemOffset, anchorWidth);
+                    fnMoveItemUpper(upperItemsEl, itemOffset, anchorIndex, -1);
+                    fnMoveItemUpper(lowerItemsEl, itemOffset, anchorIndex, anchorIndex);
                     if (lowerItemsEl.length) {
                         upperItemsEl[0].parentNode.removeChild(upperItemsEl[0]);
                         lowerItemsEl[0].parentNode.removeChild(lowerItemsEl[0]);
@@ -4493,8 +4490,8 @@ module Controls {
                         upperItemsEl[0].parentNode.removeChild(upperItemsEl[0]);
                     }
                 } else {
-                    fnMoveItemlower(upperItemsEl, itemWidth, anchorIndex, itemOffset, anchorWidth);
-                    fnMoveItemlower(lowerItemsEl, itemWidth, anchorIndex, itemOffset, anchorWidth);
+                    fnMoveItemlower(upperItemsEl, itemOffset, anchorIndex, 0);
+                    fnMoveItemlower(lowerItemsEl, itemOffset, anchorIndex, anchorIndex + 1);
                     if (lowerItemsEl.length) {
                         upperItemsEl[0].parentNode.removeChild(upperItemsEl[upperItemsEl.length - 1]);
                         lowerItemsEl[0].parentNode.removeChild(lowerItemsEl[lowerItemsEl.length - 1]);
@@ -4505,10 +4502,10 @@ module Controls {
             } else {
                 var itemsEl = this._element.querySelectorAll(CCarouselControl.KSelectorItem);
                 if (aDown) {
-                    fnMoveItemUpper(itemsEl, itemWidth, anchorIndex, itemOffset, anchorWidth);
+                    fnMoveItemUpper(itemsEl, itemOffset, anchorIndex, -1, anchorOffset);
                     itemsEl[0].parentNode.removeChild(itemsEl[0]);
                 } else {
-                    fnMoveItemlower(itemsEl, itemWidth, anchorIndex, itemOffset, anchorWidth);
+                    fnMoveItemlower(itemsEl, itemOffset, anchorIndex, 0, anchorOffset);
                     itemsEl[0].parentNode.removeChild(itemsEl[itemsEl.length - 1]);
                 }
             }
@@ -4530,7 +4527,7 @@ module Controls {
                     nextTop: number = 0, //
                     itemOffset: number,
                     anchorOffset: number, //
-                    fnMoveItemUpper: FCarouselMove, fnMoveItemlower: FCarouselMove;//
+                    fnMoveItemUpper, fnMoveItemlower;//
                 //get align
                 if (this.getOrientation() == TParamOrientation.EUnknown || undefined) {
                     align = TParamOrientation.EVertical;
@@ -4553,8 +4550,8 @@ module Controls {
                     var upperItemNodeList = this._upperBoundEl.querySelectorAll(CCarouselControl.KSelectorItem);
                     var lowerItemNodeList = this._lowerBoundEl.querySelectorAll(CCarouselControl.KSelectorItem);
                     if (aDown) {
-                        fnMoveItemUpper(upperItemNodeList, itemWidth, anchorIndex, itemOffset, anchorWidth);
-                        fnMoveItemUpper(lowerItemNodeList, itemWidth, anchorIndex, itemOffset, anchorWidth);
+                        fnMoveItemUpper(upperItemNodeList, itemOffset, anchorIndex, -1);
+                        fnMoveItemUpper(lowerItemNodeList, itemOffset, anchorIndex, anchorIndex);
                         if (lowerItemNodeList.length) {
                             this._doTransitionAndAfter(<HTMLElement> lowerItemNodeList[lowerItemNodeList.length - 1], function () {
                                 upperItemNodeList[0].parentNode.removeChild(upperItemNodeList[0]);
@@ -4566,8 +4563,8 @@ module Controls {
                             });
                         }
                     } else {
-                        fnMoveItemlower(upperItemNodeList, itemWidth, anchorIndex, itemOffset, anchorWidth);
-                        fnMoveItemlower(lowerItemNodeList, itemWidth, anchorIndex, itemOffset, anchorWidth);
+                        fnMoveItemlower(upperItemNodeList, itemOffset, anchorIndex, 0);
+                        fnMoveItemlower(lowerItemNodeList, itemOffset, anchorIndex, anchorIndex + 1);
                         if (lowerItemNodeList.length) {
                             this._doTransitionAndAfter(<HTMLElement> lowerItemNodeList[lowerItemNodeList.length - 1], function () {
                                 upperItemNodeList[0].parentNode.removeChild(upperItemNodeList[upperItemNodeList.length - 1]);
@@ -4582,18 +4579,18 @@ module Controls {
                 } else {
                     var itemNodeList = this._element.querySelectorAll(CCarouselControl.KSelectorItem);
                     if (aDown) {
-                        fnMoveItemUpper(itemNodeList, itemWidth, anchorIndex, itemOffset, anchorWidth);
+                        fnMoveItemUpper(itemNodeList, itemOffset, anchorIndex, -1, anchorOffset);
                         this._doTransitionAndAfter(<HTMLElement> itemNodeList[itemNodeList.length - 1], function () {
                             itemNodeList[0].parentNode.removeChild(itemNodeList[0]);
                         });
                     } else {
-                        fnMoveItemlower(itemNodeList, itemWidth, anchorIndex, itemOffset, anchorWidth);
+                        fnMoveItemlower(itemNodeList, itemOffset, anchorIndex, 0, anchorOffset);
                         this._doTransitionAndAfter(<HTMLElement> itemNodeList[itemNodeList.length - 1], function () {
                             itemNodeList[0].parentNode.removeChild(itemNodeList[itemNodeList.length - 1]);
                         });
                     }
                 }
-            }, 0);
+            }, 1);
         }
 
         private _doTransitionBack() {
