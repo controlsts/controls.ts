@@ -1,0 +1,18 @@
+body #root {
+  width: 500px;
+  height: 200px;
+}
+body #root .-grid-item {
+  width: 70px;
+  height: 70px;
+  margin: 10px;
+  background-color: darkgray;
+}
+body #root .-grid-item.-f {
+  background-color: lightgray;
+  border: 1px solid black;
+}
+body #root .-grid-item.-f.-fd {
+  background-color: lightpink;
+  border: 2px solid red;
+}
