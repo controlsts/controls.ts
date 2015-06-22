@@ -1,0 +1,63 @@
+body {
+  width: 1280px;
+  height: 720px;
+}
+body .-f {
+  border: 1px dashed blue;
+  box-sizing: border-box;
+}
+body .-afd-leaf {
+  border: 1px solid red;
+}
+body .-afd-leaf::after {
+  content: "FOCUSED";
+}
+body .-group.-layered {
+  width: 500px;
+  height: 500px;
+}
+body .-group.-layered .-item-0 {
+  width: 50px;
+  height: 50px;
+  background-color: blue;
+  opacity: .5;
+}
+body .-group.-layered .-item-0.-afd-leaf {
+  opacity: 1;
+}
+body .-group.-layered .-item-1 {
+  width: 100px;
+  height: 20px;
+  background-color: red;
+  opacity: .5;
+}
+body .-group.-layered .-item-1.-afd-leaf {
+  opacity: 1;
+}
+body .-group.-layered .-item-2 {
+  width: 200px;
+  height: 50px;
+  background-color: yellow;
+  opacity: .5;
+}
+body .-group.-layered .-item-2.-afd-leaf {
+  opacity: 1;
+}
+body .-group.-layered .-item-3 {
+  width: 100px;
+  height: 20px;
+  background-color: red;
+  opacity: .5;
+}
+body .-group.-layered .-item-3.-afd-leaf {
+  opacity: 1;
+}
+body .-group.-layered .-item-4 {
+  width: 50px;
+  height: 50px;
+  background-color: blue;
+  opacity: .5;
+}
+body .-group.-layered .-item-4.-afd-leaf {
+  opacity: 1;
+}
