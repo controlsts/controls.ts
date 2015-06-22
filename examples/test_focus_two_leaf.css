@@ -1,0 +1,93 @@
+body .-stateGroup {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 1280px;
+  height: 40px;
+}
+body .-stateLeft {
+  position: absolute;
+  top: 40px;
+  left: 0px;
+  width: 1280px;
+  height: 40px;
+}
+body .-stateRight {
+  position: absolute;
+  top: 80px;
+  left: 0px;
+  width: 1280px;
+  height: 40px;
+}
+body .-gained {
+  border: 1px solid red;
+}
+body .-content {
+  position: absolute;
+  top: 120px;
+  left: 0px;
+  width: 1280px;
+  height: 600px;
+}
+body .-f {
+  border: 1px dashed blue;
+  box-sizing: border-box;
+}
+body .-afd-leaf {
+  border: 1px solid red;
+}
+body .-c.-lay {
+  background-color: black;
+  width: 300px;
+  height: 300px;
+}
+body .-item-0 {
+  width: 50px;
+  height: 50px;
+  background-color: blue;
+  opacity: .5;
+  color: white;
+}
+body .-item-0.-afd-leaf {
+  opacity: 1;
+}
+body .-item-1 {
+  width: 100px;
+  height: 20px;
+  background-color: red;
+  opacity: .5;
+  color: white;
+}
+body .-item-1.-afd-leaf {
+  opacity: 1;
+}
+body .-item-2 {
+  width: 200px;
+  height: 50px;
+  background-color: yellow;
+  opacity: .5;
+  color: white;
+}
+body .-item-2.-afd-leaf {
+  opacity: 1;
+}
+body .-item-3 {
+  width: 100px;
+  height: 20px;
+  background-color: red;
+  opacity: .5;
+  color: white;
+}
+body .-item-3.-afd-leaf {
+  opacity: 1;
+}
+body .-item-4 {
+  width: 50px;
+  height: 50px;
+  background-color: blue;
+  opacity: .5;
+  color: white;
+}
+body .-item-4.-afd-leaf {
+  opacity: 1;
+}
