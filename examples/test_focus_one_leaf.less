@@ -1,0 +1,100 @@
+﻿
+@state_height: 100px;
+@height: 720px;
+@width: 1280px;
+
+body {
+    width: @width;
+    height: @height;
+
+    .-state {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: @width;
+        height: @state_height;
+    }
+
+    .-content {
+        position: absolute;
+        top: @state_height;
+        left: 0px;
+        width: @width;
+        height: @height - @state_height;
+    }
+
+    .-f {
+        border: 1px dashed blue;
+        box-sizing: border-box;
+    }
+
+    .-afd-leaf {
+        border: 1px solid red;
+    }
+
+    .-c.-lay {
+        background-color: black;
+        width: 300px;
+        height: 300px;
+    }
+
+    .-item-0 {
+        width: 50px;
+        height: 50px;
+        background-color: blue;
+        opacity: .5;
+
+        &.-afd-leaf {
+            opacity: 1;
+        }
+        color: white;
+    }
+
+    .-item-1 {
+        width: 100px;
+        height: 20px;
+        background-color: red;
+        opacity: .5;
+
+        &.-afd-leaf {
+            opacity: 1;
+        }
+        color: white;
+    }
+
+    .-item-2 {
+        width: 200px;
+        height: 50px;
+        background-color: yellow;
+        opacity: .5;
+
+        &.-afd-leaf {
+            opacity: 1;
+        }
+        color: white;
+    }
+
+    .-item-3 {
+        width: 100px;
+        height: 20px;
+        background-color: red;
+        opacity: .5;
+
+        &.-afd-leaf {
+            opacity: 1;
+        }
+        color: white;
+    }
+
+    .-item-4 {
+        width: 50px;
+        height: 50px;
+        background-color: blue;
+        opacity: .5;
+
+        &.-afd-leaf {
+            opacity: 1;
+        }
+        color: white;
+    }
+}
