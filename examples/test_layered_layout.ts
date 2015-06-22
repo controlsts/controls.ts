@@ -99,7 +99,6 @@ module gApp {
 
     var handlers = {
         _open: function (aControl: Controls.CControl, aIndex: number, aEl: HTMLElement) {
-            debugger;
             layeredGroup.createLayer({
                 transition: {
                     prevLayer: "moveLeft",

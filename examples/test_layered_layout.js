@@ -93,7 +93,6 @@ var gApp;
     ];
     var handlers = {
         _open: function (aControl, aIndex, aEl) {
-            debugger;
             layeredGroup.createLayer({
                 transition: {
                     prevLayer: "moveLeft",
