@@ -852,13 +852,13 @@ var Controls;
             this._setDrawParam(KParamStrItemHeight, aItemHeight, false);
         };
         CControl.prototype.getItemHeight = function () {
-            return this._getDrawParam(KParamStrItemHeight) || false;
+            return this._getDrawParam(KParamStrItemHeight) || 0;
         };
         CControl.prototype.setItemWidth = function (aItemWidth) {
             this._setDrawParam(KParamStrItemWidth, aItemWidth, false);
         };
         CControl.prototype.getItemWidth = function () {
-            return this._getDrawParam(KParamStrItemWidth) || false;
+            return this._getDrawParam(KParamStrItemWidth) || 0;
         };
         CControl.prototype.setMaxColCount = function (aMaxColCount) {
             this._setDrawParam(KParamStrMaxColCount, aMaxColCount, false);
@@ -1585,20 +1585,20 @@ var Controls;
             this._doInsertItems(aKey, aItem);
             this.emit("ItemInserted", aKey, aItem);
         };
-        /*protected*/ CDataProvider.prototype._doInsertItems = function (aKey, aItem) {
+        CDataProvider.prototype._doInsertItems = function (aKey, aItem) {
         };
         CDataProvider.prototype.removeItems = function (aKeys) {
             this._doRemoveItems(aKeys);
             this.emit("ItemRemoved", aKeys);
         };
-        /*protected*/ CDataProvider.prototype._doRemoveItems = function (aKeys) {
+        CDataProvider.prototype._doRemoveItems = function (aKeys) {
         };
         CDataProvider.prototype.updateItems = function (aKeys, aItems) {
             this._doUpdateItems(aKeys, aItems);
             this.emit("ItemUpdated", aKeys, aItems);
         };
         //_doUpdateItems: (aKey: any[], aItem: any[]) => boolean;
-        /*protected*/ CDataProvider.prototype._doUpdateItems = function (aKey, aItem) {
+        CDataProvider.prototype._doUpdateItems = function (aKey, aItem) {
             return false;
         };
         CDataProvider.prototype.connectItemInserted = function (aHolder, aSlotName, aHandler) {
@@ -1710,12 +1710,11 @@ var Controls;
                 this.setFocusedElement(el);
             }
         };
-        /*protected*/ CDataControl.prototype.doItemChagned = function (aKeys) {
+        CDataControl.prototype.doItemChagned = function (aKeys) {
         };
-        /*protected*/ CDataControl.prototype.doItemInserted = function (aKey, aItems, aNeedFocus) {
+        CDataControl.prototype.doItemInserted = function (aKey, aItems, aNeedFocus) {
         };
-        //doItemRemoved: (aKeys: any[]) => void;
-        /*protected*/ CDataControl.prototype.doItemRemoved = function (aKey, aUnsetFocus) {
+        CDataControl.prototype.doItemRemoved = function (aKey, aUnsetFocus) {
         };
         CDataControl.prototype.setRedrawAfterOperation = function (aRedraw) {
             this._redrawAfterOperation = aRedraw;
@@ -1822,7 +1821,7 @@ var Controls;
             });
             this._prevDrawnElements = aDrawnElements;
         };
-        /*protected*/ CDataControl.prototype._handleFocusChanged = function (aElOld, aElNew) {
+        CDataControl.prototype._handleFocusChanged = function (aElOld, aElNew) {
             _super.prototype._handleFocusChanged.call(this, aElOld, aElNew);
             var keyNew = this._drawnElements.getKey(aElNew);
             var keyOld = this._drawnElements.getKey(aElOld);
@@ -1833,7 +1832,7 @@ var Controls;
         /*
          Signals
          */
-        /*protected*/ CDataControl.prototype._doKeyEnterLatent = function () {
+        CDataControl.prototype._doKeyEnterLatent = function () {
             _super.prototype._doKeyEnterLatent.call(this);
             var focusedInfo = this.getFocusedItemInfo();
             this._emitDataItemSelected(focusedInfo.key, focusedInfo.item, focusedInfo.el);
@@ -1862,13 +1861,13 @@ var Controls;
             this._element.classList.add("-list");
             this.registerSignal(["ItemInserted", "ItemRemoved"]);
         }
-        /*protected*/ CListDataControl.prototype.doItemInserted = function (aKey, aItems, aNeedFocus) {
+        CListDataControl.prototype.doItemInserted = function (aKey, aItems, aNeedFocus) {
             this.emit.call(this, "ItemInserted", this._drawnElements, aNeedFocus);
         };
-        /*protected*/ CListDataControl.prototype.doItemRemoved = function (aKey, aUnsetFocus) {
+        CListDataControl.prototype.doItemRemoved = function (aKey, aUnsetFocus) {
             this.emit.call(this, "ItemRemoved", this._drawnElements, aUnsetFocus);
         };
-        /*protected*/ CListDataControl.prototype.doItemChagned = function (aKeys) {
+        CListDataControl.prototype.doItemChagned = function (aKeys) {
             var i, len, key, drawnEl;
             for (i = 0, len = aKeys.length; i < len; i++) {
                 key = aKeys[i];
@@ -2726,6 +2725,7 @@ var Controls;
             }, 0);
         };
         CViewGroupControl.prototype.setScrollScheme = function (aScheme, aFixedScrollUnit) {
+            aFixedScrollUnit = aFixedScrollUnit || this.getItemHeight() || this.getItemWidth();
             _super.prototype.setScrollScheme.call(this, aScheme, aFixedScrollUnit);
             this._targetChild.setScrollScheme(aScheme, aFixedScrollUnit);
         };
@@ -2927,9 +2927,11 @@ var Controls;
             return this._listDataControl.getDataRolling();
         };
         CListControl.prototype.setItemHeight = function (aItemHeight) {
+            _super.prototype.setItemHeight.call(this, aItemHeight);
             this._listDataControl.setItemHeight(aItemHeight);
         };
         CListControl.prototype.setItemWidth = function (aItemWidth) {
+            _super.prototype.setItemWidth.call(this, aItemWidth);
             this._listDataControl.setItemWidth(aItemWidth);
         };
         CListControl.prototype.setOrientation = function (aLayout) {

@@ -5,7 +5,7 @@ body .-f {
   border: 1px dashed blue;
 }
 body .-afd-leaf {
-  border: 1px solid red;
+  border: 2px solid red;
 }
 body #-focus-info {
   width: 300px;

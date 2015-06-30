@@ -28,6 +28,7 @@ module gApp {
     list.setListData(data);
     list.setItemHeight(50);
     list.setAnimation(true);
+    list.setScrollScheme(Controls.TParamScrollScheme.EByFixed);
     list.connectFocusedDataItemChanged(dummy, "_slFocusedDataItemChanged", dummy._slFocusedDataItemChanged);
     list.connectItemSelected(dummy, "_slItemSelected", dummy._slItemSelected);
     list.setRedrawAfterOperation(true);

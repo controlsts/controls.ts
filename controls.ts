@@ -966,13 +966,13 @@ module Controls {
             this._setDrawParam(KParamStrItemHeight, aItemHeight, false);
         }
         getItemHeight(): number {
-            return this._getDrawParam(KParamStrItemHeight) || false;
+            return this._getDrawParam(KParamStrItemHeight) || 0;
         }
         setItemWidth(aItemWidth: number) {
             this._setDrawParam(KParamStrItemWidth, aItemWidth, false);
         }
         getItemWidth(): number {
-            return this._getDrawParam(KParamStrItemWidth) || false;
+            return this._getDrawParam(KParamStrItemWidth) || 0;
         }
         setMaxColCount(aMaxColCount: number) {
             this._setDrawParam(KParamStrMaxColCount, aMaxColCount, false);
@@ -1784,14 +1784,14 @@ module Controls {
             this._doInsertItems(aKey, aItem);
             this.emit("ItemInserted", aKey, aItem);
         }
-        /*protected*/ _doInsertItems(aKey: any, aItem: any[]): void {
+        protected _doInsertItems(aKey: any, aItem: any[]): void {
 
         }
         removeItems(aKeys: any[]) {
             this._doRemoveItems(aKeys);
             this.emit("ItemRemoved", aKeys);
         }
-        /*protected*/ _doRemoveItems(aKeys: any[]): void {
+        protected _doRemoveItems(aKeys: any[]): void {
 
         }
         updateItems(aKeys: any[], aItems?: any[]) {
@@ -1799,7 +1799,7 @@ module Controls {
             this.emit("ItemUpdated", aKeys, aItems);
         }
         //_doUpdateItems: (aKey: any[], aItem: any[]) => boolean;
-        /*protected*/ _doUpdateItems(aKey: number[], aItem: any[]): boolean {
+        protected _doUpdateItems(aKey: number[], aItem: any[]): boolean {
             return false;
         }
         connectItemInserted(aHolder: any, aSlotName: string, aHandler: { (aKey: any, aItems: any[]): void; }) {
@@ -1936,18 +1936,17 @@ module Controls {
             }
         }
 
-        /*protected*/ doItemChagned(aKeys: any[]): void {
+        protected doItemChagned(aKeys: any[]): void {
 
         }
 
-        /*protected*/ doItemInserted(aKey: any, aItems: any[], aNeedFocus?: boolean): void {
-
-        }
-        //doItemRemoved: (aKeys: any[]) => void;
-        /*protected*/ doItemRemoved(aKey: number, aUnsetFocus?: boolean): void {
+        protected doItemInserted(aKey: any, aItems: any[], aNeedFocus?: boolean): void {
 
         }
 
+        protected doItemRemoved(aKey: number, aUnsetFocus?: boolean): void {
+
+        }
 
         setRedrawAfterOperation (aRedraw: boolean) {
             this._redrawAfterOperation = aRedraw;
@@ -2058,7 +2057,7 @@ module Controls {
             this._prevDrawnElements = aDrawnElements;
         }
 
-        /*protected*/ _handleFocusChanged(aElOld: HTMLElement, aElNew: HTMLElement) {
+        protected _handleFocusChanged(aElOld: HTMLElement, aElNew: HTMLElement) {
             super._handleFocusChanged(aElOld, aElNew);
             var keyNew = this._drawnElements.getKey(aElNew);
             var keyOld = this._drawnElements.getKey(aElOld);
@@ -2072,7 +2071,7 @@ module Controls {
         /*
          Signals
          */
-        /*protected*/ _doKeyEnterLatent() {
+        protected _doKeyEnterLatent() {
             super._doKeyEnterLatent();
             var focusedInfo = this.getFocusedItemInfo();
             this._emitDataItemSelected(focusedInfo.key, focusedInfo.item, focusedInfo.el);
@@ -2103,13 +2102,13 @@ module Controls {
             this._element.classList.add("-list");
             this.registerSignal(["ItemInserted", "ItemRemoved"]);
         }
-        /*protected*/ doItemInserted(aKey: any, aItems: any[], aNeedFocus?: boolean) {
+        protected doItemInserted(aKey: any, aItems: any[], aNeedFocus?: boolean) {
             this.emit.call(this, "ItemInserted", this._drawnElements, aNeedFocus);
         }
-        /*protected*/ doItemRemoved(aKey: number, aUnsetFocus?: boolean) {
+        protected doItemRemoved(aKey: number, aUnsetFocus?: boolean) {
             this.emit.call(this, "ItemRemoved", this._drawnElements, aUnsetFocus);
         }
-        /*protected*/ doItemChagned(aKeys: number[]) {
+        protected doItemChagned(aKeys: number[]) {
             var i, len, key, drawnEl;
             for (i = 0, len = aKeys.length; i < len; i++) {
                 key = aKeys[i];
@@ -3102,6 +3101,7 @@ module Controls {
         }
 
         setScrollScheme(aScheme: TParamScrollScheme, aFixedScrollUnit?: number) {
+            aFixedScrollUnit = aFixedScrollUnit || this.getItemHeight() || this.getItemWidth();
             super.setScrollScheme(aScheme, aFixedScrollUnit);
             this._targetChild.setScrollScheme(aScheme, aFixedScrollUnit);
         }
@@ -3308,9 +3308,11 @@ module Controls {
             return this._listDataControl.getDataRolling();
         }
         setItemHeight(aItemHeight: number) {
+            super.setItemHeight(aItemHeight);
             this._listDataControl.setItemHeight(aItemHeight);
         }
         setItemWidth(aItemWidth: number) {
+            super.setItemWidth(aItemWidth);
             this._listDataControl.setItemWidth(aItemWidth);
         }
         setOrientation(aLayout: TParamOrientation) {
