@@ -220,6 +220,7 @@ var Controls;
         }
         aFocusable[startIndex].classList.add(KClassFocused);
         aKeyMap.setActiveFocus(startIndex);
+        // next focusing
         if (this._parent) {
             if (!this._parent.isFocused()) {
                 return;
@@ -258,24 +259,24 @@ var Controls;
         }
         aFocusable[startIndex].classList.add(KClassFocused);
         aKeyMap.setActiveFocus(startIndex);
-        /*
-         if (this._parent) {
-         if (!this._parent.isFocused()) {
-         return;
-         }
-         }
-         var scrollingScheme = this._getDrawParam(KParamStrScrollSchemeVertical);
-         if (aPrevKeyStr) {
-         if (scrollingScheme === TParamScrollScheme.EByFocusRemains) {
-         if (aPrevFocused) {
-         aPrevFocused.classList.remove(KClassActiveFocusedLeaf);
-         aFocusable[startIndex].classList.add(KClassActiveFocusedLeaf);
-         }
-         } else {
-         aKeyMap.doKey(aPrevKeyStr);
-         }
-         }
-         */
+        // next focusing
+        if (this._parent) {
+            if (!this._parent.isFocused()) {
+                return;
+            }
+        }
+        var scrollingScheme = this._getDrawParam(KParamStrScrollSchemeVertical);
+        if (aPrevKeyStr) {
+            if (scrollingScheme === 3 /* EByFocusRemains */) {
+                if (aPrevFocusInfo) {
+                    aPrevFocusInfo.prevFocusedEl.classList.remove(KClassActiveFocusedLeaf);
+                    aFocusable[startIndex].classList.add(KClassActiveFocusedLeaf);
+                }
+            }
+            else {
+                aKeyMap.doKey(aPrevKeyStr);
+            }
+        }
     };
     Controls.KBuilderGrid = function (aKeyMap, aFocusable, aPrevFocusInfo, aPrevKeyStr) {
         var i, j, len;
