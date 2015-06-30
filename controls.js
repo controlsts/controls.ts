@@ -1266,11 +1266,11 @@ var Controls;
                 right: size.width - (aDrawnRect.right),
                 down: size.height - (aDrawnRect.bottom)
             };
-            // This case is (items draw Rect < drawnRect)
-            if (totalAvailable.right < 0 || totalAvailable.down < 0) {
-                // when simulation in Chrome, totalAvailable is invalid..(will be fixed?)
-                return;
-            }
+            //// This case is (items draw Rect < drawnRect)
+            //if (totalAvailable.right < 0 || totalAvailable.down < 0) {
+            //    // when simulation in Chrome, totalAvailable is invalid..(will be fixed?)
+            //    return;
+            //}
             var orientation = this._getDrawParam(KParamStrOrientation);
             if (orientation === 1 /* EVertical */) {
                 switch (aKeyStr) {
@@ -1350,6 +1350,13 @@ var Controls;
                     }
                     break;
                 case 5 /* EByFixed */:
+                    nextTop = scrollUnit;
+                    if (aUp && 0 < aTotalAvailable.up) {
+                        contentAvailable.up = scrollUnit;
+                    }
+                    if (aDown && 0 < aTotalAvailable.down) {
+                        contentAvailable.down = scrollUnit;
+                    }
                     break;
                 default:
                     break;
@@ -1407,13 +1414,12 @@ var Controls;
                     }
                     break;
                 case 5 /* EByFixed */:
-                    if (aLeft) {
-                        nextLeft = scrollUnit;
-                        contentAvailable.left = Math.min(aTotalAvailable.left, nextLeft);
+                    nextLeft = scrollUnit;
+                    if (aLeft && 0 < aTotalAvailable.left) {
+                        contentAvailable.left = scrollUnit;
                     }
-                    if (aRight) {
-                        nextLeft = scrollUnit;
-                        contentAvailable.right = Math.min(aTotalAvailable.right, nextLeft);
+                    if (aRight && 0 < aTotalAvailable.right) {
+                        contentAvailable.right = scrollUnit;
                     }
                     break;
                 default:

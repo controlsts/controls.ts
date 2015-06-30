@@ -54,7 +54,7 @@ var gApp;
     list = new Controls.CListControl(null);
     list.setListData(data);
     list.setOrientation(2 /* EHorizontal */);
-    list.setItemWidth(50);
+    list.setItemWidth(70);
     list.setAnimation(true);
     list.setScrollScheme(5 /* EByFixed */);
     list.connectFocusedDataItemChanged(dummy, "_slFocusedDataItemChanged", dummy._slFocusedDataItemChanged);

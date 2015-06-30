@@ -53,7 +53,7 @@ var gApp;
     var list;
     list = new Controls.CListControl(null);
     list.setListData(data);
-    list.setItemHeight(50);
+    list.setItemHeight(70);
     list.setAnimation(true);
     list.setScrollScheme(5 /* EByFixed */);
     list.connectFocusedDataItemChanged(dummy, "_slFocusedDataItemChanged", dummy._slFocusedDataItemChanged);
