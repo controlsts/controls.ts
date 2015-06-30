@@ -221,6 +221,7 @@ module Controls {
     export interface TPrevFocusInfo {
         rect: TRect;
         activeFocus: boolean;
+        prevFocusedEl: HTMLElement;
     }
 
     export interface FKeyMapBuilder {
@@ -252,24 +253,22 @@ module Controls {
         }
         aFocusable[startIndex].classList.add(KClassFocused);
         aKeyMap.setActiveFocus(startIndex);
-        /*
-         if (this._parent) {
-         if (!this._parent.isFocused()) {
-         return;
-         }
-         }
-         var scrollingScheme = this._getDrawParam(KParamStrScrollSchemeVertical);
-         if (aPrevKeyStr) {
-         if (scrollingScheme === TParamScrollScheme.EByFocusRemains) {
-         if (aPrevFocused) {
-         aPrevFocused.classList.remove(KClassActiveFocusedLeaf);
-         aFocusable[startIndex].classList.add(KClassActiveFocusedLeaf);
-         }
-         } else {
-         aKeyMap.doKey(aPrevKeyStr);
-         }
-         }
-         */
+        if (this._parent) {
+            if (!this._parent.isFocused()) {
+                return;
+            }
+        }
+        var scrollingScheme = this._getDrawParam(KParamStrScrollSchemeVertical);
+        if (aPrevKeyStr) {
+            if (scrollingScheme === TParamScrollScheme.EByFocusRemains) {
+                if (aPrevFocusInfo) {
+                    aPrevFocusInfo.prevFocusedEl.classList.remove(KClassActiveFocusedLeaf);
+                    aFocusable[startIndex].classList.add(KClassActiveFocusedLeaf);
+                }
+            } else {
+                aKeyMap.doKey(aPrevKeyStr);
+            }
+        }
     };
 
     export var KBuilderLeftRight: FKeyMapBuilder = function (
@@ -1177,7 +1176,8 @@ module Controls {
                 var prevFocusedEl: HTMLElement = this._keyMap.getFocusedElement();
                 this._prevFocusInfo = {
                     rect: Util.getRect(prevFocusedEl),
-                    activeFocus: prevFocusedEl.classList.contains(KClassActiveFocusedLeaf)
+                    activeFocus: prevFocusedEl.classList.contains(KClassActiveFocusedLeaf),
+                    prevFocusedEl: prevFocusedEl
                 };
             }
         }
@@ -3684,7 +3684,7 @@ module Controls {
                 prevChild = null;
                 prevElLayer = null;
                 prevCreateParam = null;
-            }
+            };
 
             this._child = [];
             if (this._keyMap) {
@@ -3787,7 +3787,7 @@ module Controls {
     export interface TViewItem {
         index: number;
         data: any;
-    };
+    }
 
     export class CViewItemResult {
         items: TViewItem[] = [];

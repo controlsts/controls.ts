@@ -4,7 +4,40 @@ var gApp;
     var focus = Controls.makeNoneFocusable("-focus-info");
     var data = [{
         type: 'txtSmall',
-        text: 'Small text!'
+        text: 'Small text 1'
+    }, {
+        type: 'txtSmall',
+        text: 'Small text 2'
+    }, {
+        type: 'txtSmall',
+        text: 'Small text 3'
+    }, {
+        type: 'txtSmall',
+        text: 'Small text 4'
+    }, {
+        type: 'txtSmall',
+        text: 'Small text 5'
+    }, {
+        type: 'txtSmall',
+        text: 'Small text 6'
+    }, {
+        type: 'txtSmall',
+        text: 'Small text 7'
+    }, {
+        type: 'txtSmall',
+        text: 'Small text 8'
+    }, {
+        type: 'txtSmall',
+        text: 'Small text 9'
+    }, {
+        type: 'txtSmall',
+        text: 'Small text 10'
+    }, {
+        type: 'txtSmall',
+        text: 'Small text 11'
+    }, {
+        type: 'txtSmall',
+        text: 'Small text 12'
     }];
     var dummy = {
         _slFocusedDataItemChanged: function (aKeyNew, aItemNew, aElNew, aKeyOld, aItemOld, aElOld) {
@@ -37,40 +70,46 @@ var gApp;
     root.setOwnedChildControls([list, focus]);
     root.draw();
     root.setActiveFocus();
-    list.appendItem({
-        type: 'txtSmall',
-        text: 'Small 1 text!'
-    });
-    list.appendItem({
-        type: 'txtSmall',
-        text: 'Small 2 text@'
-    });
-    list.appendItem({
-        type: 'txtSmall',
-        text: 'Small 3 text@'
-    });
-    list.prependItem([{
-        type: 'txtSmall',
-        text: 'Prepended'
-    }]);
-    setTimeout(function () {
-        list.prependItem({
-            type: 'txtSmall',
-            text: '1 sec'
-        });
-    }, 1000);
-    setTimeout(function () {
-        list.insertItem(3, {
-            type: 'txtSmall',
-            text: '2 sec'
-        });
-    }, 2000);
-    setTimeout(function () {
-        list.appendItem({
-            type: 'txtSmall',
-            text: '5 sec'
-        });
-    }, 5000);
+    //list.appendItem({
+    //    type: 'txtSmall',
+    //    text: 'Small 1 text!'
+    //});
+    //
+    //list.appendItem({
+    //    type: 'txtSmall',
+    //    text: 'Small 2 text@'
+    //});
+    //
+    //list.appendItem({
+    //    type: 'txtSmall',
+    //    text: 'Small 3 text@'
+    //});
+    //
+    //list.prependItem([{
+    //    type: 'txtSmall',
+    //    text: 'Prepended'
+    //}]);
+    //
+    //setTimeout(function () {
+    //    list.prependItem({
+    //        type: 'txtSmall',
+    //        text: '1 sec'
+    //    })
+    //}, 1000);
+    //
+    //setTimeout(function () {
+    //    list.insertItem(3, {
+    //        type: 'txtSmall',
+    //        text: '2 sec'
+    //    });
+    //}, 2000);
+    //
+    //setTimeout(function () {
+    //    list.appendItem({
+    //        type: 'txtSmall',
+    //        text: '5 sec'
+    //    })
+    //}, 5000);
     document.body.addEventListener('keydown', function (e) {
         var keyStr = e['keyIdentifier'];
         var handled = root.doKey(keyStr);
