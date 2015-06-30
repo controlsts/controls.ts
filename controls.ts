@@ -1254,7 +1254,7 @@ module Controls {
             return handled;
         }
 
-        _doKeyEnterLatent() {
+        protected _doKeyEnterLatent() {
             if (this._keyMap) {
                 this._emitItemSelected(this._keyMap.getFocusedIndex(), this._keyMap.getFocusedElement());
             }
@@ -1262,7 +1262,7 @@ module Controls {
         }
 
         // Signals
-        /*protected*/ _handleFocusChanged(aElOld: HTMLElement, aElNew: HTMLElement) {
+        protected _handleFocusChanged(aElOld: HTMLElement, aElNew: HTMLElement) {
             this._emitFocusChanged(aElOld, aElNew);
         }
         connectFocusChanged(aHolder: any, aSlotName: string, aSlot: FFocusChanged) {
@@ -2110,7 +2110,7 @@ module Controls {
         protected doItemRemoved(aKey: number, aUnsetFocus?: boolean) {
             this.emit.call(this, "ItemRemoved", this._drawnElements, aUnsetFocus);
         }
-        protected doItemChagned(aKeys: number[]) {
+        protected doItemChanged(aKeys: number[]) {
             var i, len, key, drawnEl;
             for (i = 0, len = aKeys.length; i < len; i++) {
                 key = aKeys[i];
@@ -3497,7 +3497,7 @@ module Controls {
         }
 
         // set drawer
-        setDataDrawer(aDrawer: FDrawingDataDrawer) {
+        setDataDrawer(aDrawer: FDataDrawer) {
             this._drawingDataControl.setDataDrawer(aDrawer);
         }
 

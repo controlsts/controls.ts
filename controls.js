@@ -1111,7 +1111,7 @@ var Controls;
             return false;
         };
         // Signals
-        /*protected*/ CControl.prototype._handleFocusChanged = function (aElOld, aElNew) {
+        CControl.prototype._handleFocusChanged = function (aElOld, aElNew) {
             this._emitFocusChanged(aElOld, aElNew);
         };
         CControl.prototype.connectFocusChanged = function (aHolder, aSlotName, aSlot) {
@@ -1868,7 +1868,7 @@ var Controls;
         CListDataControl.prototype.doItemRemoved = function (aKey, aUnsetFocus) {
             this.emit.call(this, "ItemRemoved", this._drawnElements, aUnsetFocus);
         };
-        CListDataControl.prototype.doItemChagned = function (aKeys) {
+        CListDataControl.prototype.doItemChanged = function (aKeys) {
             var i, len, key, drawnEl;
             for (i = 0, len = aKeys.length; i < len; i++) {
                 key = aKeys[i];
