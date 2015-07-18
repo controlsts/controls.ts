@@ -4438,10 +4438,18 @@ var Controls;
         return CCarouselControl;
     })(CControl);
     Controls.CCarouselControl = CCarouselControl;
-    function makeNoneFocusable(aId) {
+    function makeNoneFocusable(aId, aHtml) {
         var focusInfo = new CLayoutControl(null);
         focusInfo.setId(aId);
         focusInfo.setItemDrawers([]);
+        if (aHtml) {
+            focusInfo.setItemDrawers([
+                function (aElement, aIndex) {
+                    aElement.innerHTML = aHtml;
+                    return 1 /* KFocusNone */;
+                }
+            ]);
+        }
         return focusInfo;
     }
     Controls.makeNoneFocusable = makeNoneFocusable;
