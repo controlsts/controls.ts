@@ -1437,7 +1437,7 @@ var Controls;
             this._itemDrawers = null;
             this._element.classList.add("-lay");
         }
-        /*protected*/ CLayoutControl.prototype._doDraw = function (aRect, aDrawParam) {
+        CLayoutControl.prototype._doDraw = function (aRect, aDrawParam) {
             var ret = [];
             var i, len, el;
             this.empty();

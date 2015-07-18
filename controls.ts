@@ -1636,7 +1636,7 @@ module Controls {
             this._element.classList.add("-lay");
         }
 
-        /*protected*/ _doDraw(aRect: TRect, aDrawParam: { [key: string]: any; }) {
+        protected _doDraw(aRect: TRect, aDrawParam: { [key: string]: any; }) {
             var ret: HTMLElement[] = [];
             var i, len, el: HTMLElement;
             this.empty();
