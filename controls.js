@@ -4453,5 +4453,88 @@ var Controls;
         return focusInfo;
     }
     Controls.makeNoneFocusable = makeNoneFocusable;
+    function fillControlParam(aControl, aParam) {
+        if (aParam.id) {
+            aControl.setId(aParam.id);
+        }
+        if (aParam.width) {
+            aControl.getElement().style.width = aParam.width + 'px';
+        }
+        if (aParam.height) {
+            aControl.getElement().style.height = aParam.height + 'px';
+        }
+        if (aParam.orientation) {
+            aControl.setOrientation(aParam.orientation);
+        }
+        if (aParam.itemWidth) {
+            aControl.setItemWidth(aParam.itemWidth);
+        }
+        if (aParam.itemHeight) {
+            aControl.setItemHeight(aParam.itemHeight);
+        }
+        if (aParam.onItemSelected) {
+            aControl.connectItemSelected(aParam, 'onItemSelected', aParam.onItemSelected);
+        }
+    }
+    function Layout(aParam) {
+        var layoutControl = new CLayoutControl(aParam.el || null);
+        fillControlParam(layoutControl, aParam);
+        layoutControl.setItemDrawers(aParam.itemDrawers || []);
+        return layoutControl;
+    }
+    Controls.Layout = Layout;
+    function ListControl(aParam) {
+        var list;
+        list = new Controls.CListControl(null);
+        fillControlParam(list, aParam);
+        if (aParam.data) {
+            list.setListData(aParam.data);
+        }
+        if (aParam.dataDrawer) {
+            list.setDataDrawer(function (aKey, aItem, aEl) {
+                aEl.classList.add(aItem.type);
+                aEl.style.opacity = '.5';
+                aEl.innerText = aKey + ": " + aItem.text;
+                return 2 /* KFocusAble */;
+            });
+        }
+        if (aParam.onFocusedDataItemChanged) {
+            list.connectFocusedDataItemChanged(aParam, 'onFocusedDataItemChanged', aParam.onFocusedDataItemChanged);
+        }
+        list.setAnimation(true);
+        list.setScrollScheme(5 /* EByFixed */);
+        list.setRedrawAfterOperation(true);
+        return list;
+    }
+    Controls.ListControl = ListControl;
+    function LayoutGroupControl(aParam) {
+        var layoutGroupControl = new Controls.CLayoutGroupControl(aParam.el || null);
+        fillControlParam(layoutGroupControl, aParam);
+        if (aParam.controls) {
+            layoutGroupControl.setOwnedChildControls(aParam.controls);
+        }
+        return layoutGroupControl;
+    }
+    Controls.LayoutGroupControl = LayoutGroupControl;
+    function runRoot(aControl) {
+        aControl.draw();
+        aControl.setActiveFocus();
+        aControl.getElement().addEventListener('keydown', function (e) {
+            var keyStr = e['keyIdentifier'];
+            var handled = aControl.doKey(keyStr);
+            console.log(handled);
+            var skip = {
+                'Up': true,
+                'Down': true,
+                'Left': true,
+                'Right': true
+            };
+            if (skip[keyStr]) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
+        });
+    }
+    Controls.runRoot = runRoot;
 })(Controls || (Controls = {}));
 //# sourceMappingURL=controls.js.map

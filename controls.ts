@@ -4886,7 +4886,7 @@ module Controls {
         var focusInfo = new CLayoutControl(null);
         focusInfo.setId(aId);
         focusInfo.setItemDrawers([]);
-        if (aHtml) {
+          if (aHtml) {
             focusInfo.setItemDrawers([
                 function(aElement: HTMLElement, aIndex: number) {
                     aElement.innerHTML = aHtml;
@@ -4895,6 +4895,129 @@ module Controls {
             ]);
         }
         return focusInfo;
+    }
+
+    export interface TControl {
+        el?: HTMLElement;
+        id?: string;
+        width?: number;
+        height?: number;
+        orientation?: TParamOrientation;
+        itemWidth?: number;
+        itemHeight?: number;
+        onItemSelected?: FItemSelected;
+    }
+
+    function fillControlParam(aControl: CControl, aParam: TControl) {
+        if (aParam.id) {
+            aControl.setId(aParam.id);
+        }
+
+        if (aParam.width) {
+            aControl.getElement().style.width = aParam.width + 'px';
+        }
+
+        if (aParam.height) {
+            aControl.getElement().style.height = aParam.height + 'px';
+        }
+
+        if (aParam.orientation) {
+            aControl.setOrientation(aParam.orientation);
+        }
+
+        if (aParam.itemWidth) {
+            aControl.setItemWidth(aParam.itemWidth);
+        }
+
+        if (aParam.itemHeight) {
+            aControl.setItemHeight(aParam.itemHeight);
+        }
+
+        if (aParam.onItemSelected) {
+            aControl.connectItemSelected(aParam, 'onItemSelected', aParam.onItemSelected);
+        }
+
+    }
+
+    export interface TLayoutControl extends TControl {
+        itemDrawers?: FItemDrawer[];
+        onFocusedDataItemChanged?: FFocusedDataItemChanged;
+    }
+
+    export function Layout(aParam: TLayoutControl): CLayoutControl {
+        var layoutControl = new CLayoutControl(aParam.el || null);
+        fillControlParam(layoutControl, aParam);
+        layoutControl.setItemDrawers(aParam.itemDrawers || []);
+        return layoutControl;
+    }
+
+    export interface TListControl extends TControl {
+        data: any[];
+        dataDrawer: FDataDrawer;
+    }
+
+    export function ListControl(aParam: TListControl): CListControl {
+        var list: Controls.CListControl;
+        list = new Controls.CListControl(null);
+        fillControlParam(list, aParam);
+
+        if (aParam.data) {
+            list.setListData(aParam.data);
+        }
+
+        if (aParam.dataDrawer) {
+            list.setDataDrawer(function (aKey:any, aItem:any, aEl:HTMLElement) {
+                aEl.classList.add(aItem.type);
+                aEl.style.opacity = '.5';
+                aEl.innerText = aKey + ": " + aItem.text;
+                return Controls.TFocusInfo.KFocusAble;
+            });
+        }
+
+        if (aParam.onFocusedDataItemChanged) {
+            list.connectFocusedDataItemChanged(aParam, 'onFocusedDataItemChanged', aParam.onFocusedDataItemChanged);
+        }
+
+        list.setAnimation(true);
+        list.setScrollScheme(Controls.TParamScrollScheme.EByFixed);
+        list.setRedrawAfterOperation(true);
+        return list;
+    }
+
+    export interface TLayoutGroupControl extends TControl {
+        controls: CControl[];
+    }
+
+    export function LayoutGroupControl(aParam: TLayoutGroupControl): CLayoutGroupControl {
+        var layoutGroupControl = new Controls.CLayoutGroupControl(aParam.el || null);
+        fillControlParam(layoutGroupControl, aParam);
+        if (aParam.controls) {
+            layoutGroupControl.setOwnedChildControls(aParam.controls);
+        }
+        return layoutGroupControl;
+    }
+
+    export function runRoot(aControl: CControl) {
+        aControl.draw();
+        aControl.setActiveFocus();
+
+        aControl.getElement().addEventListener('keydown', function (e) {
+            var keyStr = e['keyIdentifier'];
+            var handled = aControl.doKey(keyStr);
+            console.log(handled);
+
+            var skip = {
+                'Up': true,
+                'Down': true,
+                'Left': true,
+                'Right': true
+            };
+
+            if (skip[keyStr]) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
+        });
     }
 
 }
