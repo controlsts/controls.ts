@@ -4475,6 +4475,9 @@ var Controls;
         if (aParam.onItemSelected) {
             aControl.connectItemSelected(aParam, 'onItemSelected', aParam.onItemSelected);
         }
+        if (aParam.onFocusChanged) {
+            aControl.connectFocusChanged(aParam, 'onFocusChanged', aParam.onFocusChanged);
+        }
     }
     function Layout(aParam) {
         var layoutControl = new CLayoutControl(aParam.el || null);
@@ -4507,6 +4510,31 @@ var Controls;
         return list;
     }
     Controls.ListControl = ListControl;
+    function CarouselControl(aParam) {
+        var carousel = new Controls.CCarouselControl(aParam.el || null);
+        fillControlParam(carousel, aParam);
+        carousel.setData(aParam.data);
+        carousel.setViewCount(aParam.viewCount);
+        carousel.setAnchorIndex(aParam.anchorIndex);
+        carousel.setDataDrawer(aParam.dataDrawer);
+        if (aParam.onStartToChange) {
+            carousel.connectStartToChange(aParam, "onStartToChange", aParam.onStartToChange);
+        }
+        if (aParam.maxKeyQueueCount) {
+            carousel.setMaxKeyQueueCount(aParam.maxKeyQueueCount);
+        }
+        if (aParam.animation) {
+            carousel.setAnimation(aParam.animation);
+        }
+        if (aParam.transparentAnchor) {
+            carousel.setTransparentAnchor(aParam.transparentAnchor);
+        }
+        if (aParam.drawEffect) {
+            carousel.setDrawEfect(aParam.drawEffect);
+        }
+        return carousel;
+    }
+    Controls.CarouselControl = CarouselControl;
     function LayoutGroupControl(aParam) {
         var layoutGroupControl = new Controls.CLayoutGroupControl(aParam.el || null);
         fillControlParam(layoutGroupControl, aParam);

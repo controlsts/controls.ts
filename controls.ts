@@ -4906,6 +4906,7 @@ module Controls {
         itemWidth?: number;
         itemHeight?: number;
         onItemSelected?: FItemSelected;
+        onFocusChanged?: FFocusChanged;
     }
 
     function fillControlParam(aControl: CControl, aParam: TControl) {
@@ -4937,11 +4938,13 @@ module Controls {
             aControl.connectItemSelected(aParam, 'onItemSelected', aParam.onItemSelected);
         }
 
+        if (aParam.onFocusChanged) {
+            aControl.connectFocusChanged(aParam, 'onFocusChanged', aParam.onFocusChanged);
+        }
     }
 
     export interface TLayoutControl extends TControl {
         itemDrawers?: FItemDrawer[];
-        onFocusedDataItemChanged?: FFocusedDataItemChanged;
     }
 
     export function Layout(aParam: TLayoutControl): CLayoutControl {
@@ -4954,6 +4957,7 @@ module Controls {
     export interface TListControl extends TControl {
         data: any[];
         dataDrawer: FDataDrawer;
+        onFocusedDataItemChanged?: FFocusedDataItemChanged;
     }
 
     export function ListControl(aParam: TListControl): CListControl {
@@ -4982,6 +4986,45 @@ module Controls {
         list.setScrollScheme(Controls.TParamScrollScheme.EByFixed);
         list.setRedrawAfterOperation(true);
         return list;
+    }
+
+    export interface TCarouselControl extends TControl {
+        data: any[];
+        dataDrawer: FCarouselDataDrawer;
+        viewCount: number;
+        anchorIndex: number;
+        itemWidth: number;
+        itemHeight: number;
+        maxKeyQueueCount?: number;
+        animation?: boolean;
+        transparentAnchor?: boolean;
+        drawEffect?: string;
+        onStartToChange?: FCarouselStartToChange;
+    }
+
+    export function CarouselControl(aParam: TCarouselControl): CCarouselControl {
+        var carousel = new Controls.CCarouselControl(aParam.el || null);
+        fillControlParam(carousel, aParam);
+        carousel.setData(aParam.data);
+        carousel.setViewCount(aParam.viewCount);
+        carousel.setAnchorIndex(aParam.anchorIndex);
+        carousel.setDataDrawer(aParam.dataDrawer);
+        if (aParam.onStartToChange) {
+            carousel.connectStartToChange(aParam, "onStartToChange", aParam.onStartToChange);
+        }
+        if (aParam.maxKeyQueueCount) {
+            carousel.setMaxKeyQueueCount(aParam.maxKeyQueueCount);
+        }
+        if (aParam.animation) {
+            carousel.setAnimation(aParam.animation);
+        }
+        if (aParam.transparentAnchor) {
+            carousel.setTransparentAnchor(aParam.transparentAnchor);
+        }
+        if (aParam.drawEffect) {
+            carousel.setDrawEfect(aParam.drawEffect);
+        }
+        return carousel;
     }
 
     export interface TLayoutGroupControl extends TControl {
