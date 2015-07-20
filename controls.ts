@@ -4988,6 +4988,37 @@ module Controls {
         return list;
     }
 
+    export interface TGridControl extends TControl {
+        maxColCount: number;
+        animation?: boolean;
+
+        data: any[];
+        dataDrawer: FDataDrawer;
+    }
+
+    export function GridControl(aParam: TGridControl): CGridControl {
+        var gridControl = new CGridControl(aParam.el || null);
+        fillControlParam(gridControl, aParam);
+
+        if (aParam.maxColCount) {
+            gridControl.setMaxColCount(aParam.maxColCount);
+        }
+
+        if (aParam.animation) {
+            gridControl.setAnimation(aParam.animation);
+        }
+
+        if (aParam.data) {
+            gridControl.setListData(aParam.data);
+        }
+
+        if (aParam.dataDrawer) {
+            gridControl.setDataDrawer(aParam.dataDrawer);
+        }
+
+        return gridControl;
+    }
+
     export interface TCarouselControl extends TControl {
         data: any[];
         dataDrawer: FCarouselDataDrawer;

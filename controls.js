@@ -4510,6 +4510,24 @@ var Controls;
         return list;
     }
     Controls.ListControl = ListControl;
+    function GridControl(aParam) {
+        var gridControl = new CGridControl(aParam.el || null);
+        fillControlParam(gridControl, aParam);
+        if (aParam.maxColCount) {
+            gridControl.setMaxColCount(aParam.maxColCount);
+        }
+        if (aParam.animation) {
+            gridControl.setAnimation(aParam.animation);
+        }
+        if (aParam.data) {
+            gridControl.setListData(aParam.data);
+        }
+        if (aParam.dataDrawer) {
+            gridControl.setDataDrawer(aParam.dataDrawer);
+        }
+        return gridControl;
+    }
+    Controls.GridControl = GridControl;
     function CarouselControl(aParam) {
         var carousel = new Controls.CCarouselControl(aParam.el || null);
         fillControlParam(carousel, aParam);
