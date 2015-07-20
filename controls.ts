@@ -4903,10 +4903,16 @@ module Controls {
         width?: number;
         height?: number;
         orientation?: TParamOrientation;
+        padding?: number;
+        margins?: number[];
+        childHAlign?: Controls.TParamHAlign;
+        childVAlign?: Controls.TParamVAlign;
         itemWidth?: number;
         itemHeight?: number;
         onItemSelected?: FItemSelected;
         onFocusChanged?: FFocusChanged;
+        onFocusGained?: FFocusGained;
+        onFocusLost?: FFocusLost;
     }
 
     function fillControlParam(aControl: CControl, aParam: TControl) {
@@ -4924,6 +4930,22 @@ module Controls {
 
         if (aParam.orientation) {
             aControl.setOrientation(aParam.orientation);
+        }
+
+        if (aParam.padding) {
+            aControl.setPadding(aParam.padding);
+        }
+
+        if (aParam.margins) {
+            aControl.setMargins(aParam.margins);
+        }
+
+        if (aParam.childHAlign) {
+            aControl.setChildHAlign(aParam.childHAlign);
+        }
+
+        if (aParam.childVAlign) {
+            aControl.setChildVAlign(aParam.childVAlign);
         }
 
         if (aParam.itemWidth) {
@@ -4947,7 +4969,7 @@ module Controls {
         itemDrawers?: FItemDrawer[];
     }
 
-    export function Layout(aParam: TLayoutControl): CLayoutControl {
+    export function LayoutControl(aParam: TLayoutControl): CLayoutControl {
         var layoutControl = new CLayoutControl(aParam.el || null);
         fillControlParam(layoutControl, aParam);
         layoutControl.setItemDrawers(aParam.itemDrawers || []);
@@ -5060,6 +5082,8 @@ module Controls {
 
     export interface TLayoutGroupControl extends TControl {
         controls: CControl[];
+
+        onChildFocusChanged?: FChildFocusChanged;
     }
 
     export function LayoutGroupControl(aParam: TLayoutGroupControl): CLayoutGroupControl {
@@ -5068,6 +5092,10 @@ module Controls {
         if (aParam.controls) {
             layoutGroupControl.setOwnedChildControls(aParam.controls);
         }
+
+        if (aParam.onChildFocusChanged) {
+            layoutGroupControl.connectChildFocusChanged(aParam, 'onChildFocusChanged', aParam.onChildFocusChanged);
+        }
         return layoutGroupControl;
     }
 
@@ -5075,7 +5103,7 @@ module Controls {
         aControl.draw();
         aControl.setActiveFocus();
 
-        aControl.getElement().addEventListener('keydown', function (e) {
+        document.body.addEventListener('keydown', function (e) {
             var keyStr = e['keyIdentifier'];
             var handled = aControl.doKey(keyStr);
             console.log(handled);

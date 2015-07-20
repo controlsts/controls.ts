@@ -4466,6 +4466,18 @@ var Controls;
         if (aParam.orientation) {
             aControl.setOrientation(aParam.orientation);
         }
+        if (aParam.padding) {
+            aControl.setPadding(aParam.padding);
+        }
+        if (aParam.margins) {
+            aControl.setMargins(aParam.margins);
+        }
+        if (aParam.childHAlign) {
+            aControl.setChildHAlign(aParam.childHAlign);
+        }
+        if (aParam.childVAlign) {
+            aControl.setChildVAlign(aParam.childVAlign);
+        }
         if (aParam.itemWidth) {
             aControl.setItemWidth(aParam.itemWidth);
         }
@@ -4479,13 +4491,13 @@ var Controls;
             aControl.connectFocusChanged(aParam, 'onFocusChanged', aParam.onFocusChanged);
         }
     }
-    function Layout(aParam) {
+    function LayoutControl(aParam) {
         var layoutControl = new CLayoutControl(aParam.el || null);
         fillControlParam(layoutControl, aParam);
         layoutControl.setItemDrawers(aParam.itemDrawers || []);
         return layoutControl;
     }
-    Controls.Layout = Layout;
+    Controls.LayoutControl = LayoutControl;
     function ListControl(aParam) {
         var list;
         list = new Controls.CListControl(null);
@@ -4559,13 +4571,16 @@ var Controls;
         if (aParam.controls) {
             layoutGroupControl.setOwnedChildControls(aParam.controls);
         }
+        if (aParam.onChildFocusChanged) {
+            layoutGroupControl.connectChildFocusChanged(aParam, 'onChildFocusChanged', aParam.onChildFocusChanged);
+        }
         return layoutGroupControl;
     }
     Controls.LayoutGroupControl = LayoutGroupControl;
     function runRoot(aControl) {
         aControl.draw();
         aControl.setActiveFocus();
-        aControl.getElement().addEventListener('keydown', function (e) {
+        document.body.addEventListener('keydown', function (e) {
             var keyStr = e['keyIdentifier'];
             var handled = aControl.doKey(keyStr);
             console.log(handled);

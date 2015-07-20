@@ -1,17 +1,13 @@
-
 /// <reference path="../controls.ts"/>
-
-module gApp{
-
+var gApp;
+(function (gApp) {
     var data = [];
-
-    for (var i=0; i<30; i++) {
+    for (var i = 0; i < 30; i++) {
         data.push({
             name: 'Name ' + i,
             text: 'Text ' + i
         });
     }
-
     var root = Controls.GridControl({
         el: document.body,
         id: 'idRoot',
@@ -19,21 +15,18 @@ module gApp{
         itemHeight: 90,
         maxColCount: 4,
         animation: true,
-
         data: data,
-        dataDrawer: function (aKey: any, aItem: any, aEl: HTMLElement) {
+        dataDrawer: function (aKey, aItem, aEl) {
             aEl.innerText = aKey + ': ' + aItem.name;
-            return Controls.TFocusInfo.KFocusAble;
+            return 2 /* KFocusAble */;
         },
-
-        onFocusChanged: function (aOld: HTMLElement, aNew: HTMLElement) {
-            aNew.innerText += 'focused'
+        onFocusChanged: function (aOld, aNew) {
+            aNew.innerText += 'focused';
         },
-        onItemSelected: function (aControl: Controls.CControl, aIndex: number, aEl: HTMLElement) {
+        onItemSelected: function (aControl, aIndex, aEl) {
             alert('index : ' + aIndex);
         }
     });
-
     Controls.runRoot(root);
-
-}
+})(gApp || (gApp = {}));
+//# sourceMappingURL=test_gridcontrol.js.map
