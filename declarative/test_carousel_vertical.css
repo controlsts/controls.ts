@@ -1,0 +1,7 @@
+body {
+  width: 1280px;
+  height: 720px;
+}
+body .-carousel {
+  width: 100px;
+}
