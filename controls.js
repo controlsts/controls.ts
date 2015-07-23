@@ -4484,6 +4484,9 @@ var Controls;
         if (aParam.itemHeight) {
             aControl.setItemHeight(aParam.itemHeight);
         }
+        if (aParam.scrollScheme) {
+            aControl.setScrollScheme(aParam.scrollScheme);
+        }
         if (aParam.onItemSelected) {
             aControl.connectItemSelected(aParam, 'onItemSelected', aParam.onItemSelected);
         }
