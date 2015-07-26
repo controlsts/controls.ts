@@ -16,7 +16,7 @@ module gApp {
         id: 'root',
         orientation: Controls.TParamOrientation.EVertical,
         controls: [
-            Controls.Layout({
+            Controls.LayoutControl({
                 id: 'idStatus'
             }),
             Controls.ListControl({

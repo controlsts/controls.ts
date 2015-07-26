@@ -13,7 +13,7 @@ var gApp;
         id: 'root',
         orientation: 1 /* EVertical */,
         controls: [
-            Controls.Layout({
+            Controls.LayoutControl({
                 id: 'idStatus'
             }),
             Controls.ListControl({
