@@ -4909,7 +4909,6 @@ module Controls {
         childVAlign?: Controls.TParamVAlign;
         itemWidth?: number;
         itemHeight?: number;
-        scrollScheme?: TParamScrollScheme;
         onItemSelected?: FItemSelected;
         onFocusChanged?: FFocusChanged;
         onFocusGained?: FFocusGained;
@@ -4955,10 +4954,6 @@ module Controls {
 
         if (aParam.itemHeight) {
             aControl.setItemHeight(aParam.itemHeight);
-        }
-
-        if (aParam.scrollScheme) {
-            aControl.setScrollScheme(aParam.scrollScheme);
         }
 
         if (aParam.onItemSelected) {
@@ -5049,6 +5044,7 @@ module Controls {
     export interface TCarouselControl extends TControl {
         data: any[];
         dataDrawer: FCarouselDataDrawer;
+        anchorDrawer?: FCarouselAnchorDrawer;
         viewCount: number;
         anchorIndex: number;
         itemWidth: number;
@@ -5081,6 +5077,9 @@ module Controls {
         }
         if (aParam.drawEffect) {
             carousel.setDrawEfect(aParam.drawEffect);
+        }
+        if (aParam.anchorDrawer) {
+            carousel.setAnchorDrawer(aParam.anchorDrawer);
         }
         return carousel;
     }
@@ -5125,6 +5124,37 @@ module Controls {
                 e.preventDefault();
             }
         });
+    }
+
+    export interface TItem {
+        el?: HTMLElement;
+        tagName?: string;
+        className?: string;
+        innerText?: string;
+        backgroundColor?: string;
+        children?: TItem[];
+    }
+
+    export function Item(aParam: TItem): HTMLElement {
+        var el = aParam.el || document.createElement(aParam.tagName || 'div');
+
+        if (aParam.className) {
+            el.classList.add(aParam.className);
+        }
+        if (aParam.innerText) {
+            el.innerText = aParam.innerText;
+        }
+        if (aParam.backgroundColor) {
+            el.style.backgroundColor = aParam.backgroundColor;
+        }
+
+        if (aParam.children) {
+            aParam.children.forEach(function(child) {
+                el.appendChild(Item(child));
+            });
+        }
+
+        return el;
     }
 
 }

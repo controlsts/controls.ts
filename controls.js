@@ -4484,9 +4484,6 @@ var Controls;
         if (aParam.itemHeight) {
             aControl.setItemHeight(aParam.itemHeight);
         }
-        if (aParam.scrollScheme) {
-            aControl.setScrollScheme(aParam.scrollScheme);
-        }
         if (aParam.onItemSelected) {
             aControl.connectItemSelected(aParam, 'onItemSelected', aParam.onItemSelected);
         }
@@ -4565,6 +4562,9 @@ var Controls;
         if (aParam.drawEffect) {
             carousel.setDrawEfect(aParam.drawEffect);
         }
+        if (aParam.anchorDrawer) {
+            carousel.setAnchorDrawer(aParam.anchorDrawer);
+        }
         return carousel;
     }
     Controls.CarouselControl = CarouselControl;
@@ -4600,5 +4600,24 @@ var Controls;
         });
     }
     Controls.runRoot = runRoot;
+    function Item(aParam) {
+        var el = aParam.el || document.createElement(aParam.tagName || 'div');
+        if (aParam.className) {
+            el.classList.add(aParam.className);
+        }
+        if (aParam.innerText) {
+            el.innerText = aParam.innerText;
+        }
+        if (aParam.backgroundColor) {
+            el.style.backgroundColor = aParam.backgroundColor;
+        }
+        if (aParam.children) {
+            aParam.children.forEach(function (child) {
+                el.appendChild(Item(child));
+            });
+        }
+        return el;
+    }
+    Controls.Item = Item;
 })(Controls || (Controls = {}));
 //# sourceMappingURL=controls.js.map
