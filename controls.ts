@@ -4992,12 +4992,7 @@ module Controls {
         }
 
         if (aParam.dataDrawer) {
-            list.setDataDrawer(function (aKey:any, aItem:any, aEl:HTMLElement) {
-                aEl.classList.add(aItem.type);
-                aEl.style.opacity = '.5';
-                aEl.innerText = aKey + ": " + aItem.text;
-                return Controls.TFocusInfo.KFocusAble;
-            });
+            list.setDataDrawer(aParam.dataDrawer);
         }
 
         if (aParam.onFocusedDataItemChanged) {

@@ -4506,12 +4506,7 @@ var Controls;
             list.setListData(aParam.data);
         }
         if (aParam.dataDrawer) {
-            list.setDataDrawer(function (aKey, aItem, aEl) {
-                aEl.classList.add(aItem.type);
-                aEl.style.opacity = '.5';
-                aEl.innerText = aKey + ": " + aItem.text;
-                return 2 /* KFocusAble */;
-            });
+            list.setDataDrawer(aParam.dataDrawer);
         }
         if (aParam.onFocusedDataItemChanged) {
             list.connectFocusedDataItemChanged(aParam, 'onFocusedDataItemChanged', aParam.onFocusedDataItemChanged);
