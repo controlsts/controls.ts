@@ -778,7 +778,7 @@ module Controls {
         ERight,
     }
     var KParamAnimation = "animation";
-    var KParamUserAnimationCSS = "userAnimationCSS";
+    var KParamConfigTransition = "configTransition";
     var KParamAnimationInterval = "animationInterval";
     var KParamKeepFocus = "keepFocus";
     /* -- DEPRECATED
@@ -1029,11 +1029,11 @@ module Controls {
             return this._getDrawParam(KParamAnimation) || false;
         }
         // User Animation CSS
-        setUseUserAnimationCSS(aAnimation: boolean) {
-            this._setDrawParam(KParamUserAnimationCSS, aAnimation, false);
+        setConfigTransition(aConfigTransition: boolean) {
+            this._setDrawParam(KParamConfigTransition, aConfigTransition, false);
         }
-        getUseUserAnimationCSS(): boolean {
-            return this._getDrawParam(KParamUserAnimationCSS) || false;
+        getConfigTransition(): boolean {
+            return this._getDrawParam(KParamConfigTransition) || false;
         }
         // AnimationInterval
         setAnimationInterval(aAnimationInterval: number) {
@@ -4106,7 +4106,7 @@ module Controls {
         private _createItem(aItem: { index: number; data: any; }, aTop: number, aClassName?: string): HTMLElement {
             var orientation: TParamOrientation = this.getOrientation();
             var animation: boolean = this.getAnimation();
-            var useUserAnimationCSS: boolean = this.getUseUserAnimationCSS();
+            var configTransition: boolean = this.getConfigTransition();
             var animationInterval = this.getAnimationInterval();
             if (!animationInterval) {
                 animationInterval = 0.3;
@@ -4124,12 +4124,12 @@ module Controls {
                 itemEl.classList.add(classNames[i]);
             }
             if (orientation === TParamOrientation.EHorizontal) {
-                if (animation && !useUserAnimationCSS) {
+                if (animation && configTransition) {
                     itemEl.style.transition = 'left ' + animationInterval + 's linear';
                 }
                 itemEl.style.left = aTop + 'px';
             } else {
-                if (animation && !useUserAnimationCSS) {
+                if (animation && configTransition) {
                     itemEl.style.transition = 'top ' + animationInterval + 's linear';
                 }
                 itemEl.style.top = aTop + 'px';
