@@ -3670,7 +3670,7 @@ var Controls;
             }
             return itemEl;
         };
-        /*protected*/ CCarouselControl.prototype._doDraw = function (aRect, aDrawParam) {
+        CCarouselControl.prototype._doDraw = function (aRect, aDrawParam) {
             var ret;
             this.setTransition(false);
             if (this._dataChanged) {
@@ -3844,7 +3844,7 @@ var Controls;
                             }
                         }
                     }
-                }, 1);
+                }, 0);
             }
             var anchorEl = document.createElement('div');
             anchorEl.classList.add(CCarouselControl.KClassAnchor);
@@ -4009,7 +4009,7 @@ var Controls;
                 _this._handleTransitionEnd();
             });
         };
-        CCarouselControl.prototype._update2 = function (aDown) {
+        CCarouselControl.prototype._update = function (aDown) {
             var menuLen = this._cirMenuItems.length();
             var itemHeight = this.getItemHeight();
             var itemWidth = this.getItemWidth();
@@ -4146,7 +4146,7 @@ var Controls;
                         });
                     }
                 }
-            }, 1);
+            }, 0);
         };
         CCarouselControl.prototype._doTransitionBack = function () {
             var dataLen = this._cirMenuItems.length();
@@ -4226,7 +4226,7 @@ var Controls;
                 this._animate(false);
             }
             else {
-                this._update2(false);
+                this._update(false);
             }
         };
         CCarouselControl.prototype._doTransitionNext = function () {
@@ -4327,7 +4327,7 @@ var Controls;
                 this._animate(true);
             }
             else {
-                this._update2(true);
+                this._update(true);
             }
         };
         CCarouselControl.prototype._doKeyLeft = function () {
@@ -4575,13 +4575,24 @@ var Controls;
         return layoutGroupControl;
     }
     Controls.LayoutGroupControl = LayoutGroupControl;
+    function ASSERT(condition, message) {
+        if (!condition) {
+            console.error(message);
+        }
+    }
     function runRoot(aControl) {
         aControl.draw();
         aControl.setActiveFocus();
         document.body.addEventListener('keydown', function (e) {
-            var keyStr = e['keyIdentifier'];
+            var keyStrList = {
+                38: 'Up',
+                40: 'Down',
+                37: 'Left',
+                39: 'Right'
+            };
+            var keyStr = e['keyIdentifier'] || keyStrList[e.keyCode];
+            ASSERT(keyStr, 'Key string not defined');
             var handled = aControl.doKey(keyStr);
-            console.log(handled);
             var skip = {
                 'Up': true,
                 'Down': true,
@@ -4602,6 +4613,7 @@ var Controls;
         }
         if (aParam.innerText) {
             el.innerText = aParam.innerText;
+            el.textContent = aParam.innerText;
         }
         if (aParam.backgroundColor) {
             el.style.backgroundColor = aParam.backgroundColor;

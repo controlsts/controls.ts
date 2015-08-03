@@ -4139,20 +4139,20 @@ module Controls {
             }
             return itemEl;
         }
-        /*protected*/ _doDraw(aRect: TRect, aDrawParam: { [key: string]: any; }): HTMLElement[] {
-        var ret: HTMLElement[];
-        this.setTransition(false);
-        if (this._dataChanged) {
-            if (this.getOrientation() == TParamOrientation.EHorizontal) {
-                this._keyMapBuilder = KBuilderLeftRight;
-            } else {
-                this._keyMapBuilder = KBuilderTopDown;
+        protected _doDraw(aRect: TRect, aDrawParam: { [key: string]: any; }): HTMLElement[] {
+            var ret: HTMLElement[];
+            this.setTransition(false);
+            if (this._dataChanged) {
+                if (this.getOrientation() == TParamOrientation.EHorizontal) {
+                    this._keyMapBuilder = KBuilderLeftRight;
+                } else {
+                    this._keyMapBuilder = KBuilderTopDown;
+                }
+                this._doDrawItems();
             }
-            this._doDrawItems();
+            ret = [this._anchorEl];
+            return ret;
         }
-        ret = [this._anchorEl];
-        return ret;
-    }
         private _doDrawItems(): HTMLElement {
             var align: TParamOrientation = this.getOrientation();
             var menuLen: number = this._cirMenuItems.length();
@@ -4306,7 +4306,7 @@ module Controls {
                             }
                         }
                     }
-                }, 1);
+                }, 0);
             }
 
             var anchorEl = document.createElement('div');
@@ -4469,7 +4469,7 @@ module Controls {
                 this._handleTransitionEnd();
             });
         }
-        private _update2(aDown: boolean) {
+        private _update(aDown: boolean) {
             var menuLen: number = this._cirMenuItems.length();
             var itemHeight: number = this.getItemHeight();
             var itemWidth: number = this.getItemWidth();
@@ -4606,7 +4606,7 @@ module Controls {
                         });
                     }
                 }
-            }, 1);
+            }, 0);
         }
 
         private _doTransitionBack() {
@@ -4685,7 +4685,7 @@ module Controls {
             if (animation) {
                 this._animate(false);
             } else {
-                this._update2(false);
+                this._update(false);
             }
         }
 
@@ -4782,7 +4782,7 @@ module Controls {
             if (animation) {
                 this._animate(true);
             } else {
-                this._update2(true);
+                this._update(true);
             }
         }
 
@@ -5098,14 +5098,26 @@ module Controls {
         return layoutGroupControl;
     }
 
+    function ASSERT(condition, message) {
+        if (!condition) {
+            console.error(message);
+        }
+    }
+
     export function runRoot(aControl: CControl) {
         aControl.draw();
         aControl.setActiveFocus();
 
         document.body.addEventListener('keydown', function (e) {
-            var keyStr = e['keyIdentifier'];
+            var keyStrList = {
+                38: 'Up',
+                40: 'Down',
+                37: 'Left',
+                39: 'Right'
+            };
+            var keyStr = e['keyIdentifier'] || keyStrList[e.keyCode];
+            ASSERT(keyStr, 'Key string not defined');
             var handled = aControl.doKey(keyStr);
-            console.log(handled);
 
             var skip = {
                 'Up': true,
@@ -5138,6 +5150,7 @@ module Controls {
         }
         if (aParam.innerText) {
             el.innerText = aParam.innerText;
+            el.textContent = aParam.innerText;
         }
         if (aParam.backgroundColor) {
             el.style.backgroundColor = aParam.backgroundColor;
