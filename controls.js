@@ -977,10 +977,10 @@ var Controls;
             return this._getDrawParam(KParamStrTransparentAnchor) || false;
         };
         // DrawEfect
-        CControl.prototype.setDrawEfect = function (aDrawEfect) {
-            this._setDrawParam(KParamStrDrawEffect, aDrawEfect, true);
+        CControl.prototype.setDrawEffect = function (aDrawEffect) {
+            this._setDrawParam(KParamStrDrawEffect, aDrawEffect, true);
         };
-        CControl.prototype.getDrawEfect = function () {
+        CControl.prototype.getDrawEffect = function () {
             return this._getDrawParam(KParamStrDrawEffect) || null;
         };
         // Scrolling scheme
@@ -3694,7 +3694,7 @@ var Controls;
             var anchorIndex = this.getAnchorIndex();
             var startIndex = this.getStartIndex();
             var transparentAnchor = this.getTransparentAnchor();
-            var drawEffect = this.getDrawEfect();
+            var drawEffect = this.getDrawEffect();
             var drawnItems = [];
             var i;
             if (!viewCount) {
@@ -3789,16 +3789,22 @@ var Controls;
                             itemPositionStart = -itemWidth;
                         }
                     }
+                    drawInfos.push({
+                        skip: i == anchorIndex,
+                        position: itemPosition,
+                        parentEl: parentEl,
+                        positionStart: itemPositionStart
+                    });
                 }
                 else {
                     parentEl = this._element;
                     itemPosition = nextPosition;
+                    drawInfos.push({
+                        position: itemPosition,
+                        parentEl: parentEl,
+                        positionStart: itemPositionStart
+                    });
                 }
-                drawInfos.push({
-                    position: itemPosition,
-                    parentEl: parentEl,
-                    positionStart: itemPositionStart
-                });
                 if (align == 1 /* EVertical */) {
                     nextPosition += i === anchorIndex ? anchorHeight : itemHeight;
                 }
@@ -3813,7 +3819,7 @@ var Controls;
                 var distClassName = CCarouselControl.KClassDistPrefix + dist;
                 var drawInfo = drawInfos[i];
                 var itemEl = null;
-                if (drawInfo.parentEl) {
+                if (!drawInfo.skip && drawInfo.parentEl) {
                     if (drawEffect == 'spreadOut') {
                         itemEl = this._createItem(item, drawInfo.positionStart, distClassName);
                     }
@@ -4172,15 +4178,15 @@ var Controls;
             var result = this._cirMenuItems.getViewItems(viewCount, anchorIndex);
             var items = result.items;
             if (this.getTransparentAnchor()) {
-                var uppperItemNodeList = this._upperBoundEl.querySelectorAll(CCarouselControl.KSelectorItem);
+                var upperItemNodeList = this._upperBoundEl.querySelectorAll(CCarouselControl.KSelectorItem);
                 var lowerItemNodeList = this._lowerBoundEl.querySelectorAll(CCarouselControl.KSelectorItem);
                 var newUpperEl, newLowerEl;
                 if (dataLen < viewCount) {
                     newUpperEl = this._createItem(null, -itemSize);
-                    this._upperBoundEl.insertBefore(newUpperEl, uppperItemNodeList[0]);
-                    uppperItemNodeList = this._upperBoundEl.querySelectorAll(CCarouselControl.KSelectorItem);
-                    for (i = 0, len = uppperItemNodeList.length; i < len; i += 1) {
-                        itemEl = uppperItemNodeList[i];
+                    this._upperBoundEl.insertBefore(newUpperEl, upperItemNodeList[0]);
+                    upperItemNodeList = this._upperBoundEl.querySelectorAll(CCarouselControl.KSelectorItem);
+                    for (i = 0, len = upperItemNodeList.length; i < len; i += 1) {
+                        itemEl = upperItemNodeList[i];
                         itemEl.innerText = '';
                         item = items[i];
                         if (item) {
@@ -4202,7 +4208,7 @@ var Controls;
                 else {
                     newUpperEl = this._createItem(items[0], -itemSize, null);
                     newLowerEl = this._createItem(items[anchorIndex + 1], -itemSize, null);
-                    uppperItemNodeList[0].parentNode.insertBefore(newUpperEl, uppperItemNodeList[0]);
+                    upperItemNodeList[0].parentNode.insertBefore(newUpperEl, upperItemNodeList[0]);
                     lowerItemNodeList[0].parentNode.insertBefore(newLowerEl, lowerItemNodeList[0]);
                 }
             }
@@ -4555,7 +4561,7 @@ var Controls;
             carousel.setTransparentAnchor(aParam.transparentAnchor);
         }
         if (aParam.drawEffect) {
-            carousel.setDrawEfect(aParam.drawEffect);
+            carousel.setDrawEffect(aParam.drawEffect);
         }
         if (aParam.anchorDrawer) {
             carousel.setAnchorDrawer(aParam.anchorDrawer);
