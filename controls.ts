@@ -1092,10 +1092,10 @@ module Controls {
             return this._getDrawParam(KParamStrTransparentAnchor) || false;
         }
         // DrawEfect
-        setDrawEfect(aDrawEfect: string) {
-            this._setDrawParam(KParamStrDrawEffect, aDrawEfect, true);
+        setDrawEffect(aDrawEffect: string) {
+            this._setDrawParam(KParamStrDrawEffect, aDrawEffect, true);
         }
-        getDrawEfect(): string {
+        getDrawEffect(): string {
             return this._getDrawParam(KParamStrDrawEffect) || null;
         }
         // Scrolling scheme
@@ -4162,7 +4162,7 @@ module Controls {
             var anchorIndex: number = this.getAnchorIndex();
             var startIndex: number = this.getStartIndex();
             var transparentAnchor: boolean = this.getTransparentAnchor();
-            var drawEffect: string = this.getDrawEfect();
+            var drawEffect: string = this.getDrawEffect();
             var drawnItems: any = [];
             var i: number;
 
@@ -4221,13 +4221,12 @@ module Controls {
                 this._element.appendChild(this._upperBoundEl);
                 this._element.appendChild(this._lowerBoundEl);
             }
-
             /*
              * Make draw info for each items
              */
             var result = this._cirMenuItems.getViewItems(viewCount, anchorIndex);
             var parentEl: HTMLElement = null;
-            var drawInfos: { position: number; parentEl: HTMLElement; positionStart: number; }[] = [];
+            var drawInfos: { skip?: boolean; position: number; parentEl: HTMLElement; positionStart: number; }[] = [];
             var nextPosition: number = 0;
             var itemPosition: number = 0;
             if (align == TParamOrientation.EVertical) {
@@ -4256,15 +4255,21 @@ module Controls {
                             itemPositionStart = -itemWidth;
                         }
                     }
+                    drawInfos.push({
+                        skip: i == anchorIndex,
+                        position: itemPosition,
+                        parentEl: parentEl,
+                        positionStart: itemPositionStart
+                    });
                 } else {
                     parentEl = this._element;
                     itemPosition = nextPosition;
+                    drawInfos.push({
+                        position: itemPosition,
+                        parentEl: parentEl,
+                        positionStart: itemPositionStart
+                    });
                 }
-                drawInfos.push({
-                    position: itemPosition,
-                    parentEl: parentEl,
-                    positionStart: itemPositionStart
-                });
                 if (align == TParamOrientation.EVertical) {
                     nextPosition += i === anchorIndex ? anchorHeight : itemHeight;
                 } else {
@@ -4278,7 +4283,7 @@ module Controls {
                 var distClassName = CCarouselControl.KClassDistPrefix + dist;
                 var drawInfo = drawInfos[i];
                 var itemEl = null;
-                if (drawInfo.parentEl) {
+                if (!drawInfo.skip && drawInfo.parentEl) {
                     if (drawEffect == 'spreadOut') {
                         itemEl = this._createItem(item, drawInfo.positionStart, distClassName);
                     } else {
@@ -4634,15 +4639,15 @@ module Controls {
             var result = this._cirMenuItems.getViewItems(viewCount, anchorIndex);
             var items = result.items;
             if (this.getTransparentAnchor()) {
-                var uppperItemNodeList = this._upperBoundEl.querySelectorAll(CCarouselControl.KSelectorItem);
+                var upperItemNodeList = this._upperBoundEl.querySelectorAll(CCarouselControl.KSelectorItem);
                 var lowerItemNodeList = this._lowerBoundEl.querySelectorAll(CCarouselControl.KSelectorItem);
                 var newUpperEl, newLowerEl;
                 if (dataLen < viewCount) {
                     newUpperEl = this._createItem(null, -itemSize);
-                    this._upperBoundEl.insertBefore(newUpperEl, uppperItemNodeList[0]);
-                    uppperItemNodeList = this._upperBoundEl.querySelectorAll(CCarouselControl.KSelectorItem);
-                    for (i = 0, len = uppperItemNodeList.length; i < len; i += 1) {
-                        itemEl = <HTMLElement> uppperItemNodeList[i];
+                    this._upperBoundEl.insertBefore(newUpperEl, upperItemNodeList[0]);
+                    upperItemNodeList = this._upperBoundEl.querySelectorAll(CCarouselControl.KSelectorItem);
+                    for (i = 0, len = upperItemNodeList.length; i < len; i += 1) {
+                        itemEl = <HTMLElement> upperItemNodeList[i];
                         itemEl.innerText = '';
                         item = items[i];
                         if (item) {
@@ -4663,7 +4668,7 @@ module Controls {
                 } else {
                     newUpperEl = this._createItem(items[0], -itemSize, null);
                     newLowerEl = this._createItem(items[anchorIndex + 1], -itemSize, null);
-                    uppperItemNodeList[0].parentNode.insertBefore(newUpperEl, uppperItemNodeList[0]);
+                    upperItemNodeList[0].parentNode.insertBefore(newUpperEl, upperItemNodeList[0]);
                     lowerItemNodeList[0].parentNode.insertBefore(newLowerEl, lowerItemNodeList[0]);
                 }
             } else {
@@ -5071,7 +5076,7 @@ module Controls {
             carousel.setTransparentAnchor(aParam.transparentAnchor);
         }
         if (aParam.drawEffect) {
-            carousel.setDrawEfect(aParam.drawEffect);
+            carousel.setDrawEffect(aParam.drawEffect);
         }
         if (aParam.anchorDrawer) {
             carousel.setAnchorDrawer(aParam.anchorDrawer);
