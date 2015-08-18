@@ -240,7 +240,7 @@ var Controls;
         }
     };
     Controls.KBuilderLeftRight = function (aKeyMap, aFocusable, aPrevFocusInfo, aPrevKeyStr) {
-        var i, j, len, el, mapItem, prevMapItem = null;
+        var i, len, el, mapItem, prevMapItem = null;
         var startIndex = 0;
         for (i = 0, len = aFocusable.length; i < len; i++) {
             el = aFocusable[i];
@@ -279,7 +279,7 @@ var Controls;
         }
     };
     Controls.KBuilderGrid = function (aKeyMap, aFocusable, aPrevFocusInfo, aPrevKeyStr) {
-        var i, j, len;
+        var i, len;
         var el;
         var mapItem;
         var prevMapItem = null;
@@ -2506,11 +2506,12 @@ var Controls;
                 this.setActiveFocus();
             }
         };
-        CGroupControl.prototype._doDraw = function (aRect, aDrawParam) {
-            return this._doDrawCommon(this._element, aRect, aDrawParam);
+        CGroupControl.prototype._getDrawElement = function () {
+            return this._element;
         };
-        CGroupControl.prototype._doDrawCommon = function (aParent, aRect, aDrawParam) {
+        CGroupControl.prototype._doDraw = function (aRect, aDrawParam) {
             var ret = [];
+            var parent = this._getDrawElement();
             if (this._root) {
                 this._element.classList.add(KClassFocused);
             }
@@ -2519,7 +2520,7 @@ var Controls;
                 c = this._child[i];
                 el = c._element;
                 el.attributes["data"] = i;
-                aParent.appendChild(el);
+                parent.appendChild(el);
                 c.draw(aRect);
                 if (c.isFocusable()) {
                     ret.push(el);
@@ -3328,15 +3329,15 @@ var Controls;
                 destroy();
             }
         };
-        CLayeredGroupControl.prototype.draw = function (aRect) {
-            _super.prototype.draw.call(this, aRect);
-            this.setActiveFocus();
-        };
-        CLayeredGroupControl.prototype._doDraw = function (aRect, aDrawParam) {
+        //draw(aRect?: TRect) {
+        //    super.draw(aRect);
+        //    this.setActiveFocus();
+        //}
+        CLayeredGroupControl.prototype._getDrawElement = function () {
             if (!this._elLayer) {
                 throw "Layer must be created before draw";
             }
-            return this._doDrawCommon(this._elLayer, aRect, aDrawParam);
+            return this._elLayer;
         };
         CLayeredGroupControl.prototype.createLayoutControl = function (aItemDrawers) {
             if (!this._elLayer) {
@@ -3366,7 +3367,7 @@ var Controls;
             this.setOwnedChildControls([aControl]);
         };
         return CLayeredGroupControl;
-    })(CGroupControl);
+    })(CLayoutGroupControl);
     Controls.CLayeredGroupControl = CLayeredGroupControl;
     var CViewItemResult = (function () {
         function CViewItemResult() {
@@ -4581,6 +4582,19 @@ var Controls;
         return layoutGroupControl;
     }
     Controls.LayoutGroupControl = LayoutGroupControl;
+    function LayeredGroupControl(aParam) {
+        var layeredGroupControl = aParam.rootLayeredGroup || new Controls.CLayeredGroupControl(aParam.el || null);
+        fillControlParam(layeredGroupControl, aParam);
+        if (aParam.controls) {
+            layeredGroupControl.createLayer(aParam.createLayerParam);
+            layeredGroupControl.setOwnedChildControls(aParam.controls);
+        }
+        if (aParam.rootLayeredGroup) {
+            layeredGroupControl.draw();
+        }
+        return layeredGroupControl;
+    }
+    Controls.LayeredGroupControl = LayeredGroupControl;
     function ASSERT(condition, message) {
         if (!condition) {
             console.error(message);
@@ -4594,9 +4608,10 @@ var Controls;
                 38: 'Up',
                 40: 'Down',
                 37: 'Left',
-                39: 'Right'
+                39: 'Right',
+                8: 'Back'
             };
-            var keyStr = e['keyIdentifier'] || keyStrList[e.keyCode];
+            var keyStr = keyStrList[e.keyCode] || e['keyIdentifier'];
             ASSERT(keyStr, 'Key string not defined');
             var handled = aControl.doKey(keyStr);
             var skip = {

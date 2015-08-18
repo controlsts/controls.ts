@@ -1,0 +1,72 @@
+﻿
+body {
+    width: 1280px;
+    height: 720px;
+    .-f {
+        border: 1px dashed blue;
+        box-sizing: border-box;
+    }
+
+    .-afd-leaf {
+        border: 1px solid red;
+    }
+
+    .-afd-leaf::after {
+        content: "FOCUSED";
+    }
+
+    .-group.-layered {
+        width: 500px;
+        height: 500px;
+
+        .-item-0 {
+            width: 50px;
+            height: 50px;
+            background-color: blue;
+            opacity: .5;
+            &.-afd-leaf {
+                opacity: 1;
+            }
+        }
+
+        .-item-1 {
+            width: 100px;
+            height: 20px;
+            background-color: red;
+            opacity: .5;
+            &.-afd-leaf {
+                opacity: 1;
+            }
+        }
+
+        .-item-2 {
+            width: 200px;
+            height: 50px;
+            background-color: yellow;
+            opacity: .5;
+            &.-afd-leaf {
+                opacity: 1;
+            }
+        }
+
+        .-item-3 {
+            width: 100px;
+            height: 20px;
+            background-color: red;
+            opacity: .5;
+            &.-afd-leaf {
+                opacity: 1;
+            }
+        }
+
+        .-item-4 {
+            width: 50px;
+            height: 50px;
+            background-color: blue;
+            opacity: .5;
+            &.-afd-leaf {
+                opacity: 1;
+            }
+        }
+    }
+}

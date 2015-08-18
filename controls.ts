@@ -279,7 +279,7 @@ module Controls {
         aPrevFocusInfo?: TPrevFocusInfo,
         aPrevKeyStr?: string
     ) {
-        var i, j, len, el: HTMLElement, mapItem: TKeyMapItem, prevMapItem: TKeyMapItem = null;
+        var i, len, el: HTMLElement, mapItem: TKeyMapItem, prevMapItem: TKeyMapItem = null;
         var startIndex: number = 0;
         for (i = 0, len = aFocusable.length; i < len; i++) {
             el = aFocusable[i];
@@ -324,7 +324,7 @@ module Controls {
         aPrevFocusInfo?: TPrevFocusInfo,
         aPrevKeyStr?: string
     ) {
-        var i, j, len;
+        var i, len;
         var el: HTMLElement;
         var mapItem: TKeyMapItem;
         var prevMapItem: TKeyMapItem = null;
@@ -640,7 +640,7 @@ module Controls {
          aFocusable[startIndex].classList.add(KClassActiveFocusedLeaf);
          }
          */
-    }
+    };
 
     interface TSignalHandlerInfo {
         holder: any;
@@ -2856,12 +2856,13 @@ module Controls {
             }
         }
 
-        _doDraw(aRect: TRect, aDrawParam: { [key: string]: any; }) {
-            return this._doDrawCommon(this._element, aRect, aDrawParam);
+        protected _getDrawElement(): HTMLElement {
+            return this._element;
         }
 
-        _doDrawCommon(aParent: HTMLElement, aRect: TRect, aDrawParam: { [key: string]: any; }) {
+        protected _doDraw(aRect: TRect, aDrawParam: { [key: string]: any; }) {
             var ret: HTMLElement[] = [];
+            var parent = this._getDrawElement();
             if (this._root) {
                 this._element.classList.add(KClassFocused);
             }
@@ -2870,7 +2871,7 @@ module Controls {
                 c = this._child[i];
                 el = c._element;
                 el.attributes["data"] = i;
-                aParent.appendChild(el);
+                parent.appendChild(el);
                 c.draw(aRect);
                 if (c.isFocusable()) {
                     ret.push(el);
@@ -3558,7 +3559,7 @@ module Controls {
         childControls: CControl[];
     }
 
-    export class CLayeredGroupControl extends CGroupControl {
+    export class CLayeredGroupControl extends CLayoutGroupControl {
         private _layerInfoStack: TLayerInfo[] = [];
         private _createParam: TCreateLayerParam;
         private _elLayer: HTMLElement;
@@ -3759,16 +3760,16 @@ module Controls {
 
         }
 
-        draw(aRect?: TRect) {
-            super.draw(aRect);
-            this.setActiveFocus();
-        }
+        //draw(aRect?: TRect) {
+        //    super.draw(aRect);
+        //    this.setActiveFocus();
+        //}
 
-        _doDraw(aRect: TRect, aDrawParam: { [key: string]: any; }) {
+        protected _getDrawElement(): HTMLElement {
             if (!this._elLayer) {
                 throw "Layer must be created before draw";
             }
-            return this._doDrawCommon(this._elLayer, aRect, aDrawParam);
+            return this._elLayer;
         }
 
         createLayoutControl(aItemDrawers: FItemDrawer[]): CLayoutControl {
@@ -5103,6 +5104,27 @@ module Controls {
         return layoutGroupControl;
     }
 
+    export interface TLayeredGroupControl extends TControl {
+        rootLayeredGroup?: CLayeredGroupControl;
+        createLayerParam?: TCreateLayerParam;
+        controls: CControl[];
+    }
+
+    export function LayeredGroupControl(aParam: TLayeredGroupControl) {
+        var layeredGroupControl = aParam.rootLayeredGroup || new Controls.CLayeredGroupControl(aParam.el || null);
+        fillControlParam(layeredGroupControl, aParam);
+        if (aParam.controls) {
+            layeredGroupControl.createLayer(aParam.createLayerParam);
+            layeredGroupControl.setOwnedChildControls(aParam.controls);
+        }
+
+        if (aParam.rootLayeredGroup) {
+            layeredGroupControl.draw();
+        }
+
+        return layeredGroupControl;
+    }
+
     function ASSERT(condition, message) {
         if (!condition) {
             console.error(message);
@@ -5118,9 +5140,10 @@ module Controls {
                 38: 'Up',
                 40: 'Down',
                 37: 'Left',
-                39: 'Right'
+                39: 'Right',
+                8: 'Back'
             };
-            var keyStr = e['keyIdentifier'] || keyStrList[e.keyCode];
+            var keyStr = keyStrList[e.keyCode] || e['keyIdentifier'];
             ASSERT(keyStr, 'Key string not defined');
             var handled = aControl.doKey(keyStr);
 
