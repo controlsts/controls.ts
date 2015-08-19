@@ -4591,6 +4591,7 @@ var Controls;
         }
         if (aParam.rootLayeredGroup) {
             layeredGroupControl.draw();
+            layeredGroupControl.setActiveFocus();
         }
         return layeredGroupControl;
     }
