@@ -672,6 +672,8 @@ var Controls;
         TParamScrollScheme[TParamScrollScheme["EByFixed"] = 5] = "EByFixed";
     })(Controls.TParamScrollScheme || (Controls.TParamScrollScheme = {}));
     var TParamScrollScheme = Controls.TParamScrollScheme;
+    var KParamStrStretchWidth = "stretchWidth";
+    var KParamStrStretchHeight = "stretchHeight";
     var KParamStrOrientation = "orientation";
     (function (TParamOrientation) {
         TParamOrientation[TParamOrientation["EUnknown"] = 0] = "EUnknown";
@@ -801,6 +803,19 @@ var Controls;
         };
         CControl.prototype.setParent = function (aParentControl) {
             this._parent = aParentControl;
+        };
+        // Size
+        CControl.prototype.setStretchWidth = function (aStretchWidth) {
+            this._setDrawParam(KParamStrStretchWidth, aStretchWidth, false);
+        };
+        CControl.prototype.getStretchWidth = function () {
+            return this._getDrawParam(KParamStrStretchWidth);
+        };
+        CControl.prototype.setStretchHeight = function (aStretchHeight) {
+            this._setDrawParam(KParamStrStretchHeight, aStretchHeight, false);
+        };
+        CControl.prototype.getStretchHeight = function () {
+            return this._getDrawParam(KParamStrStretchHeight);
         };
         CControl.prototype._setDrawParam = function (aParamName, aValue, aVolitile) {
             if (aVolitile) {
@@ -2520,6 +2535,12 @@ var Controls;
                 c = this._child[i];
                 el = c._element;
                 el.attributes["data"] = i;
+                if (c.getStretchWidth()) {
+                    el.attributes["data-stretch-width"] = "true";
+                }
+                if (c.getStretchHeight()) {
+                    el.attributes["data-stretch-height"] = "true";
+                }
                 parent.appendChild(el);
                 c.draw(aRect);
                 if (c.isFocusable()) {
@@ -2591,8 +2612,8 @@ var Controls;
         for (i = 0, len = aChild.length; i < len; i++) {
             el = aChild[i];
             if (el) {
-                w = el.offsetWidth;
-                h = el.offsetHeight;
+                w = (el.attributes["data-stretch-width"]) ? 0 : el.offsetWidth;
+                h = (el.attributes["data-stretch-height"]) ? 0 : el.offsetHeight;
                 maxWidth = Math.max(maxWidth, w);
                 maxHeight = Math.max(maxHeight, h);
                 totalWidth += w;
@@ -2619,7 +2640,6 @@ var Controls;
         else if (aVAlign == 3 /* EBottom */) {
             posTop = aEl.offsetHeight - (aMargins.b + aTotalHeight);
         }
-        var posLeft = aMargins.l;
         var i, len, el, posLeft;
         for (i = 0, len = aChild.length; i < len; i++) {
             el = aChild[i];
@@ -2630,6 +2650,12 @@ var Controls;
                 }
                 else if (aHAlign == 3 /* ERight */) {
                     posLeft = aEl.offsetWidth - (aMargins.r + el.offsetWidth);
+                }
+                if (el.attributes["data-stretch-height"]) {
+                    el.style.height = (aEl.offsetHeight - aTotalHeight) + 'px';
+                }
+                if (el.attributes["data-stretch-width"]) {
+                    el.style.width = aEl.offsetWidth + 'px';
                 }
                 el.style.left = posLeft + "px";
                 posTop += el.offsetHeight + aPadding;
@@ -2667,6 +2693,13 @@ var Controls;
             }
             else if (aVAlign == 3 /* EBottom */) {
                 posTop = aEl.offsetHeight - (aMargins.b + el.offsetHeight);
+            }
+            if (el.attributes["data-stretch-height"]) {
+                el.style.height = aEl.offsetHeight + 'px';
+            }
+            if (el.attributes["data-stretch-width"]) {
+                el.style.width = (aEl.offsetWidth - aTotalWidth) + 'px';
+                console.log(aEl.offsetWidth, aTotalWidth);
             }
             el.style.top = posTop + "px";
             posLeft += el.offsetWidth + aPadding;
@@ -4470,6 +4503,12 @@ var Controls;
         if (aParam.height) {
             aControl.getElement().style.height = aParam.height + 'px';
         }
+        if (aParam.stretchWidth) {
+            aControl.setStretchWidth(aParam.stretchWidth);
+        }
+        if (aParam.stretchHeight) {
+            aControl.setStretchHeight(aParam.stretchHeight);
+        }
         if (aParam.orientation) {
             aControl.setOrientation(aParam.orientation);
         }
@@ -4602,6 +4641,7 @@ var Controls;
         }
     }
     function runRoot(aControl) {
+        aControl.getElement().style.overflow = 'hidden';
         aControl.draw();
         aControl.setActiveFocus();
         document.body.addEventListener('keydown', function (e) {
