@@ -1,11 +1,14 @@
 ﻿
+@SCREEN_WIDTH: 1000px;
+@SCREEN_HEIGHT: 1000px;
+
 body {
     margin: 0
 }
 
 #idRoot {
-    width: 100%;
-    height: 100%;
+    width: @SCREEN_WIDTH;
+    height: @SCREEN_HEIGHT;
 
     .-f {
         border: 1px dashed blue;
@@ -18,10 +21,18 @@ body {
 
     #idStatus {
         height: 100px;
+        width: @SCREEN_WIDTH;
+    }
+
+    #idContent {
+        height: @SCREEN_HEIGHT - 100px - 60px;
+        width: @SCREEN_WIDTH;
+        //height: 200px;
     }
 
     #idFooter {
         height: 60px;
+        width: @SCREEN_WIDTH;
     }
 
     //display: grid;

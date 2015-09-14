@@ -2,8 +2,8 @@ body {
   margin: 0;
 }
 #idRoot {
-  width: 100%;
-  height: 100%;
+  width: 1000px;
+  height: 1000px;
 }
 #idRoot .-f {
   border: 1px dashed blue;
@@ -14,7 +14,13 @@ body {
 }
 #idRoot #idStatus {
   height: 100px;
+  width: 1000px;
+}
+#idRoot #idContent {
+  height: 840px;
+  width: 1000px;
 }
 #idRoot #idFooter {
   height: 60px;
+  width: 1000px;
 }
