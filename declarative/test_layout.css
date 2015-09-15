@@ -20,6 +20,22 @@ body {
   height: 840px;
   width: 1000px;
 }
+#idRoot #idContent #idMenu {
+  height: 840px;
+  width: 200px;
+}
+#idRoot #idContent #idMenu .-carousel-item {
+  position: absolute;
+  transition: top .3s;
+}
+#idRoot #idContent #idList {
+  height: 840px;
+  width: 800px;
+}
+#idRoot #idContent #idList .-list-item {
+  width: 800px;
+  height: 70px;
+}
 #idRoot #idFooter {
   height: 60px;
   width: 1000px;

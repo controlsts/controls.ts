@@ -25,9 +25,26 @@ body {
     }
 
     #idContent {
-        height: @SCREEN_HEIGHT - 100px - 60px;
+
+        @HEIGHT: @SCREEN_HEIGHT - 100px - 60px;
+        height: @HEIGHT;
         width: @SCREEN_WIDTH;
-        //height: 200px;
+        #idMenu {
+            height: @HEIGHT;
+            width: 200px;
+            .-carousel-item {
+                position: absolute;
+                transition: top .3s;
+            }
+        }
+        #idList {
+            height: @HEIGHT;
+            width: @SCREEN_WIDTH - 200px;
+            .-list-item {
+                width: @SCREEN_WIDTH - 200px;
+                height: 70px;
+            }
+        }
     }
 
     #idFooter {

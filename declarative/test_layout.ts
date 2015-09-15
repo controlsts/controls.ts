@@ -2,6 +2,14 @@
 
 module App {
     console.log(window.innerWidth, window.innerHeight);
+    var data = [];
+
+    for (var i=0; i<20; i++) {
+        data.push({
+            type: 'textItem',
+            text: "Loem ipsum " + i
+        });
+    }
     var lcgRoot;
     window.addEventListener('resize', function() {
         less.modifyVars({
@@ -26,7 +34,7 @@ module App {
                         function (aElement: HTMLElement, aIndex: number) {
                             aElement.id = "idStatus";
                             aElement.innerText = "-status";
-                            return Controls.TFocusInfo.KFocusAble;
+                            return Controls.TFocusInfo.KFocusNone;
                         },
                     ]
                 }),
@@ -34,34 +42,45 @@ module App {
                     id: 'idContent',
                     orientation: Controls.TParamOrientation.EHorizontal,
                     controls: [
-                        Controls.LayoutControl({
-                            width: 100,
-                            itemDrawers: [
-                                function (aElement: HTMLElement, aIndex: number) {
-                                    aElement.id = "-menu-upper-item1";
-                                    aElement.innerText = "-menu-upper-item1";
-                                    return Controls.TFocusInfo.KFocusAble;
-                                },
-                                function (aElement: HTMLElement, aIndex: number) {
-                                    aElement.id = "-menu-lower-item1";
-                                    aElement.innerText = "-menu-lower-item1";
-                                    return Controls.TFocusInfo.KFocusAble;
-                                }
-                            ]
+                        Controls.CarouselControl({
+                            id: 'idMenu',
+                            data: [{
+                                text: 'Layout Control'
+                            }, {
+                                text: 'List Control'
+                            }, {
+                                text: 'Grid Control'
+                            }],
+                            //orientation: Controls.TParamOrientation.EVertical,
+                            viewCount: 3,
+                            itemWidth: 200,
+                            itemHeight: 40,
+                            anchorIndex: 1,
+                            animation: true,
+                            maxKeyQueueCount: 3,
+                            drawEffect: 'spreadOut',
+                            dataDrawer: function(aElement: HTMLElement, aItem: any, aIndex: number) {
+                                aElement.innerText = aItem.text;
+                            }
                         }),
-                        Controls.LayoutControl({
-                            itemDrawers: [
-                                function (aElement: HTMLElement, aIndex: number) {
-                                    aElement.id = "-content1-item1";
-                                    aElement.innerHTML = "-content1-item1";
-                                    return Controls.TFocusInfo.KFocusAble;
-                                },
-                                function (aElement: HTMLElement, aIndex: number) {
-                                    aElement.id = "-content2-item1";
-                                    aElement.innerHTML = "-content2-item1";
-                                    return Controls.TFocusInfo.KFocusAble;
-                                }
-                            ]
+                        Controls.ListControl({
+                            id: 'idList',
+                            itemHeight: 70,
+                            data: data,
+                            dataDrawer: function (aKey:any, aItem:any, aEl:HTMLElement) {
+                                aEl.classList.add(aItem.type);
+                                aEl.style.opacity = '.5';
+                                aEl.innerText = aKey + ": " + aItem.text;
+                                return Controls.TFocusInfo.KFocusAble;
+                            },
+                            onFocusedDataItemChanged: function (
+                                aKeyNew: any, aItemNew: any, aElNew: HTMLElement,
+                                aKeyOld: any, aItemOld: any, aElOld: HTMLElement) {
+                                document.getElementById('idStatus').innerText = aItemNew.text;
+                            },
+                            onItemSelected: function(aControl: Controls.CControl, aIndex: number, aEl: HTMLElement) {
+                                document.getElementById('idStatus').innerText = aEl.innerText;
+                            }
                         })
                     ]
                 }),
@@ -70,7 +89,7 @@ module App {
                         function (aElement: HTMLElement, aIndex: number) {
                             aElement.id = "idFooter";
                             aElement.innerText = "Footer";
-                            return Controls.TFocusInfo.KFocusAble;
+                            return Controls.TFocusInfo.KFocusNone;
                         },
                     ]
                 })

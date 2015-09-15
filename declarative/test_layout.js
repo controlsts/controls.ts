@@ -2,6 +2,13 @@
 var App;
 (function (App) {
     console.log(window.innerWidth, window.innerHeight);
+    var data = [];
+    for (var i = 0; i < 20; i++) {
+        data.push({
+            type: 'textItem',
+            text: "Loem ipsum " + i
+        });
+    }
     var lcgRoot;
     window.addEventListener('resize', function () {
         less.modifyVars({
@@ -25,7 +32,7 @@ var App;
                         function (aElement, aIndex) {
                             aElement.id = "idStatus";
                             aElement.innerText = "-status";
-                            return 2 /* KFocusAble */;
+                            return 1 /* KFocusNone */;
                         },
                     ]
                 }),
@@ -33,34 +40,43 @@ var App;
                     id: 'idContent',
                     orientation: 2 /* EHorizontal */,
                     controls: [
-                        Controls.LayoutControl({
-                            width: 100,
-                            itemDrawers: [
-                                function (aElement, aIndex) {
-                                    aElement.id = "-menu-upper-item1";
-                                    aElement.innerText = "-menu-upper-item1";
-                                    return 2 /* KFocusAble */;
-                                },
-                                function (aElement, aIndex) {
-                                    aElement.id = "-menu-lower-item1";
-                                    aElement.innerText = "-menu-lower-item1";
-                                    return 2 /* KFocusAble */;
-                                }
-                            ]
+                        Controls.CarouselControl({
+                            id: 'idMenu',
+                            data: [{
+                                text: 'Layout Control'
+                            }, {
+                                text: 'List Control'
+                            }, {
+                                text: 'Grid Control'
+                            }],
+                            //orientation: Controls.TParamOrientation.EVertical,
+                            viewCount: 3,
+                            itemWidth: 200,
+                            itemHeight: 40,
+                            anchorIndex: 1,
+                            animation: true,
+                            maxKeyQueueCount: 3,
+                            drawEffect: 'spreadOut',
+                            dataDrawer: function (aElement, aItem, aIndex) {
+                                aElement.innerText = aItem.text;
+                            }
                         }),
-                        Controls.LayoutControl({
-                            itemDrawers: [
-                                function (aElement, aIndex) {
-                                    aElement.id = "-content1-item1";
-                                    aElement.innerHTML = "-content1-item1";
-                                    return 2 /* KFocusAble */;
-                                },
-                                function (aElement, aIndex) {
-                                    aElement.id = "-content2-item1";
-                                    aElement.innerHTML = "-content2-item1";
-                                    return 2 /* KFocusAble */;
-                                }
-                            ]
+                        Controls.ListControl({
+                            id: 'idList',
+                            itemHeight: 70,
+                            data: data,
+                            dataDrawer: function (aKey, aItem, aEl) {
+                                aEl.classList.add(aItem.type);
+                                aEl.style.opacity = '.5';
+                                aEl.innerText = aKey + ": " + aItem.text;
+                                return 2 /* KFocusAble */;
+                            },
+                            onFocusedDataItemChanged: function (aKeyNew, aItemNew, aElNew, aKeyOld, aItemOld, aElOld) {
+                                document.getElementById('idStatus').innerText = aItemNew.text;
+                            },
+                            onItemSelected: function (aControl, aIndex, aEl) {
+                                document.getElementById('idStatus').innerText = aEl.innerText;
+                            }
                         })
                     ]
                 }),
@@ -69,7 +85,7 @@ var App;
                         function (aElement, aIndex) {
                             aElement.id = "idFooter";
                             aElement.innerText = "Footer";
-                            return 2 /* KFocusAble */;
+                            return 1 /* KFocusNone */;
                         },
                     ]
                 })
