@@ -26,7 +26,7 @@ module App {
         var root = document.body;
         root.id = "idRoot";
 
-        lcgRoot = Controls.LayoutGroupControl({
+        lcgRoot = Controls.LayeredGroupControl({
             el: root,
             controls: [
                 Controls.LayoutControl({
@@ -44,6 +44,13 @@ module App {
                     controls: [
                         Controls.CarouselControl({
                             id: 'idMenu',
+                            viewCount: 5,
+                            itemWidth: 200,
+                            itemHeight: 40,
+                            anchorIndex: 2,
+                            animation: true,
+                            maxKeyQueueCount: 3,
+                            drawEffect: 'spreadOut',
                             data: [{
                                 text: 'Layout Control'
                             }, {
@@ -51,14 +58,6 @@ module App {
                             }, {
                                 text: 'Grid Control'
                             }],
-                            //orientation: Controls.TParamOrientation.EVertical,
-                            viewCount: 3,
-                            itemWidth: 200,
-                            itemHeight: 40,
-                            anchorIndex: 1,
-                            animation: true,
-                            maxKeyQueueCount: 3,
-                            drawEffect: 'spreadOut',
                             dataDrawer: function(aElement: HTMLElement, aItem: any, aIndex: number) {
                                 aElement.innerText = aItem.text;
                             }
@@ -79,6 +78,25 @@ module App {
                                 document.getElementById('idStatus').innerText = aItemNew.text;
                             },
                             onItemSelected: function(aControl: Controls.CControl, aIndex: number, aEl: HTMLElement) {
+                                Controls.LayeredGroupControl({
+                                    rootLayeredGroup: lcgRoot,
+                                    createLayerParam: {
+                                        transition: {
+                                            prevLayer: "moveLeft",
+                                            newLayer: "moveLeft",
+                                        }
+                                    },
+                                    controls: [
+                                        Controls.LayoutControl({
+                                            itemDrawers: [
+                                                function (aElement: HTMLElement, aIndex: number) {
+                                                    aElement.innerText = "Hi!";
+                                                    return Controls.TFocusInfo.KFocusNone;
+                                                }
+                                            ]
+                                        })
+                                    ]
+                                });
                                 document.getElementById('idStatus').innerText = aEl.innerText;
                             }
                         })
@@ -95,6 +113,11 @@ module App {
                 })
             ]
         });
+
+        lcgRoot["_doKeyBack"] = function () {
+            lcgRoot.removeLayer();
+            return true;
+        };
 
         Controls.runRoot(lcgRoot);
 

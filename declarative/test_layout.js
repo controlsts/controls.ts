@@ -24,7 +24,7 @@ var App;
         console.log('start');
         var root = document.body;
         root.id = "idRoot";
-        lcgRoot = Controls.LayoutGroupControl({
+        lcgRoot = Controls.LayeredGroupControl({
             el: root,
             controls: [
                 Controls.LayoutControl({
@@ -42,6 +42,13 @@ var App;
                     controls: [
                         Controls.CarouselControl({
                             id: 'idMenu',
+                            viewCount: 5,
+                            itemWidth: 200,
+                            itemHeight: 40,
+                            anchorIndex: 2,
+                            animation: true,
+                            maxKeyQueueCount: 3,
+                            drawEffect: 'spreadOut',
                             data: [{
                                 text: 'Layout Control'
                             }, {
@@ -49,14 +56,6 @@ var App;
                             }, {
                                 text: 'Grid Control'
                             }],
-                            //orientation: Controls.TParamOrientation.EVertical,
-                            viewCount: 3,
-                            itemWidth: 200,
-                            itemHeight: 40,
-                            anchorIndex: 1,
-                            animation: true,
-                            maxKeyQueueCount: 3,
-                            drawEffect: 'spreadOut',
                             dataDrawer: function (aElement, aItem, aIndex) {
                                 aElement.innerText = aItem.text;
                             }
@@ -75,6 +74,25 @@ var App;
                                 document.getElementById('idStatus').innerText = aItemNew.text;
                             },
                             onItemSelected: function (aControl, aIndex, aEl) {
+                                Controls.LayeredGroupControl({
+                                    rootLayeredGroup: lcgRoot,
+                                    createLayerParam: {
+                                        transition: {
+                                            prevLayer: "moveLeft",
+                                            newLayer: "moveLeft"
+                                        }
+                                    },
+                                    controls: [
+                                        Controls.LayoutControl({
+                                            itemDrawers: [
+                                                function (aElement, aIndex) {
+                                                    aElement.innerText = "Hi!";
+                                                    return 1 /* KFocusNone */;
+                                                }
+                                            ]
+                                        })
+                                    ]
+                                });
                                 document.getElementById('idStatus').innerText = aEl.innerText;
                             }
                         })
@@ -91,6 +109,10 @@ var App;
                 })
             ]
         });
+        lcgRoot["_doKeyBack"] = function () {
+            lcgRoot.removeLayer();
+            return true;
+        };
         Controls.runRoot(lcgRoot);
     });
 })(App || (App = {}));
