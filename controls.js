@@ -1,9 +1,7 @@
-// Module
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Controls;
 (function (Controls) {
@@ -54,11 +52,9 @@ var Controls;
     }
     var KCssTransitionParamPos = 'top .3s linear, left .3s linear';
     var KCssTransitionParamOpa = 'opacity .3s linear';
-    // DOM helper
-    var Util = (function () {
-        function Util() {
-        }
-        Util.afterTransition = function (aElement, aCallBack) {
+    var Util;
+    (function (Util) {
+        function afterTransition(aElement, aCallBack) {
             var durations = ['0'];
             if (getComputedStyle) {
                 if (getComputedStyle(aElement).transitionDuration) {
@@ -75,8 +71,9 @@ var Controls;
             else {
                 throw "Invalid transition duration";
             }
-        };
-        Util.remove = function (aElement) {
+        }
+        Util.afterTransition = afterTransition;
+        function remove(aElement) {
             var parent = aElement.parentElement;
             if (parent) {
                 parent.removeChild(aElement);
@@ -84,20 +81,55 @@ var Controls;
             else {
                 throw "Element has no parent";
             }
-        };
-        Util.prepend = function (aElement, aNewChild) {
+        }
+        Util.remove = remove;
+        function prepend(aElement, aNewChild) {
             aElement.insertBefore(aNewChild, aElement.firstElementChild);
-        };
-        Util.getRect = function (aElement) {
+        }
+        Util.prepend = prepend;
+        function getRect(aElement) {
             return new TRect({
                 top: aElement.offsetTop,
                 left: aElement.offsetLeft,
                 right: aElement.offsetLeft + aElement.offsetWidth,
                 bottom: aElement.offsetTop + aElement.offsetHeight
             });
+        }
+        Util.getRect = getRect;
+        var KReTransform = /(\w+)\((.+?)\)/g;
+        var KReTransformValue = {
+            'translate': function (value) {
+                console.log(value);
+                var m = /\s*([-\d]+)\w+\s*,\s*([-\d]+)\w+\s*/.exec(value);
+                return {
+                    x: parseInt(m[1], 10),
+                    y: parseInt(m[2], 10)
+                };
+            }
         };
-        return Util;
-    })();
+        function getTrasformValues(aElement) {
+            var ret = {};
+            var transform = aElement.style.transform;
+            var match;
+            while (match = KReTransform.exec(transform)) {
+                var name_1 = match[1];
+                var value = match[2];
+                console.log(name_1, value);
+                ret[name_1] = KReTransformValue[name_1](value);
+            }
+            console.log(ret);
+            return ret;
+        }
+        Util.getTrasformValues = getTrasformValues;
+        function setTrasformValues(aElement, aValues) {
+            var values = [];
+            if (aValues.translate) {
+                values.push('translate(' + aValues.translate.x + 'px,' + aValues.translate.y + 'px)');
+            }
+            aElement.style.transform = values.join(' ');
+        }
+        Util.setTrasformValues = setTrasformValues;
+    })(Util || (Util = {}));
     var KKeyStrUp = "Up";
     var KKeyStrDown = "Down";
     var KKeyStrLeft = "Left";
@@ -198,7 +230,7 @@ var Controls;
             return false;
         };
         return CKeyMap;
-    })();
+    }());
     Controls.CKeyMap = CKeyMap;
     Controls.KBuilderTopDown = function (aKeyMap, aFocusable, aPrevFocusInfo, aPrevKeyStr) {
         var i, len, el, mapItem, prevMapItem = null;
@@ -220,7 +252,6 @@ var Controls;
         }
         aFocusable[startIndex].classList.add(KClassFocused);
         aKeyMap.setActiveFocus(startIndex);
-        // next focusing
         if (this._parent) {
             if (!this._parent.isFocused()) {
                 return;
@@ -228,7 +259,7 @@ var Controls;
         }
         var scrollingScheme = this._getDrawParam(KParamStrScrollSchemeVertical);
         if (aPrevKeyStr) {
-            if (scrollingScheme === 3 /* EByFocusRemains */) {
+            if (scrollingScheme === TParamScrollScheme.EByFocusRemains) {
                 if (aPrevFocusInfo) {
                     aPrevFocusInfo.prevFocusedEl.classList.remove(KClassActiveFocusedLeaf);
                     aFocusable[startIndex].classList.add(KClassActiveFocusedLeaf);
@@ -259,7 +290,6 @@ var Controls;
         }
         aFocusable[startIndex].classList.add(KClassFocused);
         aKeyMap.setActiveFocus(startIndex);
-        // next focusing
         if (this._parent) {
             if (!this._parent.isFocused()) {
                 return;
@@ -267,7 +297,7 @@ var Controls;
         }
         var scrollingScheme = this._getDrawParam(KParamStrScrollSchemeVertical);
         if (aPrevKeyStr) {
-            if (scrollingScheme === 3 /* EByFocusRemains */) {
+            if (scrollingScheme === TParamScrollScheme.EByFocusRemains) {
                 if (aPrevFocusInfo) {
                     aPrevFocusInfo.prevFocusedEl.classList.remove(KClassActiveFocusedLeaf);
                     aFocusable[startIndex].classList.add(KClassActiveFocusedLeaf);
@@ -471,7 +501,6 @@ var Controls;
                     idxNearestRight = j;
                 }
             }
-            //result
             if (!aKeyMapItem.l && idxNearestLeft != -1) {
                 aKeyMapItem.l = idxNearestLeft;
             }
@@ -528,7 +557,6 @@ var Controls;
                     }
                 }
             }
-            //result
             if (!aKeyMapItem.l && idxNearestLeft != -1) {
                 aKeyMapItem.l = idxNearestLeft;
             }
@@ -566,18 +594,6 @@ var Controls;
                 aKeyMap.getFocusedElement().classList.add(KClassActiveFocusedLeaf);
             }
         }
-        /*
-         aFocusable[startIndex].classList.add(KClassFocused);
-         aKeyMap.setActiveFocus(startIndex);
-         if (this._parent) {
-         if (!this._parent.isFocused()) {
-         return;
-         }
-         }
-         if (aPrevFocused) {
-         aFocusable[startIndex].classList.add(KClassActiveFocusedLeaf);
-         }
-         */
     };
     var CSignalSource = (function () {
         function CSignalSource() {
@@ -650,7 +666,7 @@ var Controls;
             }
         };
         return CSignalSource;
-    })();
+    }());
     Controls.CSignalSource = CSignalSource;
     (function (TFocusInfo) {
         TFocusInfo[TFocusInfo["KFocusUnknown"] = 0] = "KFocusUnknown";
@@ -774,7 +790,7 @@ var Controls;
             return null;
         };
         return TRect;
-    })();
+    }());
     Controls.TRect = TRect;
     var CControl = (function (_super) {
         __extends(CControl, _super);
@@ -782,7 +798,6 @@ var Controls;
             _super.call(this);
             this._root = false;
             this._group = false;
-            // Draw param
             this._drawParam = {};
             this._drawParamVolitile = {};
             this._transitioning = false;
@@ -804,7 +819,6 @@ var Controls;
         CControl.prototype.setParent = function (aParentControl) {
             this._parent = aParentControl;
         };
-        // Size
         CControl.prototype.setStretchWidth = function (aStretchWidth) {
             this._setDrawParam(KParamStrStretchWidth, aStretchWidth, false);
         };
@@ -850,19 +864,17 @@ var Controls;
         CControl.prototype._clearVolitile = function () {
             this._drawParamVolitile = {};
         };
-        // Orientation
         CControl.prototype.setOrientation = function (aLayout) {
             this._setDrawParam(KParamStrOrientation, aLayout, false);
         };
         CControl.prototype.getOrientation = function () {
-            var ret = 0 /* EUnknown */;
+            var ret = TParamOrientation.EUnknown;
             var value = this._getDrawParam(KParamStrOrientation);
             if (value) {
                 ret = value;
             }
             return ret;
         };
-        // Item info
         CControl.prototype.setItemHeight = function (aItemHeight) {
             this._setDrawParam(KParamStrItemHeight, aItemHeight, false);
         };
@@ -881,7 +893,6 @@ var Controls;
         CControl.prototype.getMaxColCount = function () {
             return this._getDrawParam(KParamStrMaxColCount) || false;
         };
-        // Margin
         CControl.prototype.setMargins = function (aMargins) {
             this._setDrawParam(KParamStrMargin, aMargins, false);
         };
@@ -901,14 +912,12 @@ var Controls;
             }
             return ret;
         };
-        // Padding
         CControl.prototype.setPadding = function (aPadding) {
             this._setDrawParam(KParamStrPadding, aPadding, false);
         };
         CControl.prototype.getPadding = function () {
             return this._getDrawParam(KParamStrPadding) || 0;
         };
-        // Child align
         CControl.prototype.setChildVAlign = function (aChildVAlign) {
             this._setDrawParam(KParamStrChildVAlign, aChildVAlign, false);
         };
@@ -921,88 +930,76 @@ var Controls;
         CControl.prototype.getChildHAlign = function () {
             return this._getDrawParam(KParamStrChildHAlign) || 0;
         };
-        // Animaion
         CControl.prototype.setAnimation = function (aAnimation) {
             this._setDrawParam(KParamAnimation, aAnimation, false);
         };
         CControl.prototype.getAnimation = function () {
             return this._getDrawParam(KParamAnimation) || false;
         };
-        // User Animation CSS
         CControl.prototype.setConfigTransition = function (aConfigTransition) {
             this._setDrawParam(KParamConfigTransition, aConfigTransition, false);
         };
         CControl.prototype.getConfigTransition = function () {
             return this._getDrawParam(KParamConfigTransition) || false;
         };
-        // AnimationInterval
         CControl.prototype.setAnimationInterval = function (aAnimationInterval) {
             this._setDrawParam(KParamAnimationInterval, aAnimationInterval, false);
         };
         CControl.prototype.getAnimationInterval = function () {
             return this._getDrawParam(KParamAnimationInterval) || 0;
         };
-        // ViewCount
         CControl.prototype.setViewCount = function (aViewCount) {
             this._setDrawParam(KParamStrViewCount, aViewCount, false);
         };
         CControl.prototype.getViewCount = function () {
             return this._getDrawParam(KParamStrViewCount) || 0;
         };
-        // AnchorIndex
         CControl.prototype.setAnchorIndex = function (aAnchorIndex) {
             this._setDrawParam(KParamStrAnchorIndex, aAnchorIndex, false);
         };
         CControl.prototype.getAnchorIndex = function () {
             return this._getDrawParam(KParamStrAnchorIndex) || 0;
         };
-        // AnchorHeight
         CControl.prototype.setAnchorHeight = function (aAnchorHeight) {
             this._setDrawParam(KParamStrAnchorHeight, aAnchorHeight, false);
         };
         CControl.prototype.getAnchorHeight = function () {
             return this._getDrawParam(KParamStrAnchorHeight) || 0;
         };
-        // AnchorWidth
         CControl.prototype.setAnchorWidth = function (aAnchorWidth) {
             this._setDrawParam(KParamStrAnchorWidth, aAnchorWidth, false);
         };
         CControl.prototype.getAnchorWidth = function () {
             return this._getDrawParam(KParamStrAnchorWidth) || 0;
         };
-        // StartIndex
         CControl.prototype.setStartIndex = function (aStartIndex) {
             this._setDrawParam(KParamStrStartIndex, aStartIndex, false);
         };
         CControl.prototype.getStartIndex = function () {
             return this._getDrawParam(KParamStrStartIndex) || 0;
         };
-        // MaxKeyQueueCount
         CControl.prototype.setMaxKeyQueueCount = function (aMaxKeyQueueCount) {
             this._setDrawParam(KParamStrMaxKeyQueueCount, aMaxKeyQueueCount, false);
         };
         CControl.prototype.getMaxKeyQueueCount = function () {
             return this._getDrawParam(KParamStrMaxKeyQueueCount) || 0;
         };
-        // TransparentAnchor
         CControl.prototype.setTransparentAnchor = function (aTransparentAnchor) {
             this._setDrawParam(KParamStrTransparentAnchor, aTransparentAnchor, false);
         };
         CControl.prototype.getTransparentAnchor = function () {
             return this._getDrawParam(KParamStrTransparentAnchor) || false;
         };
-        // DrawEfect
         CControl.prototype.setDrawEffect = function (aDrawEffect) {
             this._setDrawParam(KParamStrDrawEffect, aDrawEffect, true);
         };
         CControl.prototype.getDrawEffect = function () {
             return this._getDrawParam(KParamStrDrawEffect) || null;
         };
-        // Scrolling scheme
         CControl.prototype.setScrollScheme = function (aScheme, aFixedScrollUnit) {
             this._setDrawParam(KParamStrScrollSchemeVertical, aScheme, false);
             this._setDrawParam(KParamStrScrollSchemeHorizontal, aScheme, false);
-            if (aScheme == 5 /* EByFixed */) {
+            if (aScheme == TParamScrollScheme.EByFixed) {
                 if (aFixedScrollUnit) {
                     this._setDrawParam(KParamStrScrollSchemeFixedUnitVertical, aFixedScrollUnit, false);
                     this._setDrawParam(KParamStrScrollSchemeFixedUnitHorizontal, aFixedScrollUnit, false);
@@ -1014,7 +1011,7 @@ var Controls;
         };
         CControl.prototype.setVerticalScrollScheme = function (aScheme, aFixedScrollUnit) {
             this._setDrawParam(KParamStrScrollSchemeVertical, aScheme, false);
-            if (aScheme == 5 /* EByFixed */) {
+            if (aScheme == TParamScrollScheme.EByFixed) {
                 if (aFixedScrollUnit) {
                     this._setDrawParam(KParamStrScrollSchemeFixedUnitVertical, aFixedScrollUnit, false);
                 }
@@ -1024,11 +1021,11 @@ var Controls;
             }
         };
         CControl.prototype.getVerticalScrollScheme = function () {
-            return this._getDrawParam(KParamStrScrollSchemeVertical) || 1 /* EByItem */;
+            return this._getDrawParam(KParamStrScrollSchemeVertical) || TParamScrollScheme.EByItem;
         };
         CControl.prototype.setHorizontalScrollScheme = function (aScheme, aFixedScrollUnit) {
             this._setDrawParam(KParamStrScrollSchemeHorizontal, aScheme, false);
-            if (aScheme == 5 /* EByFixed */) {
+            if (aScheme == TParamScrollScheme.EByFixed) {
                 if (aFixedScrollUnit) {
                     this._setDrawParam(KParamStrScrollSchemeFixedUnitHorizontal, aFixedScrollUnit, false);
                 }
@@ -1038,12 +1035,11 @@ var Controls;
             }
         };
         CControl.prototype.getHorizontalScrollScheme = function () {
-            return this._getDrawParam(KParamStrScrollSchemeHorizontal) || 1 /* EByItem */;
+            return this._getDrawParam(KParamStrScrollSchemeHorizontal) || TParamScrollScheme.EByItem;
         };
         CControl.prototype.getDataRolling = function () {
             return false;
         };
-        // Keep focus
         CControl.prototype.setKeepFocus = function (aKeepFocus) {
             this._setDrawParam(KParamKeepFocus, aKeepFocus, true);
         };
@@ -1096,7 +1092,6 @@ var Controls;
                 this._element.classList.remove(KClassFocusable);
             }
         };
-        // Key navigation
         CControl.prototype._keyMapFocusChanged = function (aOld, aNew) {
             this._handleFocusChanged(aOld, aNew);
         };
@@ -1125,7 +1120,6 @@ var Controls;
             }
             return false;
         };
-        // Signals
         CControl.prototype._handleFocusChanged = function (aElOld, aElNew) {
             this._emitFocusChanged(aElOld, aElNew);
         };
@@ -1165,7 +1159,6 @@ var Controls;
         CControl.prototype._emitRedrawRequired = function () {
             this.emit.call(this, "RedrawRequired", this);
         };
-        // Utilities
         CControl.prototype.isFocusable = function () {
             return this._element.classList.contains(KClassFocusable);
         };
@@ -1281,13 +1274,8 @@ var Controls;
                 right: size.width - (aDrawnRect.right),
                 down: size.height - (aDrawnRect.bottom)
             };
-            //// This case is (items draw Rect < drawnRect)
-            //if (totalAvailable.right < 0 || totalAvailable.down < 0) {
-            //    // when simulation in Chrome, totalAvailable is invalid..(will be fixed?)
-            //    return;
-            //}
             var orientation = this._getDrawParam(KParamStrOrientation);
-            if (orientation === 1 /* EVertical */) {
+            if (orientation === TParamOrientation.EVertical) {
                 switch (aKeyStr) {
                     case KKeyStrLeft:
                     case KKeyStrRight:
@@ -1295,7 +1283,7 @@ var Controls;
                         return;
                 }
             }
-            else if (orientation === 2 /* EHorizontal */) {
+            else if (orientation === TParamOrientation.EHorizontal) {
                 switch (aKeyStr) {
                     case KKeyStrUp:
                     case KKeyStrDown:
@@ -1326,7 +1314,7 @@ var Controls;
             var scrollUnit = this._getDrawParam(KParamStrScrollSchemeFixedUnitVertical);
             var itemHeight = this.getItemHeight() || aFocusedRect.getHeight();
             switch (scrollSchemeVertical) {
-                case 4 /* EByFocusRemainsRolling */:
+                case TParamScrollScheme.EByFocusRemainsRolling:
                     if (aUp) {
                         contentAvailable.up = aDrawnRect.getHeight() - itemHeight;
                     }
@@ -1334,7 +1322,7 @@ var Controls;
                         contentAvailable.down = aFocusedRect.top - aDrawnRect.top;
                     }
                     break;
-                case 3 /* EByFocusRemains */:
+                case TParamScrollScheme.EByFocusRemains:
                     if (aUp) {
                         nextTop = aDrawnRect.getHeight() - itemHeight;
                         if (nextTop <= 0) {
@@ -1354,7 +1342,7 @@ var Controls;
                         }
                     }
                     break;
-                case 1 /* EByItem */:
+                case TParamScrollScheme.EByItem:
                     if (aUp) {
                         nextTop = itemHeight;
                         contentAvailable.up = Math.min(aTotalAvailable.up, nextTop);
@@ -1364,7 +1352,7 @@ var Controls;
                         contentAvailable.down = Math.min(aTotalAvailable.down, nextTop);
                     }
                     break;
-                case 5 /* EByFixed */:
+                case TParamScrollScheme.EByFixed:
                     nextTop = scrollUnit;
                     if (aUp && 0 < aTotalAvailable.up) {
                         contentAvailable.up = scrollUnit;
@@ -1390,7 +1378,7 @@ var Controls;
             var scrollUnit = this._getDrawParam(KParamStrScrollSchemeFixedUnitHorizontal);
             var itemWidth = this.getItemWidth() || aFocusedRect.getWidth();
             switch (scrollSchemeHorizontal) {
-                case 4 /* EByFocusRemainsRolling */:
+                case TParamScrollScheme.EByFocusRemainsRolling:
                     if (aLeft) {
                         contentAvailable.left = aDrawnRect.getWidth() - itemWidth;
                     }
@@ -1398,7 +1386,7 @@ var Controls;
                         contentAvailable.right = aFocusedRect.left - aDrawnRect.left;
                     }
                     break;
-                case 3 /* EByFocusRemains */:
+                case TParamScrollScheme.EByFocusRemains:
                     if (aLeft) {
                         nextLeft = aDrawnRect.getWidth() - itemWidth;
                         if (nextLeft <= 0) {
@@ -1418,7 +1406,7 @@ var Controls;
                         }
                     }
                     break;
-                case 1 /* EByItem */:
+                case TParamScrollScheme.EByItem:
                     if (aLeft) {
                         nextLeft = itemWidth;
                         contentAvailable.left = Math.min(aTotalAvailable.left, nextLeft);
@@ -1428,7 +1416,7 @@ var Controls;
                         contentAvailable.right = Math.min(aTotalAvailable.right, nextLeft);
                     }
                     break;
-                case 5 /* EByFixed */:
+                case TParamScrollScheme.EByFixed:
                     nextLeft = scrollUnit;
                     if (aLeft && 0 < aTotalAvailable.left) {
                         contentAvailable.left = scrollUnit;
@@ -1443,7 +1431,7 @@ var Controls;
             return contentAvailable;
         };
         return CControl;
-    })(CSignalSource);
+    }(CSignalSource));
     Controls.CControl = CControl;
     var CLayoutControl = (function (_super) {
         __extends(CLayoutControl, _super);
@@ -1456,7 +1444,7 @@ var Controls;
             var ret = [];
             var i, len, el;
             this.empty();
-            var horizontal = (aDrawParam[KParamStrOrientation] === 2 /* EHorizontal */);
+            var horizontal = (aDrawParam[KParamStrOrientation] === TParamOrientation.EHorizontal);
             this._keyMapBuilder = horizontal ? Controls.KBuilderLeftRight : Controls.KBuilderTopDown;
             var drawer;
             var drawnElements = [];
@@ -1468,11 +1456,11 @@ var Controls;
                     el.style.position = "absolute";
                     this._element.appendChild(el);
                     switch (drawer(el, i)) {
-                        case 2 /* KFocusAble */:
+                        case TFocusInfo.KFocusAble:
                             el.classList.add(KClassFocusable);
                             ret.push(el);
                             break;
-                        case 3 /* KFocused */:
+                        case TFocusInfo.KFocused:
                             el.classList.add(KClassFocusable);
                             el.classList.add(KClassFocused);
                             ret.push(el);
@@ -1491,7 +1479,7 @@ var Controls;
             this._itemDrawers = aDrawers;
         };
         return CLayoutControl;
-    })(CControl);
+    }(CControl));
     Controls.CLayoutControl = CLayoutControl;
     var CDrawnElements = (function () {
         function CDrawnElements() {
@@ -1528,11 +1516,6 @@ var Controls;
         CDrawnElements.prototype.setElement = function (aKey, aItem) {
             this._drawnElements[aKey] = aItem;
         };
-        /**
-         * Get key from drawn element
-         * @param aItem
-         * @returns {string|any}
-         */
         CDrawnElements.prototype.getKey = function (aItem) {
             var keys = Object.keys(this._drawnElements);
             var i, len = keys.length, k, el;
@@ -1584,7 +1567,7 @@ var Controls;
             }
         };
         return CDrawnElements;
-    })();
+    }());
     Controls.CDrawnElements = CDrawnElements;
     var CDataProvider = (function (_super) {
         __extends(CDataProvider, _super);
@@ -1597,11 +1580,9 @@ var Controls;
         };
         CDataProvider.prototype.getItem = function (aKey) {
             throw "not implemented";
-            return null;
         };
         CDataProvider.prototype.getLength = function () {
             throw "not implemented";
-            return 0;
         };
         CDataProvider.prototype.insertItem = function (aKey, aItem) {
             this._doInsertItems(aKey, aItem);
@@ -1619,7 +1600,6 @@ var Controls;
             this._doUpdateItems(aKeys, aItems);
             this.emit("ItemUpdated", aKeys, aItems);
         };
-        //_doUpdateItems: (aKey: any[], aItem: any[]) => boolean;
         CDataProvider.prototype._doUpdateItems = function (aKey, aItem) {
             return false;
         };
@@ -1633,7 +1613,7 @@ var Controls;
             this.connect("ItemUpdated", aHolder, aSlotName);
         };
         return CDataProvider;
-    })(CSignalSource);
+    }(CSignalSource));
     Controls.CDataProvider = CDataProvider;
     var CListDataProvider = (function (_super) {
         __extends(CListDataProvider, _super);
@@ -1681,7 +1661,7 @@ var Controls;
             return true;
         };
         return CListDataProvider;
-    })(CDataProvider);
+    }(CDataProvider));
     Controls.CListDataProvider = CListDataProvider;
     var CGridDataProvider = (function (_super) {
         __extends(CGridDataProvider, _super);
@@ -1689,7 +1669,7 @@ var Controls;
             _super.call(this);
         }
         return CGridDataProvider;
-    })(CDataProvider);
+    }(CDataProvider));
     Controls.CGridDataProvider = CGridDataProvider;
     var CDataControl = (function (_super) {
         __extends(CDataControl, _super);
@@ -1771,7 +1751,7 @@ var Controls;
                 el.style.top = index * height + "px";
                 el.style.left = index * width + "px";
                 var focusInfo = _this._drawer(aKey, item, el);
-                if (focusInfo === 2 /* KFocusAble */) {
+                if (focusInfo === TFocusInfo.KFocusAble) {
                     el.classList.add(KClassFocusable);
                 }
                 _this._element.appendChild(el);
@@ -1795,7 +1775,6 @@ var Controls;
             this._emitRedrawRequired();
         };
         CDataControl.prototype._slItemRemoved = function (aKeys) {
-            //TODO implement
         };
         CDataControl.prototype.setOwnedDataProvider = function (dataProvider) {
             var self = this;
@@ -1851,9 +1830,6 @@ var Controls;
             var itemOld = this._ownedDataProvider.getItem(keyOld);
             this._emitFocusedDataItemChanged(keyNew, itemNew, aElNew, keyOld, itemOld, aElOld);
         };
-        /*
-         Signals
-         */
         CDataControl.prototype._doKeyEnterLatent = function () {
             _super.prototype._doKeyEnterLatent.call(this);
             var focusedInfo = this.getFocusedItemInfo();
@@ -1873,7 +1849,7 @@ var Controls;
             this.emit.call(this, "FocusedDataItemChanged", aKeyNew, aItemNew, aElNew, aKeyOld, aItemOld, aElOld);
         };
         return CDataControl;
-    })(CControl);
+    }(CControl));
     Controls.CDataControl = CDataControl;
     var CListDataControl = (function (_super) {
         __extends(CListDataControl, _super);
@@ -1908,7 +1884,7 @@ var Controls;
         CListDataControl.prototype.getSize = function () {
             var itemHeight = this._getDrawParam(KParamStrItemHeight) || 0;
             var itemWidth = this._getDrawParam(KParamStrItemWidth) || 0;
-            var horizontal = (this._getDrawParam(KParamStrOrientation) === 2 /* EHorizontal */);
+            var horizontal = (this._getDrawParam(KParamStrOrientation) === TParamOrientation.EHorizontal);
             var count = this._ownedDataProvider ? this._ownedDataProvider.getLength() : 0;
             if (this._bDataRolling) {
                 var w = horizontal ? Number.MAX_VALUE : itemWidth;
@@ -1925,7 +1901,7 @@ var Controls;
         };
         CListDataControl.prototype._doDraw = function (aRect, aDrawParam) {
             var focusableElements = [];
-            var horizontal = (aDrawParam[KParamStrOrientation] === 2 /* EHorizontal */);
+            var horizontal = (aDrawParam[KParamStrOrientation] === TParamOrientation.EHorizontal);
             var dp = this._ownedDataProvider;
             var fixedItemSize = horizontal ? aDrawParam[KParamStrItemWidth] : aDrawParam[KParamStrItemHeight];
             var drawPosStart = horizontal ? aRect.left : aRect.top;
@@ -1947,7 +1923,6 @@ var Controls;
                 var elPosStart = i * fixedItemSize;
                 var elPosEnd = elPosStart + fixedItemSize;
                 if (elPosStart <= drawPosEnd) {
-                    // draw element if necessary
                     var el = prevDrawnItem.pickElement(i);
                     var item = dp.getItem(i);
                     if (!el) {
@@ -1957,7 +1932,7 @@ var Controls;
                         el.style.position = "absolute";
                         el.style[posProp] = i * fixedItemSize + "px";
                         var focusInfo = this._drawer(i, item, el);
-                        if (focusInfo === 2 /* KFocusAble */) {
+                        if (focusInfo === TFocusInfo.KFocusAble) {
                             el.classList.add(KClassFocusable);
                         }
                         this._element.appendChild(el);
@@ -1966,7 +1941,6 @@ var Controls;
                     if (drawPosStart <= elPosStart && elPosEnd <= drawPosEnd && el.classList.contains(KClassFocusable)) {
                         focusableElements.push(el);
                     }
-                    // check content available
                     if (elPosStart < drawPosStart) {
                         if (horizontal) {
                             contentAvailable.left = drawPosStart - elPosStart;
@@ -1986,7 +1960,6 @@ var Controls;
                 }
             }
             prevDrawnItem.destroy();
-            // check content available
             if (horizontal) {
                 if (contentAvailable.left === 0 && startIndex) {
                     contentAvailable.left = fixedItemSize;
@@ -2022,7 +1995,7 @@ var Controls;
             this._ownedDataProvider.removeItems(index);
         };
         return CListDataControl;
-    })(CDataControl);
+    }(CDataControl));
     Controls.CListDataControl = CListDataControl;
     var CGridDataControl = (function (_super) {
         __extends(CGridDataControl, _super);
@@ -2080,7 +2053,7 @@ var Controls;
                         el.style.top = elTop + 'px';
                         el.style.left = elLeft + 'px';
                         var focusInfo = this._drawer(i, item, el);
-                        if (focusInfo === 2 /* KFocusAble */) {
+                        if (focusInfo === TFocusInfo.KFocusAble) {
                             el.classList.add(KClassFocusable);
                         }
                         this._element.appendChild(el);
@@ -2120,7 +2093,7 @@ var Controls;
             return focusableElements;
         };
         return CGridDataControl;
-    })(CDataControl);
+    }(CDataControl));
     Controls.CGridDataControl = CGridDataControl;
     (function (TDrawingDataGrouping) {
         TDrawingDataGrouping[TDrawingDataGrouping["ENone"] = 0] = "ENone";
@@ -2150,7 +2123,6 @@ var Controls;
         CDrawingDataProvider.prototype.getPrevDrawingDataByRow = function (aRowIndex) {
             return this._drawingDataByRow[aRowIndex];
         };
-        // get drawing data
         CDrawingDataProvider.prototype.getDrawingDataList = function (aRect, aFocusedInfo, aCallback) {
             var _this = this;
             if (this._grouping && this._doGetDrawingDataListByRow) {
@@ -2164,7 +2136,6 @@ var Controls;
                 aCallback(aDrawingDataList);
             });
         };
-        // get whole drawable area
         CDrawingDataProvider.prototype.getSize = function () {
             throw "implement this";
         };
@@ -2188,16 +2159,16 @@ var Controls;
         CDrawingDataProvider.prototype._doGetItem = function (aKey) {
             return this._drawingDataCache[aKey];
         };
-        /*protected*/ CDrawingDataProvider.prototype._doUpdateItems = function (aKey, aItem) {
+        CDrawingDataProvider.prototype._doUpdateItems = function (aKey, aItem) {
             return true;
         };
-        /*protected*/ CDrawingDataProvider.prototype._doInsertItems = function (aKey, aItems) {
+        CDrawingDataProvider.prototype._doInsertItems = function (aKey, aItems) {
             var i, len;
             for (i = 0, len = aItems.length; i < len; i += 1) {
                 this._handleNewItem(aItems[i], true);
             }
         };
-        /*protected*/ CDrawingDataProvider.prototype._doRemoveItems = function (aKeys) {
+        CDrawingDataProvider.prototype._doRemoveItems = function (aKeys) {
             var i, iLen, k, item, j, jLen, rowList;
             for (i = 0, iLen = aKeys.length; i < iLen; i += 1) {
                 k = aKeys[i];
@@ -2215,7 +2186,7 @@ var Controls;
             }
         };
         return CDrawingDataProvider;
-    })(CDataProvider);
+    }(CDataProvider));
     Controls.CDrawingDataProvider = CDrawingDataProvider;
     var CDrawingDataControl = (function (_super) {
         __extends(CDrawingDataControl, _super);
@@ -2247,12 +2218,6 @@ var Controls;
             }
             return false;
         };
-        /*
-         private _handleFocusGained() {
-         var el: HTMLElement = this.getFirstElementByRow(this._curretRowIndex);
-         this.setFocusedElement(el);
-         }
-         */
         CDrawingDataControl.prototype.setCurrentRow = function (aRowIndex) {
             if (this._changeCurrentRow(aRowIndex)) {
                 var el = this.getFirstElementByRow(this._currentRowIndex);
@@ -2304,7 +2269,7 @@ var Controls;
             });
             if (this._drawnRect) {
                 var scrollScheme = this.getVerticalScrollScheme();
-                if (scrollScheme == 3 /* EByFocusRemains */ || scrollScheme == 4 /* EByFocusRemainsRolling */) {
+                if (scrollScheme == TParamScrollScheme.EByFocusRemains || scrollScheme == TParamScrollScheme.EByFocusRemainsRolling) {
                     if (rect.top < this._drawnRect.bottom && this._drawnRect.bottom < rect.bottom) {
                         rect.top = Math.max(this._drawnRect.bottom, rect.top);
                     }
@@ -2333,7 +2298,9 @@ var Controls;
                         if (!el) {
                             el = _this._createDrawItem(drawingData);
                         }
-                        if (el.classList.contains(KClassFocusable) && intersectedRect.getWidth() && intersectedRect.getWidth() <= drawingData.rect.getWidth() && intersectedRect.getHeight() && intersectedRect.getHeight() <= drawingData.rect.getHeight()) {
+                        if (el.classList.contains(KClassFocusable) &&
+                            intersectedRect.getWidth() && intersectedRect.getWidth() <= drawingData.rect.getWidth() &&
+                            intersectedRect.getHeight() && intersectedRect.getHeight() <= drawingData.rect.getHeight()) {
                             if (intersectedRect.right < aRect.right || intersectedRect.right == _this._element.offsetWidth || intersectedRect.getWidth() >= aRect.getWidth()) {
                                 focusableElements.push(el);
                             }
@@ -2363,7 +2330,7 @@ var Controls;
             el.style.width = aDrawingData.rect.getWidth() + "px";
             el.style.height = aDrawingData.rect.getHeight() + "px";
             this._element.appendChild(el);
-            if (this._drawer(aDrawingData.key, aDrawingData, el) === 2 /* KFocusAble */) {
+            if (this._drawer(aDrawingData.key, aDrawingData, el) === TFocusInfo.KFocusAble) {
                 el.classList.add(KClassFocusable);
             }
             return el;
@@ -2415,7 +2382,7 @@ var Controls;
             }
         };
         return CDrawingDataControl;
-    })(CDataControl);
+    }(CDataControl));
     Controls.CDrawingDataControl = CDrawingDataControl;
     var CGroupControl = (function (_super) {
         __extends(CGroupControl, _super);
@@ -2437,10 +2404,10 @@ var Controls;
             }
         };
         CGroupControl.prototype.setKeyBuilder = function (aLayout) {
-            if (aLayout == 1 /* EVertical */) {
+            if (aLayout == TParamOrientation.EVertical) {
                 this._keyMapBuilder = Controls.KBuilderTopDown;
             }
-            else if (aLayout == 2 /* EHorizontal */) {
+            else if (aLayout == TParamOrientation.EHorizontal) {
                 this._keyMapBuilder = Controls.KBuilderLeftRight;
             }
             else {
@@ -2468,28 +2435,10 @@ var Controls;
                 aControl.destroy();
             }
         };
-        /*
-         updateKeyMap(aFocusedControl?: CControl) {
-         var ret: HTMLElement[] = [];
-         var i, len, c: CControl, el: HTMLElement;
-         for (i = 0, len = this._child.length; i < len; i++) {
-         c = this._child[i];
-         el = c._element;
-         el.attributes["data"] = i;
-         this._element.appendChild(el);
-         c.draw(aRect);
-         if (c.isFocusable()) {
-         ret.push(el);
-         }
-         }
-         return ret;
-         }
-         */
         CGroupControl.prototype.doKey = function (aKeyStr, aParam) {
             if (this._transitioning) {
                 return true;
             }
-            //this._prevKeyStr = aKeyStr;
             var handled = false;
             var funcName = "_doKey" + aKeyStr;
             if (this[funcName]) {
@@ -2578,7 +2527,6 @@ var Controls;
             newChild._setActiveFocus(true);
             this._emitChildFocusChanged(oldChild, newChild);
         };
-        // CGroupControl events
         CGroupControl.prototype.connectChildFocusChanged = function (aHolder, aSlotName, aSlot) {
             this.connect("ChildFocusChanged", aHolder, aSlotName);
         };
@@ -2595,13 +2543,13 @@ var Controls;
             this.emit.call(aControl, "ChildViewMoved", this, aIncrement);
         };
         return CGroupControl;
-    })(CControl);
+    }(CControl));
     Controls.CGroupControl = CGroupControl;
     var FLayoutElement = function (aEl, aChild, aOrientation, aVAlign, aHAlign, aMargins, aPadding) {
-        if (aEl.offsetHeight == 0 && aVAlign != 0 /* EUnkown */) {
+        if (aEl.offsetHeight == 0 && aVAlign != TParamVAlign.EUnkown) {
             throw "vertical align meaningless without height";
         }
-        if (aEl.offsetWidth == 0 && aHAlign != 0 /* EUnkown */) {
+        if (aEl.offsetWidth == 0 && aHAlign != TParamHAlign.EUnkown) {
             throw "horizontal align meaningless without width";
         }
         var maxWidth = 0;
@@ -2624,7 +2572,7 @@ var Controls;
             totalWidth += (len - 1) * aPadding;
             totalHeight += (len - 1) * aPadding;
         }
-        if (aOrientation == 2 /* EHorizontal */) {
+        if (aOrientation == TParamOrientation.EHorizontal) {
             FLayoutElementHorizontal(aEl, aChild, aVAlign, aHAlign, aMargins, aPadding, maxWidth, maxHeight, totalWidth, totalHeight);
         }
         else {
@@ -2634,10 +2582,10 @@ var Controls;
     var FLayoutElementVertical = function (aEl, aChild, aVAlign, aHAlign, aMargins, aPadding, aMaxWidth, aMaxHeight, aTotalWidth, aTotalHeight) {
         var height = aMargins.t + aTotalHeight + aMargins.b;
         var posTop = aMargins.t;
-        if (aVAlign == 2 /* ECenter */) {
+        if (aVAlign == TParamVAlign.ECenter) {
             posTop = (aEl.offsetHeight - aTotalHeight) / 2;
         }
-        else if (aVAlign == 3 /* EBottom */) {
+        else if (aVAlign == TParamVAlign.EBottom) {
             posTop = aEl.offsetHeight - (aMargins.b + aTotalHeight);
         }
         var i, len, el, posLeft;
@@ -2645,10 +2593,10 @@ var Controls;
             el = aChild[i];
             if (el) {
                 el.style.top = posTop + "px";
-                if (aHAlign == 2 /* ECenter */) {
+                if (aHAlign == TParamHAlign.ECenter) {
                     posLeft = (aEl.offsetWidth - el.offsetWidth) / 2;
                 }
-                else if (aHAlign == 3 /* ERight */) {
+                else if (aHAlign == TParamHAlign.ERight) {
                     posLeft = aEl.offsetWidth - (aMargins.r + el.offsetWidth);
                 }
                 if (el.attributes["data-stretch-height"]) {
@@ -2677,10 +2625,10 @@ var Controls;
     var FLayoutElementHorizontal = function (aEl, aChild, aVAlign, aHAlign, aMargins, aPadding, aMaxWidth, aMaxHeight, aTotalWidth, aTotalHeight) {
         var width = aMargins.l + aTotalWidth + aMargins.r;
         var posLeft = aMargins.l;
-        if (aHAlign == 2 /* ECenter */) {
+        if (aHAlign == TParamHAlign.ECenter) {
             posLeft = (aEl.offsetWidth - aTotalWidth) / 2;
         }
-        else if (aHAlign == 3 /* ERight */) {
+        else if (aHAlign == TParamHAlign.ERight) {
             posLeft = aEl.offsetWidth - (aMargins.l + aTotalWidth);
         }
         var posTop = aMargins.t;
@@ -2688,10 +2636,10 @@ var Controls;
         for (i = 0, len = aChild.length; i < len; i++) {
             el = aChild[i];
             el.style.left = posLeft + "px";
-            if (aVAlign == 2 /* ECenter */) {
+            if (aVAlign == TParamVAlign.ECenter) {
                 posTop = (aEl.offsetHeight - el.offsetHeight) / 2;
             }
-            else if (aVAlign == 3 /* EBottom */) {
+            else if (aVAlign == TParamVAlign.EBottom) {
                 posTop = aEl.offsetHeight - (aMargins.b + el.offsetHeight);
             }
             if (el.attributes["data-stretch-height"]) {
@@ -2723,7 +2671,7 @@ var Controls;
                 childEl.push(this._child[i]._element);
             }
             FLayoutElement(this._element, childEl, this.getOrientation(), this.getChildVAlign(), this.getChildHAlign(), this.getMargins(), this.getPadding());
-            if (this.getOrientation() == 2 /* EHorizontal */) {
+            if (this.getOrientation() == TParamOrientation.EHorizontal) {
                 this._keyMapBuilder = Controls.KBuilderLeftRight;
             }
             else {
@@ -2732,7 +2680,7 @@ var Controls;
             return ret;
         };
         return CLayoutGroupControl;
-    })(CGroupControl);
+    }(CGroupControl));
     Controls.CLayoutGroupControl = CLayoutGroupControl;
     var CViewGroupControl = (function (_super) {
         __extends(CViewGroupControl, _super);
@@ -2810,10 +2758,10 @@ var Controls;
                 right: drawPosLeft + this._element.offsetWidth,
                 bottom: drawPosTop + this._element.offsetHeight
             });
-            var i, len, c, el; // looping param
-            var childRect = new TRect; // rectangle for child control
-            var childSize; // size of child control
-            var drawRectForChild; // rectangle param for child control
+            var i, len, c, el;
+            var childRect = new TRect;
+            var childSize;
+            var drawRectForChild;
             for (i = 0, len = this._child.length; i < len; i++) {
                 c = this._child[i];
                 el = c._element;
@@ -2824,7 +2772,7 @@ var Controls;
                 childRect.setWidth(childSize.width);
                 var scrollSchemeVertical = this._getDrawParam(KParamStrScrollSchemeVertical);
                 var scrollSchemeHorizontal = this._getDrawParam(KParamStrScrollSchemeHorizontal);
-                if (scrollSchemeVertical === 4 /* EByFocusRemainsRolling */ || scrollSchemeHorizontal === 4 /* EByFocusRemainsRolling */) {
+                if (scrollSchemeVertical === TParamScrollScheme.EByFocusRemainsRolling || scrollSchemeHorizontal === TParamScrollScheme.EByFocusRemainsRolling) {
                     drawRectForChild = drawRect;
                 }
                 else {
@@ -2881,6 +2829,13 @@ var Controls;
         CViewGroupControl.prototype._getContainerPos = function () {
             var containerTop = this._container.offsetTop;
             var containerLeft = this._container.offsetLeft;
+            if (this.getAnimation()) {
+                var transformValues = Util.getTrasformValues(this._container);
+                if (transformValues.translate) {
+                    containerTop = transformValues.translate.y;
+                    containerLeft = transformValues.translate.x;
+                }
+            }
             return {
                 top: containerTop,
                 left: containerLeft
@@ -2898,7 +2853,7 @@ var Controls;
                 if (increment.top || increment.left) {
                     this._handleViewMoved(this, increment);
                     var scrollScheme = this.getVerticalScrollScheme();
-                    if ((aKeyStr == KKeyStrUp || aKeyStr == KKeyStrDown) && (scrollScheme == 3 /* EByFocusRemains */ || scrollScheme == 4 /* EByFocusRemainsRolling */)) {
+                    if ((aKeyStr == KKeyStrUp || aKeyStr == KKeyStrDown) && (scrollScheme == TParamScrollScheme.EByFocusRemains || scrollScheme == TParamScrollScheme.EByFocusRemainsRolling)) {
                         this.setKeepFocus(true);
                     }
                     this.moveDrawPosition(increment);
@@ -2917,8 +2872,18 @@ var Controls;
         CViewGroupControl.prototype.initDrawPosition = function (aPosition) {
             var pos = (aPosition) ? aPosition : { top: 0, left: 0 };
             this._setContainerPosForAni(pos);
-            this._container.style.top = pos.top + "px";
-            this._container.style.left = pos.left + "px";
+            if (this.getAnimation()) {
+                Util.setTrasformValues(this._container, {
+                    translate: {
+                        x: pos.left,
+                        y: pos.top
+                    }
+                });
+            }
+            else {
+                this._container.style.top = pos.top + "px";
+                this._container.style.left = pos.left + "px";
+            }
             this.draw();
         };
         CViewGroupControl.prototype.setDrawPosition = function (aPosition) {
@@ -2930,8 +2895,12 @@ var Controls;
                 });
                 this._setContainerPosForAni(aPosition);
                 this.setTransition(true);
-                this._container.style.top = aPosition.top + "px";
-                this._container.style.left = aPosition.left + "px";
+                Util.setTrasformValues(this._container, {
+                    translate: {
+                        x: aPosition.left,
+                        y: aPosition.top
+                    }
+                });
             }
             else {
                 this._container.style.top = aPosition.top + "px";
@@ -2942,11 +2911,17 @@ var Controls;
         CViewGroupControl.prototype.setAnimation = function (aAnimation) {
             _super.prototype.setAnimation.call(this, aAnimation);
             if (aAnimation) {
-                this._container.style[KCssPropTransition] = KCssTransitionParamPos;
+                this._container.style[KCssPropTransition] = 'transform .3s linear';
+                Util.setTrasformValues(this._container, {
+                    translate: {
+                        x: 0,
+                        y: 0
+                    }
+                });
             }
         };
         return CViewGroupControl;
-    })(CGroupControl);
+    }(CGroupControl));
     Controls.CViewGroupControl = CViewGroupControl;
     var CListControl = (function (_super) {
         __extends(CListControl, _super);
@@ -3040,13 +3015,6 @@ var Controls;
         CListControl.prototype.removeItems = function (index) {
             this._listDataControl.removeItems(index);
         };
-        /**
-         * slot for item insert signal
-         *
-         * @param drawnElements inserted drawn items
-         * @param aNeedFocus
-         * @private
-         */
         CListControl.prototype._slItemInserted = function (drawnElements, aNeedFocus) {
             var rect = this.getSize();
             var height = this._listDataControl.getItemHeight();
@@ -3073,14 +3041,13 @@ var Controls;
             }
         };
         CListControl.prototype._slItemRemoved = function (drawnElements, aUnsetFocus) {
-            //TODO: implement
             this._listDataControl._makeKeyMap(drawnElements.getElements(), false, false);
             if (aUnsetFocus) {
                 this._listDataControl._setActiveFocus(false);
             }
         };
         return CListControl;
-    })(CViewGroupControl);
+    }(CViewGroupControl));
     Controls.CListControl = CListControl;
     var CGridControl = (function (_super) {
         __extends(CGridControl, _super);
@@ -3094,7 +3061,6 @@ var Controls;
             this._gridDataControl.destroy();
             _super.prototype.destroy.call(this);
         };
-        // set draw param
         CGridControl.prototype.setMaxColCount = function (aMaxColCount) {
             this._gridDataControl.setMaxColCount(aMaxColCount);
         };
@@ -3104,18 +3070,15 @@ var Controls;
         CGridControl.prototype.setItemHeight = function (aItemHeight) {
             this._gridDataControl.setItemHeight(aItemHeight);
         };
-        // set data
         CGridControl.prototype.setListData = function (aData) {
             this._gridDataControl.setOwnedDataProvider(new CListDataProvider(aData, false));
         };
         CGridControl.prototype.setOwnedDataProvider = function (aDataProvider) {
             this._gridDataControl.setOwnedDataProvider(aDataProvider);
         };
-        // set drawer
         CGridControl.prototype.setDataDrawer = function (aDrawer) {
             this._gridDataControl.setDataDrawer(aDrawer);
         };
-        // connect event
         CGridControl.prototype.connectFocusChanged = function (aHolder, aSlotName, aSlot) {
             this._gridDataControl.connectFocusChanged(aHolder, aSlotName, aSlot);
         };
@@ -3123,7 +3086,7 @@ var Controls;
             this._gridDataControl.connectItemSelected(aHolder, aSlotName, aSlot);
         };
         return CGridControl;
-    })(CViewGroupControl);
+    }(CViewGroupControl));
     Controls.CGridControl = CGridControl;
     var CDrawingControl = (function (_super) {
         __extends(CDrawingControl, _super);
@@ -3148,7 +3111,6 @@ var Controls;
         CDrawingControl.prototype.getCurrentRowIndex = function () {
             return this._drawingDataControl.getCurrentRow();
         };
-        // set drawer
         CDrawingControl.prototype.setDataDrawer = function (aDrawer) {
             this._drawingDataControl.setDataDrawer(aDrawer);
         };
@@ -3158,7 +3120,6 @@ var Controls;
         CDrawingControl.prototype.clearDrawnElements = function () {
             this._drawingDataControl.clearDrawnElements();
         };
-        // connect event
         CDrawingControl.prototype.connectFocusChanged = function (aHolder, aSlotName, aSlot) {
             this._drawingDataControl.connectFocusChanged(aHolder, aSlotName, aSlot);
         };
@@ -3169,7 +3130,7 @@ var Controls;
             this._drawingDataControl.connectRowIndexChanged(aHolder, aSlotName, aSlot);
         };
         return CDrawingControl;
-    })(CViewGroupControl);
+    }(CViewGroupControl));
     Controls.CDrawingControl = CDrawingControl;
     var CLayeredGroupControl = (function (_super) {
         __extends(CLayeredGroupControl, _super);
@@ -3362,10 +3323,6 @@ var Controls;
                 destroy();
             }
         };
-        //draw(aRect?: TRect) {
-        //    super.draw(aRect);
-        //    this.setActiveFocus();
-        //}
         CLayeredGroupControl.prototype._getDrawElement = function () {
             if (!this._elLayer) {
                 throw "Layer must be created before draw";
@@ -3400,7 +3357,7 @@ var Controls;
             this.setOwnedChildControls([aControl]);
         };
         return CLayeredGroupControl;
-    })(CLayoutGroupControl);
+    }(CLayoutGroupControl));
     Controls.CLayeredGroupControl = CLayeredGroupControl;
     var CViewItemResult = (function () {
         function CViewItemResult() {
@@ -3423,7 +3380,7 @@ var Controls;
             return -1;
         };
         return CViewItemResult;
-    })();
+    }());
     Controls.CViewItemResult = CViewItemResult;
     var CCircularArray = (function () {
         function CCircularArray(aArray) {
@@ -3575,7 +3532,7 @@ var Controls;
             return ret;
         };
         return CCircularArray;
-    })();
+    }());
     Controls.CCircularArray = CCircularArray;
     var CCarouselControl = (function (_super) {
         __extends(CCarouselControl, _super);
@@ -3584,7 +3541,7 @@ var Controls;
             this._keyQueue = [];
             this._element.classList.add(CCarouselControl.KClassCarousel);
             this._element.style.overflow = "hidden";
-            this.setOrientation(1 /* EVertical */);
+            this.setOrientation(TParamOrientation.EVertical);
             this.registerSignal(["CurrentItemChanged", "StartToChange"]);
         }
         CCarouselControl.prototype.connectCurrentItemChanged = function (aHolder, aSlotName, aHandler) {
@@ -3676,7 +3633,6 @@ var Controls;
             if (!animationInterval) {
                 animationInterval = 0.3;
             }
-            //var classNames = aClassName ? ['-carousel-item', aClassName] : ['-carousel-item'];
             var classNames = [CCarouselControl.KClassItem];
             if (aClassName) {
                 classNames.push(aClassName);
@@ -3687,7 +3643,7 @@ var Controls;
             for (i = 0, len = classNames.length; i < len; i += 1) {
                 itemEl.classList.add(classNames[i]);
             }
-            if (orientation === 2 /* EHorizontal */) {
+            if (orientation === TParamOrientation.EHorizontal) {
                 if (animation && configTransition) {
                     itemEl.style.transition = 'left ' + animationInterval + 's linear';
                 }
@@ -3708,7 +3664,7 @@ var Controls;
             var ret;
             this.setTransition(false);
             if (this._dataChanged) {
-                if (this.getOrientation() == 2 /* EHorizontal */) {
+                if (this.getOrientation() == TParamOrientation.EHorizontal) {
                     this._keyMapBuilder = Controls.KBuilderLeftRight;
                 }
                 else {
@@ -3734,7 +3690,7 @@ var Controls;
             if (!viewCount) {
                 throw "setViewCount required";
             }
-            if (align == 1 /* EVertical */) {
+            if (align == TParamOrientation.EVertical) {
                 var anchorHeight = this.getAnchorHeight();
                 var anchorTop = anchorIndex * itemHeight;
                 if (!itemHeight) {
@@ -3763,7 +3719,7 @@ var Controls;
                 this._lowerBoundEl = document.createElement('div');
                 this._lowerBoundEl.style.position = 'absolute';
                 this._lowerBoundEl.style.overflow = 'hidden';
-                if (align == 1 /* EVertical */) {
+                if (align == TParamOrientation.EVertical) {
                     this._upperBoundHeight = anchorIndex * itemHeight;
                     this._upperBoundEl.style.width = itemWidth + 'px';
                     this._upperBoundEl.style.height = this._upperBoundHeight + 'px';
@@ -3786,15 +3742,12 @@ var Controls;
                 this._element.appendChild(this._upperBoundEl);
                 this._element.appendChild(this._lowerBoundEl);
             }
-            /*
-             * Make draw info for each items
-             */
             var result = this._cirMenuItems.getViewItems(viewCount, anchorIndex);
             var parentEl = null;
             var drawInfos = [];
             var nextPosition = 0;
             var itemPosition = 0;
-            if (align == 1 /* EVertical */) {
+            if (align == TParamOrientation.EVertical) {
                 var itemPositionStart = anchorTop;
             }
             else {
@@ -3805,7 +3758,7 @@ var Controls;
                     if (i <= anchorIndex) {
                         parentEl = this._upperBoundEl;
                         itemPosition = nextPosition;
-                        if (align == 1 /* EVertical */) {
+                        if (align == TParamOrientation.EVertical) {
                             itemPositionStart = this._upperBoundHeight;
                         }
                         else {
@@ -3814,7 +3767,7 @@ var Controls;
                     }
                     else if (anchorIndex < i) {
                         parentEl = this._lowerBoundEl;
-                        if (align == 1 /* EVertical */) {
+                        if (align == TParamOrientation.EVertical) {
                             itemPosition = nextPosition - this._lowerBoundTop;
                             itemPositionStart = -itemHeight;
                         }
@@ -3839,7 +3792,7 @@ var Controls;
                         positionStart: itemPositionStart
                     });
                 }
-                if (align == 1 /* EVertical */) {
+                if (align == TParamOrientation.EVertical) {
                     nextPosition += i === anchorIndex ? anchorHeight : itemHeight;
                 }
                 else {
@@ -3876,7 +3829,7 @@ var Controls;
                 setTimeout(function () {
                     for (i = 0; i < drawInfos.length; i++) {
                         if (drawnItems[i]) {
-                            if (align == 1 /* EVertical */) {
+                            if (align == TParamOrientation.EVertical) {
                                 drawnItems[i].style.top = drawInfos[i].position + 'px';
                             }
                             else {
@@ -3889,7 +3842,7 @@ var Controls;
             var anchorEl = document.createElement('div');
             anchorEl.classList.add(CCarouselControl.KClassAnchor);
             anchorEl.style.position = 'absolute';
-            if (align == 1 /* EVertical */) {
+            if (align == TParamOrientation.EVertical) {
                 anchorEl.style.top = anchorTop + 'px';
             }
             else {
@@ -3905,7 +3858,7 @@ var Controls;
                 this._element.appendChild(anchorEl);
             }
             this._anchorEl = anchorEl;
-            if (align == 1 /* EVertical */) {
+            if (align == TParamOrientation.EVertical) {
                 this._height = anchorHeight + (itemHeight * (viewCount - 1));
                 this._element.style.height = this._height + 'px';
             }
@@ -4061,7 +4014,7 @@ var Controls;
             var itemOffset;
             var anchorOffset;
             var fnMoveItemUpper, fnMoveItemlower;
-            if (align == 1 /* EVertical */) {
+            if (align == TParamOrientation.EVertical) {
                 itemOffset = itemHeight;
                 anchorOffset = anchorHeight;
                 fnMoveItemUpper = this._moveItemsUpward;
@@ -4117,15 +4070,14 @@ var Controls;
             this.setTransition(true);
             this._emitStartToChange(this._anchorEl, this._cirMenuItems.curItem(), this._cirMenuItems.cur());
             setTimeout(function () {
-                var menuLen = _this._cirMenuItems.length(), align, anchorIndex = _this.getAnchorIndex(), anchorHeight = _this.getAnchorHeight(), anchorWidth = _this.getAnchorWidth(), itemHeight = _this.getItemHeight(), itemWidth = _this.getItemWidth(), transparentAnchor = _this.getTransparentAnchor(), nextTop = 0, itemOffset, anchorOffset, fnMoveItemUpper, fnMoveItemlower; //
-                //get align
-                if (_this.getOrientation() == 0 /* EUnknown */ || undefined) {
-                    align = 1 /* EVertical */;
+                var menuLen = _this._cirMenuItems.length(), align, anchorIndex = _this.getAnchorIndex(), anchorHeight = _this.getAnchorHeight(), anchorWidth = _this.getAnchorWidth(), itemHeight = _this.getItemHeight(), itemWidth = _this.getItemWidth(), transparentAnchor = _this.getTransparentAnchor(), nextTop = 0, itemOffset, anchorOffset, fnMoveItemUpper, fnMoveItemlower;
+                if (_this.getOrientation() == TParamOrientation.EUnknown || undefined) {
+                    align = TParamOrientation.EVertical;
                 }
                 else {
                     align = _this.getOrientation();
                 }
-                if (align == 1 /* EVertical */) {
+                if (align == TParamOrientation.EVertical) {
                     itemOffset = itemHeight;
                     anchorOffset = anchorHeight;
                     fnMoveItemUpper = _this._moveItemsUpward;
@@ -4200,7 +4152,7 @@ var Controls;
             var itemEl;
             var itemSize;
             var anchorSize;
-            if (align == 1 /* EVertical */) {
+            if (align == TParamOrientation.EVertical) {
                 itemSize = this.getItemHeight();
                 anchorSize = this.getAnchorHeight();
             }
@@ -4281,7 +4233,7 @@ var Controls;
             var itemEl;
             var itemSize;
             var anchorSize;
-            if (align == 1 /* EVertical */) {
+            if (align == TParamOrientation.EVertical) {
                 itemSize = this.getItemHeight();
                 anchorSize = this.getAnchorHeight();
             }
@@ -4297,7 +4249,7 @@ var Controls;
                 var lowerItemNodeList = this._lowerBoundEl.querySelectorAll(CCarouselControl.KSelectorItem);
                 var newUpperEl, newLowerEl;
                 if (dataLen < viewCount) {
-                    if (align == 1 /* EVertical */) {
+                    if (align == TParamOrientation.EVertical) {
                         newUpperEl = this._createItem(null, this._upperBoundHeight);
                     }
                     else {
@@ -4313,7 +4265,7 @@ var Controls;
                             this._drawItem(itemEl, item.data, item.index);
                         }
                     }
-                    if (align == 1 /* EVertical */) {
+                    if (align == TParamOrientation.EVertical) {
                         newLowerEl = this._createItem(null, this._lowerBoundHeight);
                     }
                     else {
@@ -4331,7 +4283,7 @@ var Controls;
                     }
                 }
                 else {
-                    if (align == 1 /* EVertical */) {
+                    if (align == TParamOrientation.EVertical) {
                         newUpperEl = this._createItem(items[anchorIndex - 1], this._upperBoundHeight, null);
                         newLowerEl = this._createItem(items[items.length - 1], this._lowerBoundHeight, null);
                     }
@@ -4345,7 +4297,7 @@ var Controls;
             }
             else {
                 var itemNodeList = this._element.querySelectorAll(CCarouselControl.KSelectorItem);
-                if (align == 1 /* EVertical */) {
+                if (align == TParamOrientation.EVertical) {
                     var newItemEl = this._createItem(items[items.length - 1], this._height, CCarouselControl.KClassLower);
                 }
                 else {
@@ -4374,7 +4326,7 @@ var Controls;
             var dataLen = this._cirMenuItems.length();
             var align = this.getOrientation();
             var maxKeyQueueCount = this.getMaxKeyQueueCount();
-            if (align == 1 /* EVertical */) {
+            if (align == TParamOrientation.EVertical) {
                 return false;
             }
             if (dataLen <= 1) {
@@ -4397,7 +4349,7 @@ var Controls;
             var dataLen = this._cirMenuItems.length();
             var align = this.getOrientation();
             var maxKeyQueueCount = this.getMaxKeyQueueCount();
-            if (align == 1 /* EVertical */) {
+            if (align == TParamOrientation.EVertical) {
                 return false;
             }
             if (dataLen <= 1) {
@@ -4420,7 +4372,7 @@ var Controls;
             var dataLen = this._cirMenuItems.length();
             var align = this.getOrientation();
             var maxKeyQueueCount = this.getMaxKeyQueueCount();
-            if (align == 2 /* EHorizontal */) {
+            if (align == TParamOrientation.EHorizontal) {
                 return false;
             }
             if (dataLen <= 1) {
@@ -4443,7 +4395,7 @@ var Controls;
             var dataLen = this._cirMenuItems.length();
             var align = this.getOrientation();
             var maxKeyQueueCount = this.getMaxKeyQueueCount();
-            if (align == 2 /* EHorizontal */) {
+            if (align == TParamOrientation.EHorizontal) {
                 return false;
             }
             if (dataLen <= 1) {
@@ -4476,7 +4428,7 @@ var Controls;
         CCarouselControl.KClassLower = "-lower";
         CCarouselControl.KSelectorItem = ".-carousel-item";
         return CCarouselControl;
-    })(CControl);
+    }(CControl));
     Controls.CCarouselControl = CCarouselControl;
     function makeNoneFocusable(aId, aHtml) {
         var focusInfo = new CLayoutControl(null);
@@ -4486,7 +4438,7 @@ var Controls;
             focusInfo.setItemDrawers([
                 function (aElement, aIndex) {
                     aElement.innerHTML = aHtml;
-                    return 1 /* KFocusNone */;
+                    return TFocusInfo.KFocusNone;
                 }
             ]);
         }
@@ -4558,7 +4510,7 @@ var Controls;
             list.connectFocusedDataItemChanged(aParam, 'onFocusedDataItemChanged', aParam.onFocusedDataItemChanged);
         }
         list.setAnimation(true);
-        list.setScrollScheme(5 /* EByFixed */);
+        list.setScrollScheme(Controls.TParamScrollScheme.EByFixed);
         list.setRedrawAfterOperation(true);
         return list;
     }

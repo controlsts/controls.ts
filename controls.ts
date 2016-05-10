@@ -54,8 +54,23 @@ module Controls {
     var KCssTransitionParamOpa = 'opacity .3s linear';
 
 // DOM helper
-    class Util {
-        static afterTransition(aElement: HTMLElement, aCallBack: Function) {
+    interface TTranformValues {
+        matrix?: {
+            0: number;
+            1: number;
+            2: number;
+            3: number;
+            4: number;
+            5: number;
+        },
+        translate?: {
+            x: number;
+            y: number;
+        }
+    }
+
+    module Util {
+        export function afterTransition(aElement: HTMLElement, aCallBack: Function) {
             var durations = ['0'];
             if (getComputedStyle) {
                 if (getComputedStyle(aElement).transitionDuration) {
@@ -73,7 +88,7 @@ module Controls {
             }
         }
 
-        static remove(aElement: HTMLElement) {
+        export function remove(aElement: HTMLElement) {
             var parent = aElement.parentElement;
             if (parent) {
                 parent.removeChild(aElement);
@@ -82,17 +97,51 @@ module Controls {
             }
         }
 
-        static prepend(aElement: HTMLElement, aNewChild: HTMLElement) {
+        export function prepend(aElement: HTMLElement, aNewChild: HTMLElement) {
             aElement.insertBefore(aNewChild, aElement.firstElementChild);
         }
 
-        static getRect(aElement: HTMLElement): TRect {
+        export function getRect(aElement: HTMLElement): TRect {
             return new TRect({
                 top: aElement.offsetTop,
                 left: aElement.offsetLeft,
                 right: aElement.offsetLeft + aElement.offsetWidth,
                 bottom: aElement.offsetTop + aElement.offsetHeight
             });
+        }
+
+        const KReTransform = /(\w+)\((.+?)\)/g;
+        const KReTransformValue = {
+            'translate': function(value) {
+                console.log(value);
+                let m = /\s*([-\d]+)\w+\s*,\s*([-\d]+)\w+\s*/.exec(value);
+                return {
+                    x: parseInt(m[1], 10),
+                    y: parseInt(m[2], 10)
+                };
+            }
+        };
+
+        export function getTrasformValues(aElement: HTMLElement): TTranformValues {
+            let ret: TTranformValues = {};
+            const transform = aElement.style.transform;
+            let match;
+            while (match = KReTransform.exec(transform)) {
+                let name = match[1];
+                let value = match[2];
+                console.log(name, value);
+                ret[name] = KReTransformValue[name](value);
+            }
+            console.log(ret);
+            return ret;
+        }
+
+        export function setTrasformValues(aElement: HTMLElement, aValues: TTranformValues) {
+            let values = [];
+            if (aValues.translate) {
+                values.push('translate(' + aValues.translate.x + 'px,' + aValues.translate.y + 'px)');
+            }
+            aElement.style.transform = values.join(' ');
         }
     }
 
@@ -1807,12 +1856,10 @@ module Controls {
 
         getItem(aKey: any): any {
             throw "not implemented";
-            return null;
         }
 
         getLength(): number {
             throw "not implemented";
-            return 0;
         }
 
         insertItem(aKey: any, aItem: any) {
@@ -3281,6 +3328,13 @@ module Controls {
         private _getContainerPos(): { top: number; left: number; } {
             var containerTop = this._container.offsetTop;
             var containerLeft = this._container.offsetLeft;
+            if (this.getAnimation()) {
+                let transformValues = Util.getTrasformValues(this._container);
+                if (transformValues.translate) {
+                    containerTop = transformValues.translate.y;
+                    containerLeft = transformValues.translate.x;
+                }
+            }
             return {
                 top: containerTop,
                 left: containerLeft
@@ -3318,8 +3372,17 @@ module Controls {
         initDrawPosition(aPosition?: { top: number; left: number; }) {
             var pos = (aPosition) ? aPosition : { top: 0, left: 0 };
             this._setContainerPosForAni(pos);
-            this._container.style.top = pos.top + "px";
-            this._container.style.left = pos.left + "px";
+            if (this.getAnimation()) {
+                Util.setTrasformValues(this._container, {
+                    translate: {
+                        x: pos.left,
+                        y: pos.top
+                    }
+                });
+            } else {
+                this._container.style.top = pos.top + "px";
+                this._container.style.left = pos.left + "px";
+            }
             this.draw();
         }
         setDrawPosition(aPosition: { top: number; left: number; }) {
@@ -3330,8 +3393,15 @@ module Controls {
                 });
                 this._setContainerPosForAni(aPosition);
                 this.setTransition(true);
-                this._container.style.top = aPosition.top + "px";
-                this._container.style.left = aPosition.left + "px";
+                // this._container.style.top = aPosition.top + "px";
+                // this._container.style.left = aPosition.left + "px";
+
+                Util.setTrasformValues(this._container, {
+                    translate: {
+                        x: aPosition.left,
+                        y: aPosition.top
+                    }
+                });
             } else {
                 this._container.style.top = aPosition.top + "px";
                 this._container.style.left = aPosition.left + "px";
@@ -3341,7 +3411,14 @@ module Controls {
         setAnimation(aAnimation: boolean) {
             super.setAnimation(aAnimation);
             if (aAnimation) {
-                this._container.style[KCssPropTransition] = KCssTransitionParamPos;
+                // this._container.style[KCssPropTransition] = KCssTransitionParamPos;
+                this._container.style[KCssPropTransition] = 'transform .3s linear';
+                Util.setTrasformValues(this._container, {
+                    translate: {
+                        x: 0,
+                        y: 0
+                    }
+                });
             }
         }
     }
