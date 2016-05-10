@@ -75,15 +75,16 @@ module App {
 
     var lcgRoot = new Controls.CLayoutGroupControl(root);
     lcgRoot.setOwnedChildControls([status, lcgHorizontal]);
-    lcgRoot.draw();
-    lcgRoot.setActiveFocus();
 
-    document.body.addEventListener('keydown', function(e) {
-        var handled = lcgRoot.doKey(e['keyIdentifier']);
-        if (handled) {
-            e.stopPropagation();
-            e.preventDefault();
-        }
-    });
+    Controls.runRoot(lcgRoot);
+    // lcgRoot.draw();
+    // lcgRoot.setActiveFocus();
+    // document.body.addEventListener('keydown', function(e) {
+    //     var handled = lcgRoot.doKey(e['keyIdentifier']);
+    //     if (handled) {
+    //         e.stopPropagation();
+    //         e.preventDefault();
+    //     }
+    // });
 
 }

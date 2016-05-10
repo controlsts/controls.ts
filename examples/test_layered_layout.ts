@@ -126,26 +126,26 @@ module gApp {
         return true;
     };
 
-    layeredGroup.draw();
-    layeredGroup.setActiveFocus();
+    Controls.runRoot(layeredGroup);
 
-    document.body.addEventListener('keydown', function (e) {
-        var keyStr = e['keyIdentifier'];
-        var handled = layeredGroup.doKey(keyStr);
-        console.log(handled);
-
-        var skip = {
-            'Up': true,
-            'Down': true,
-            'Left': true,
-            'Right': true
-        };
-
-        if (skip[keyStr]) {
-            e.stopPropagation();
-            e.preventDefault();
-        }
-    });
+    // layeredGroup.draw();
+    // layeredGroup.setActiveFocus();
+    // document.body.addEventListener('keydown', function (e) {
+    //     var keyStr = e['keyIdentifier'];
+    //     var handled = layeredGroup.doKey(keyStr);
+    //     console.log(handled);
+    //
+    //     var skip = {
+    //         'Up': true,
+    //         'Down': true,
+    //         'Left': true,
+    //         'Right': true
+    //     };
+    //
+    //     if (skip[keyStr]) {
+    //         e.stopPropagation();
+    //         e.preventDefault();
+    //     }
+    // });
 
 }
-

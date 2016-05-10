@@ -5269,10 +5269,11 @@ module Controls {
                 40: 'Down',
                 37: 'Left',
                 39: 'Right',
-                8: 'Back'
+                8: 'Back',
+                13: 'Ok'
             };
             var keyStr = keyStrList[e.keyCode] || e['keyIdentifier'];
-            ASSERT(keyStr, 'Key string not defined');
+            ASSERT(keyStr, 'Key string not defined, ' + e.keyCode);
             var handled = aControl.doKey(keyStr);
 
             var skip = {

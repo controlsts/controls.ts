@@ -100,15 +100,17 @@ module gApp {
     var root = new Controls.CLayoutGroupControl(el);
     root.setOwnedChildControls(child);
     root.setPadding(2);
-    root.draw();
-    root.setActiveFocus();
 
-    document.body.addEventListener('keydown', function(e) {
-        var handled = root.doKey(e['keyIdentifier']);
-        if (handled) {
-            e.stopPropagation();
-            e.preventDefault();
-        }
-    });
+    Controls.runRoot(root);
+
+    // root.draw();
+    // root.setActiveFocus();
+    // document.body.addEventListener('keydown', function(e) {
+    //     var handled = root.doKey(e['keyIdentifier']);
+    //     if (handled) {
+    //         e.stopPropagation();
+    //         e.preventDefault();
+    //     }
+    // });
 
 }

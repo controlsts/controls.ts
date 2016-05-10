@@ -95,24 +95,26 @@ module gApp {
     var root = new Controls.CLayoutGroupControl(document.body);
     root.setOrientation(Controls.TParamOrientation.EHorizontal);
     root.setOwnedChildControls(childControls);
-    root.draw();
 
-    document.body.addEventListener('keydown', function (e) {
-        var keyStr = e['keyIdentifier'];
-        var handled = root.doKey(keyStr);
-        console.log(handled);
+    Controls.runRoot(root);
 
-        var skip = {
-            'Up': true,
-            'Down': true,
-            'Left': true,
-            'Right': true
-        };
-
-        if (skip[keyStr]) {
-            e.stopPropagation();
-            e.preventDefault();
-        }
-    });
+    // root.draw();
+    // document.body.addEventListener('keydown', function (e) {
+    //     var keyStr = e['keyIdentifier'];
+    //     var handled = root.doKey(keyStr);
+    //     console.log(handled);
+    //
+    //     var skip = {
+    //         'Up': true,
+    //         'Down': true,
+    //         'Left': true,
+    //         'Right': true
+    //     };
+    //
+    //     if (skip[keyStr]) {
+    //         e.stopPropagation();
+    //         e.preventDefault();
+    //     }
+    // });
 
 }

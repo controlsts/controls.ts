@@ -129,28 +129,29 @@ module gApp {
         return true;
     };
     layeredGroup.createLayoutGroupControl([layoutControl0, layoutControl1]);
-    layeredGroup.draw();
-    layeredGroup.setActiveFocus();
 
     layoutControl0.connectItemSelected(handlers, "_open", handlers._open);
     layoutControl1.connectItemSelected(handlers, "_open", handlers._open);
 
-    document.body.addEventListener('keydown', function (e) {
-        var keyStr = e['keyIdentifier'];
-        var handled = layeredGroup.doKey(keyStr);
-        console.log(handled);
-
-        var skip = {
-            'Up': true,
-            'Down': true,
-            'Left': true,
-            'Right': true
-        };
-
-        if (skip[keyStr]) {
-            e.stopPropagation();
-            e.preventDefault();
-        }
-    });
+    Controls.runRoot(layeredGroup);
+    // layeredGroup.draw();
+    // layeredGroup.setActiveFocus();
+    // document.body.addEventListener('keydown', function (e) {
+    //     var keyStr = e['keyIdentifier'];
+    //     var handled = layeredGroup.doKey(keyStr);
+    //     console.log(handled);
+    //
+    //     var skip = {
+    //         'Up': true,
+    //         'Down': true,
+    //         'Left': true,
+    //         'Right': true
+    //     };
+    //
+    //     if (skip[keyStr]) {
+    //         e.stopPropagation();
+    //         e.preventDefault();
+    //     }
+    // });
 
 }

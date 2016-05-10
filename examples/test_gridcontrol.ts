@@ -108,24 +108,26 @@ module gApp{
         aEl.innerText = aKey + ': ' + aItem.name;
         return Controls.TFocusInfo.KFocusAble;
     });
-    grid.draw();
 
-    document.body.addEventListener('keydown', function (e) {
-        var keyStr = e['keyIdentifier'];
-        var handled = grid.doKey(keyStr);
-        console.log(handled);
+    Controls.runRoot(grid);
 
-        var skip = {
-            'Up': true,
-            'Down': true,
-            'Left': true,
-            'Right': true
-        };
-
-        if (skip[keyStr]) {
-            e.stopPropagation();
-            e.preventDefault();
-        }
-    });
+    // grid.draw();
+    // document.body.addEventListener('keydown', function (e) {
+    //     var keyStr = e['keyIdentifier'];
+    //     var handled = grid.doKey(keyStr);
+    //     console.log(handled);
+    //
+    //     var skip = {
+    //         'Up': true,
+    //         'Down': true,
+    //         'Left': true,
+    //         'Right': true
+    //     };
+    //
+    //     if (skip[keyStr]) {
+    //         e.stopPropagation();
+    //         e.preventDefault();
+    //     }
+    // });
 
 }
