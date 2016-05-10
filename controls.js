@@ -3625,7 +3625,7 @@ var Controls;
                 aItemEl.innerHTML = aItem;
             }
         };
-        CCarouselControl.prototype._createItem = function (aItem, aTop, aClassName) {
+        CCarouselControl.prototype._createItem = function (aItem, aStartPos, aClassName) {
             var orientation = this.getOrientation();
             var animation = this.getAnimation();
             var configTransition = this.getConfigTransition();
@@ -3637,28 +3637,46 @@ var Controls;
             if (aClassName) {
                 classNames.push(aClassName);
             }
-            var itemEl = document.createElement('div');
-            itemEl.style.position = "absolute";
+            var elItem = document.createElement('div');
+            elItem.style.position = "absolute";
             var i, len;
             for (i = 0, len = classNames.length; i < len; i += 1) {
-                itemEl.classList.add(classNames[i]);
+                elItem.classList.add(classNames[i]);
             }
             if (orientation === TParamOrientation.EHorizontal) {
-                if (animation && configTransition) {
-                    itemEl.style.transition = 'left ' + animationInterval + 's linear';
+                if (animation) {
+                    Util.setTrasformValues(elItem, {
+                        translate: {
+                            x: aStartPos,
+                            y: 0
+                        }
+                    });
+                    elItem.style.transition = 'transform ' + animationInterval + 's linear';
+                    elItem.style.left = 0 + 'px';
                 }
-                itemEl.style.left = aTop + 'px';
+                else {
+                    elItem.style.left = aStartPos + 'px';
+                }
             }
             else {
-                if (animation && configTransition) {
-                    itemEl.style.transition = 'top ' + animationInterval + 's linear';
+                if (animation) {
+                    Util.setTrasformValues(elItem, {
+                        translate: {
+                            x: 0,
+                            y: aStartPos
+                        }
+                    });
+                    elItem.style.transition = 'transform ' + animationInterval + 's linear';
+                    elItem.style.top = 0 + 'px';
                 }
-                itemEl.style.top = aTop + 'px';
+                else {
+                    elItem.style.top = aStartPos + 'px';
+                }
             }
             if (aItem) {
-                this._drawItem(itemEl, aItem.data, aItem.index);
+                this._drawItem(elItem, aItem.data, aItem.index);
             }
-            return itemEl;
+            return elItem;
         };
         CCarouselControl.prototype._doDraw = function (aRect, aDrawParam) {
             var ret;
@@ -3683,6 +3701,7 @@ var Controls;
             var itemHeight = this.getItemHeight();
             var anchorIndex = this.getAnchorIndex();
             var startIndex = this.getStartIndex();
+            var animation = this.getAnimation();
             var transparentAnchor = this.getTransparentAnchor();
             var drawEffect = this.getDrawEffect();
             var drawnItems = [];
@@ -3830,10 +3849,30 @@ var Controls;
                     for (i = 0; i < drawInfos.length; i++) {
                         if (drawnItems[i]) {
                             if (align == TParamOrientation.EVertical) {
-                                drawnItems[i].style.top = drawInfos[i].position + 'px';
+                                if (animation) {
+                                    Util.setTrasformValues(drawnItems[i], {
+                                        translate: {
+                                            x: 0,
+                                            y: drawInfos[i].position
+                                        }
+                                    });
+                                }
+                                else {
+                                    drawnItems[i].style.top = drawInfos[i].position + 'px';
+                                }
                             }
                             else {
-                                drawnItems[i].style.left = drawInfos[i].position + 'px';
+                                if (animation) {
+                                    Util.setTrasformValues(drawnItems[i], {
+                                        translate: {
+                                            x: drawInfos[i].position,
+                                            y: 0
+                                        }
+                                    });
+                                }
+                                else {
+                                    drawnItems[i].style.left = drawInfos[i].position + 'px';
+                                }
                             }
                         }
                     }
@@ -3872,7 +3911,7 @@ var Controls;
             }
             return this._element;
         };
-        CCarouselControl.prototype._moveItemsLeftward = function (aItemsEl, aItemWidth, aAnchorIndex, aIndexOffset, aAnchorWidth) {
+        CCarouselControl.prototype._moveItemsLeftward = function (aAnimation, aItemsEl, aItemWidth, aAnchorIndex, aIndexOffset, aAnchorWidth) {
             var nextLeft = 0, i;
             for (i = 0; i < aItemsEl.length; i += 1) {
                 var itemEl = aItemsEl[i];
@@ -3885,7 +3924,17 @@ var Controls;
                 var dist = Math.abs(diff);
                 var direction = diff < 0 ? CCarouselControl.KClassUpper : CCarouselControl.KClassLower;
                 var distClassName = CCarouselControl.KClassDistPrefix + dist;
-                itemEl.style.left = nextLeft + 'px';
+                if (aAnimation) {
+                    Util.setTrasformValues(itemEl, {
+                        translate: {
+                            x: nextLeft,
+                            y: 0
+                        }
+                    });
+                }
+                else {
+                    itemEl.style.left = nextLeft + 'px';
+                }
                 itemEl.classList.remove(prevDistClassName);
                 itemEl.classList.add(distClassName);
                 if (diff === 0) {
@@ -3898,7 +3947,7 @@ var Controls;
                 nextLeft += (aAnchorWidth && itemIndex == aAnchorIndex) ? aAnchorWidth : aItemWidth;
             }
         };
-        CCarouselControl.prototype._moveItemsRightward = function (aItemsEl, aItemWidth, aAnchorIndex, aIndexOffset, aAnchorWidth) {
+        CCarouselControl.prototype._moveItemsRightward = function (aAnimation, aItemsEl, aItemWidth, aAnchorIndex, aIndexOffset, aAnchorWidth) {
             var nextLeft = -aItemWidth, i;
             for (i = 0; i < aItemsEl.length; i += 1) {
                 var itemEl = aItemsEl[i];
@@ -3911,7 +3960,17 @@ var Controls;
                 var dist = Math.abs(diff);
                 var direction = diff < 0 ? CCarouselControl.KClassUpper : CCarouselControl.KClassLower;
                 var distClassName = CCarouselControl.KClassDistPrefix + dist;
-                itemEl.style.left = nextLeft + 'px';
+                if (aAnimation) {
+                    Util.setTrasformValues(itemEl, {
+                        translate: {
+                            x: nextLeft,
+                            y: 0
+                        }
+                    });
+                }
+                else {
+                    itemEl.style.left = nextLeft + 'px';
+                }
                 itemEl.classList.remove(prevDistClassName);
                 itemEl.classList.add(distClassName);
                 if (diff === 0) {
@@ -3924,7 +3983,7 @@ var Controls;
                 nextLeft += (aAnchorWidth && itemIndex == aAnchorIndex) ? aAnchorWidth : aItemWidth;
             }
         };
-        CCarouselControl.prototype._moveItemsDownward = function (aItemsEl, aItemHeight, aAnchorIndex, aIndexOffset, aAnchorHeight) {
+        CCarouselControl.prototype._moveItemsDownward = function (aAnimation, aItemsEl, aItemHeight, aAnchorIndex, aIndexOffset, aAnchorHeight) {
             var nextTop = 0;
             var i, len;
             for (i = 0, len = aItemsEl.length; i < len; i += 1) {
@@ -3938,7 +3997,17 @@ var Controls;
                 var dist = Math.abs(diff);
                 var direction = diff < 0 ? CCarouselControl.KClassUpper : CCarouselControl.KClassLower;
                 var distClassName = CCarouselControl.KClassDistPrefix + dist;
-                itemEl.style.top = nextTop + 'px';
+                if (aAnimation) {
+                    Util.setTrasformValues(itemEl, {
+                        translate: {
+                            x: 0,
+                            y: nextTop
+                        }
+                    });
+                }
+                else {
+                    itemEl.style.top = nextTop + 'px';
+                }
                 itemEl.classList.remove(prevDistClassName);
                 itemEl.classList.add(distClassName);
                 if (diff === 0) {
@@ -3951,7 +4020,7 @@ var Controls;
                 nextTop += (aAnchorHeight && itemIndex === aAnchorIndex) ? aAnchorHeight : aItemHeight;
             }
         };
-        CCarouselControl.prototype._moveItemsUpward = function (aItemsEl, aItemHeight, aAnchorIndex, aIndexOffset, aAnchorHeight) {
+        CCarouselControl.prototype._moveItemsUpward = function (aAnimation, aItemsEl, aItemHeight, aAnchorIndex, aIndexOffset, aAnchorHeight) {
             var nextTop = -aItemHeight;
             var i, len;
             for (i = 0, len = aItemsEl.length; i < len; i += 1) {
@@ -3965,7 +4034,17 @@ var Controls;
                 var dist = Math.abs(diff);
                 var direction = diff < 0 ? CCarouselControl.KClassUpper : CCarouselControl.KClassLower;
                 var distClassName = CCarouselControl.KClassDistPrefix + dist;
-                itemEl.style.top = nextTop + 'px';
+                if (aAnimation) {
+                    Util.setTrasformValues(itemEl, {
+                        translate: {
+                            x: 0,
+                            y: nextTop
+                        }
+                    });
+                }
+                else {
+                    itemEl.style.top = nextTop + 'px';
+                }
                 itemEl.classList.remove(prevDistClassName);
                 itemEl.classList.add(distClassName);
                 if (diff === 0) {
@@ -3979,6 +4058,7 @@ var Controls;
             }
         };
         CCarouselControl.prototype._handleTransitionEnd = function () {
+            var _this = this;
             this.setTransition(false);
             if (this.fnSafeUpdate) {
                 this.fnSafeUpdate();
@@ -3987,7 +4067,9 @@ var Controls;
             }
             else {
                 if (this._keyQueue.length) {
-                    this[this._keyQueue.shift()]();
+                    setTimeout(function () {
+                        _this[_this._keyQueue.shift()]();
+                    });
                 }
                 else {
                     this._emitCurrentItemChanged(this._anchorEl, this._cirMenuItems.curItem(), this._cirMenuItems.cur());
@@ -4009,6 +4091,7 @@ var Controls;
             var anchorHeight = this.getAnchorHeight();
             var anchorWidth = this.getAnchorWidth();
             var anchorIndex = this.getAnchorIndex();
+            var animation = this.getAnimation();
             var transparentAnchor = this.getTransparentAnchor();
             var align = this.getOrientation();
             var itemOffset;
@@ -4030,8 +4113,8 @@ var Controls;
                 var upperItemsEl = this._upperBoundEl.querySelectorAll(CCarouselControl.KSelectorItem);
                 var lowerItemsEl = this._lowerBoundEl.querySelectorAll(CCarouselControl.KSelectorItem);
                 if (aDown) {
-                    fnMoveItemUpper(upperItemsEl, itemOffset, anchorIndex, -1);
-                    fnMoveItemUpper(lowerItemsEl, itemOffset, anchorIndex, anchorIndex);
+                    fnMoveItemUpper(animation, upperItemsEl, itemOffset, anchorIndex, -1);
+                    fnMoveItemUpper(animation, lowerItemsEl, itemOffset, anchorIndex, anchorIndex);
                     if (lowerItemsEl.length) {
                         upperItemsEl[0].parentNode.removeChild(upperItemsEl[0]);
                         lowerItemsEl[0].parentNode.removeChild(lowerItemsEl[0]);
@@ -4041,8 +4124,8 @@ var Controls;
                     }
                 }
                 else {
-                    fnMoveItemlower(upperItemsEl, itemOffset, anchorIndex, 0);
-                    fnMoveItemlower(lowerItemsEl, itemOffset, anchorIndex, anchorIndex + 1);
+                    fnMoveItemlower(animation, upperItemsEl, itemOffset, anchorIndex, 0);
+                    fnMoveItemlower(animation, lowerItemsEl, itemOffset, anchorIndex, anchorIndex + 1);
                     if (lowerItemsEl.length) {
                         upperItemsEl[0].parentNode.removeChild(upperItemsEl[upperItemsEl.length - 1]);
                         lowerItemsEl[0].parentNode.removeChild(lowerItemsEl[lowerItemsEl.length - 1]);
@@ -4055,11 +4138,11 @@ var Controls;
             else {
                 var itemsEl = this._element.querySelectorAll(CCarouselControl.KSelectorItem);
                 if (aDown) {
-                    fnMoveItemUpper(itemsEl, itemOffset, anchorIndex, -1, anchorOffset);
+                    fnMoveItemUpper(animation, itemsEl, itemOffset, anchorIndex, -1, anchorOffset);
                     itemsEl[0].parentNode.removeChild(itemsEl[0]);
                 }
                 else {
-                    fnMoveItemlower(itemsEl, itemOffset, anchorIndex, 0, anchorOffset);
+                    fnMoveItemlower(animation, itemsEl, itemOffset, anchorIndex, 0, anchorOffset);
                     itemsEl[0].parentNode.removeChild(itemsEl[itemsEl.length - 1]);
                 }
             }
@@ -4070,7 +4153,7 @@ var Controls;
             this.setTransition(true);
             this._emitStartToChange(this._anchorEl, this._cirMenuItems.curItem(), this._cirMenuItems.cur());
             setTimeout(function () {
-                var menuLen = _this._cirMenuItems.length(), align, anchorIndex = _this.getAnchorIndex(), anchorHeight = _this.getAnchorHeight(), anchorWidth = _this.getAnchorWidth(), itemHeight = _this.getItemHeight(), itemWidth = _this.getItemWidth(), transparentAnchor = _this.getTransparentAnchor(), nextTop = 0, itemOffset, anchorOffset, fnMoveItemUpper, fnMoveItemlower;
+                var menuLen = _this._cirMenuItems.length(), align, anchorIndex = _this.getAnchorIndex(), anchorHeight = _this.getAnchorHeight(), anchorWidth = _this.getAnchorWidth(), itemHeight = _this.getItemHeight(), itemWidth = _this.getItemWidth(), animation = _this.getAnimation(), transparentAnchor = _this.getTransparentAnchor(), nextTop = 0, itemOffset, anchorOffset, fnMoveItemUpper, fnMoveItemlower;
                 if (_this.getOrientation() == TParamOrientation.EUnknown || undefined) {
                     align = TParamOrientation.EVertical;
                 }
@@ -4093,8 +4176,8 @@ var Controls;
                     var upperItemNodeList = _this._upperBoundEl.querySelectorAll(CCarouselControl.KSelectorItem);
                     var lowerItemNodeList = _this._lowerBoundEl.querySelectorAll(CCarouselControl.KSelectorItem);
                     if (aDown) {
-                        fnMoveItemUpper(upperItemNodeList, itemOffset, anchorIndex, -1);
-                        fnMoveItemUpper(lowerItemNodeList, itemOffset, anchorIndex, anchorIndex);
+                        fnMoveItemUpper(animation, upperItemNodeList, itemOffset, anchorIndex, -1);
+                        fnMoveItemUpper(animation, lowerItemNodeList, itemOffset, anchorIndex, anchorIndex);
                         if (lowerItemNodeList.length) {
                             _this._doTransitionAndAfter(lowerItemNodeList[lowerItemNodeList.length - 1], function () {
                                 upperItemNodeList[0].parentNode.removeChild(upperItemNodeList[0]);
@@ -4108,8 +4191,8 @@ var Controls;
                         }
                     }
                     else {
-                        fnMoveItemlower(upperItemNodeList, itemOffset, anchorIndex, 0);
-                        fnMoveItemlower(lowerItemNodeList, itemOffset, anchorIndex, anchorIndex + 1);
+                        fnMoveItemlower(animation, upperItemNodeList, itemOffset, anchorIndex, 0);
+                        fnMoveItemlower(animation, lowerItemNodeList, itemOffset, anchorIndex, anchorIndex + 1);
                         if (lowerItemNodeList.length) {
                             _this._doTransitionAndAfter(lowerItemNodeList[lowerItemNodeList.length - 1], function () {
                                 upperItemNodeList[0].parentNode.removeChild(upperItemNodeList[upperItemNodeList.length - 1]);
@@ -4126,13 +4209,13 @@ var Controls;
                 else {
                     var itemNodeList = _this._element.querySelectorAll(CCarouselControl.KSelectorItem);
                     if (aDown) {
-                        fnMoveItemUpper(itemNodeList, itemOffset, anchorIndex, -1, anchorOffset);
+                        fnMoveItemUpper(animation, itemNodeList, itemOffset, anchorIndex, -1, anchorOffset);
                         _this._doTransitionAndAfter(itemNodeList[itemNodeList.length - 1], function () {
                             itemNodeList[0].parentNode.removeChild(itemNodeList[0]);
                         });
                     }
                     else {
-                        fnMoveItemlower(itemNodeList, itemOffset, anchorIndex, 0, anchorOffset);
+                        fnMoveItemlower(animation, itemNodeList, itemOffset, anchorIndex, 0, anchorOffset);
                         _this._doTransitionAndAfter(itemNodeList[itemNodeList.length - 1], function () {
                             itemNodeList[0].parentNode.removeChild(itemNodeList[itemNodeList.length - 1]);
                         });
@@ -4214,6 +4297,7 @@ var Controls;
                     }
                 }
             }
+            var trick = this._element.offsetHeight;
             if (animation) {
                 this._animate(false);
             }
@@ -4297,11 +4381,12 @@ var Controls;
             }
             else {
                 var itemNodeList = this._element.querySelectorAll(CCarouselControl.KSelectorItem);
+                var newItemEl = void 0;
                 if (align == TParamOrientation.EVertical) {
-                    var newItemEl = this._createItem(items[items.length - 1], this._height, CCarouselControl.KClassLower);
+                    newItemEl = this._createItem(items[items.length - 1], this._height, CCarouselControl.KClassLower);
                 }
                 else {
-                    var newItemEl = this._createItem(items[items.length - 1], this._width, CCarouselControl.KClassLower);
+                    newItemEl = this._createItem(items[items.length - 1], this._width, CCarouselControl.KClassLower);
                 }
                 this._element.appendChild(newItemEl);
                 if (dataLen < viewCount) {
@@ -4315,6 +4400,7 @@ var Controls;
                     }
                 }
             }
+            var trick = this._element.offsetHeight;
             if (animation) {
                 this._animate(true);
             }
